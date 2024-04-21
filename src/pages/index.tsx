@@ -13,6 +13,7 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Typography>Test CI/CD</Typography>
+      <Typography>Test Tiếp heheh</Typography>
       <Button variant='contained'>Hello world</Button>
     </>
   )
