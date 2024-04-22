@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import LoginPage from 'src/view/pages/login-page'
+import LoginPage from 'src/view/pages/login'
 
 type TProps = {}
 

@@ -3,7 +3,7 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 
 // ** MUI
-import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, IconButton, Link, Typography } from '@mui/material'
+import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, IconButton, Typography } from '@mui/material'
 import CustomTextField from 'src/components/text-field'
 import { useTheme } from '@mui/material'
 
@@ -22,26 +22,33 @@ import { useState } from 'react'
 import CustomIcon from 'src/components/Icon'
 
 // ** Image
-// import LoginDark from '/public/images/login-dark.png'
-import LoginLight from '/public/images/login-light.png'
+import RegisterDark from '/public/images/register-dark.png'
+import RegisterLight from '/public/images/register-light.png'
+import Link from 'next/link'
 
 type TProps = {}
 
-const schema = yup
-  .object({
-    email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
-    password: yup
-      .string()
-      .required('Please enter password')
-      .matches(PASSWORD_REG, 'the password is contain charact,special character,number')
-  })
-  .required()
+const schema = yup.object({
+  email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
+  password: yup
+    .string()
+    .required('Please enter password')
+    .matches(PASSWORD_REG, 'the password is contain charact,special character,number'),
+  confirmPassword: yup
+    .string()
+    .required('Please enter confirm password')
+    .matches(PASSWORD_REG, 'the password is contain charact,special character,number')
+    .oneOf([yup.ref('password'), ''], 'The confirm password is must match password')
+})
 
-const LoginPage: NextPage<TProps> = () => {
+const RegisterPage: NextPage<TProps> = () => {
   const theme = useTheme()
 
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
   const handleClickShowPassword = () => setShowPassword(show => !show)
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword(show1 => !show1)
 
   const {
     control,
@@ -50,12 +57,13 @@ const LoginPage: NextPage<TProps> = () => {
   } = useForm({
     defaultValues: {
       email: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     },
     resolver: yupResolver(schema)
   })
 
-  const handleOnSubmit = (data: { email: string; password: string }) => {
+  const handleOnSubmit = (data: { email: string; password: string; confirmPassword: string }) => {
     console.log('data', { data })
   }
 
@@ -83,7 +91,12 @@ const LoginPage: NextPage<TProps> = () => {
           backgroundColor: theme.palette.customColors.bodyBg
         }}
       >
-        <Image src={LoginLight} width={600} alt='Login Image' style={{ width: 'auto', height: 'auto' }} />
+        <Image
+          src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
+          width={600}
+          alt='Login Image'
+          style={{ width: 'auto', height: 'auto' }}
+        />
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
@@ -100,7 +113,7 @@ const LoginPage: NextPage<TProps> = () => {
             Sign in
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-            <Box mt={2}>
+            <Box mt={2} width='300px'>
               <Controller
                 control={control}
                 rules={{
@@ -122,7 +135,7 @@ const LoginPage: NextPage<TProps> = () => {
               />
             </Box>
 
-            <Box mt={2}>
+            <Box mt={2} width='300px'>
               <Controller
                 control={control}
                 rules={{
@@ -159,11 +172,48 @@ const LoginPage: NextPage<TProps> = () => {
                 name='password'
               />
             </Box>
+
+            <Box mt={2} width='300px'>
+              <Controller
+                control={control}
+                rules={{
+                  required: true
+                }}
+                render={({ field: { onChange, onBlur, value, ref } }) => (
+                  <CustomTextField
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    fullWidth
+                    label='Confirm Password'
+                    inputRef={ref}
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    error={Boolean(errors.confirmPassword)}
+                    helperText={errors.confirmPassword?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton
+                          aria-label='toggle password visibility'
+                          onClick={handleClickShowConfirmPassword}
+                          edge='end'
+                        >
+                          {showConfirmPassword ? (
+                            <CustomIcon icon='material-symbols:visibility-outline' />
+                          ) : (
+                            <CustomIcon icon='material-symbols:visibility-off-outline-rounded' />
+                          )}
+                        </IconButton>
+                      )
+                    }}
+                  />
+                )}
+                name='confirmPassword'
+              />
+            </Box>
+
             <Box>
               <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
-              <Link href='#' variant='body2'>
-                Forgot password?
-              </Link>
+              <Link href='#'>Forgot password?</Link>
             </Box>
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
               Sign In
@@ -173,9 +223,7 @@ const LoginPage: NextPage<TProps> = () => {
                 {"Don't have an account?"}
               </Grid>
               <Grid item>
-                <Link href='#' variant='body2'>
-                  {' Sign Up'}
-                </Link>
+                <Link href='/login'>{' Login in'}</Link>
               </Grid>
             </Grid>
 
@@ -221,4 +269,4 @@ const LoginPage: NextPage<TProps> = () => {
   )
 }
 
-export default LoginPage
+export default RegisterPage
