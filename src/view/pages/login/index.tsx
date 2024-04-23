@@ -1,6 +1,7 @@
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 
 // ** MUI
 import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, IconButton, Typography } from '@mui/material'
@@ -24,7 +25,10 @@ import CustomIcon from 'src/components/Icon'
 // ** Image
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
-import Link from 'next/link'
+
+// Hook Auth
+import { useAuth } from 'src/hooks/useAuth'
+import { LoginParams } from 'src/contexts/types'
 
 type TProps = {}
 
@@ -40,7 +44,10 @@ const LoginPage: NextPage<TProps> = () => {
   const theme = useTheme()
 
   const [showPassword, setShowPassword] = useState(false)
+  const [isRemember, setRemember] = useState(false)
   const handleClickShowPassword = () => setShowPassword(show => !show)
+
+  const { login } = useAuth()
 
   const {
     control,
@@ -54,8 +61,10 @@ const LoginPage: NextPage<TProps> = () => {
     resolver: yupResolver(schema)
   })
 
-  const handleOnSubmit = (data: { email: string; password: string }) => {
-    console.log('data', { data })
+  const handleOnSubmit = (data: LoginParams) => {
+    if (!Object.keys(errors)?.length) {
+      login({ ...data, rememberMe: isRemember })
+    }
   }
 
   return (
@@ -70,7 +79,7 @@ const LoginPage: NextPage<TProps> = () => {
     >
       <Box
         display={{
-          md: 'flex',
+          sm: 'flex',
           xs: 'none'
         }}
         sx={{
@@ -164,7 +173,12 @@ const LoginPage: NextPage<TProps> = () => {
               />
             </Box>
             <Box>
-              <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
+              <FormControlLabel
+                control={
+                  <Checkbox onChange={e => setRemember(e.target.checked)} checked={isRemember} color='primary' />
+                }
+                label='Remember me'
+              />
               <Link href='#'>Forgot password?</Link>
             </Box>
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>

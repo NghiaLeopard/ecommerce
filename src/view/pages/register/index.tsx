@@ -79,7 +79,7 @@ const RegisterPage: NextPage<TProps> = () => {
     >
       <Box
         display={{
-          md: 'flex',
+          sm: 'flex',
           xs: 'none'
         }}
         sx={{
