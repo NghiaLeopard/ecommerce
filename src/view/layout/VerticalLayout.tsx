@@ -6,14 +6,16 @@ import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import MuiDrawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
 import Toolbar from '@mui/material/Toolbar'
 
 // ** Style
 import { styled } from '@mui/material/styles'
 
 // components
-import { mainListItems, secondaryListItems } from './listItem'
+import { ListVerticalLayout } from './ListVerticalLayout'
+
+// ** Custom
+import CustomIcon from 'src/components/Icon'
 
 const drawerWidth: number = 240
 
@@ -38,9 +40,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: prop => prop !== 'open' })
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen
       }),
-      width: theme.spacing(7),
+      width: theme.spacing(12),
       [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9)
+        width: theme.spacing(12)
       }
     })
   }
@@ -58,14 +60,12 @@ const VerticalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             px: [1]
           }}
         >
-          <IconButton onClick={toggleDrawer}>{/* <ChevronLeftIcon /> */}</IconButton>
+          <IconButton onClick={toggleDrawer}>
+            <CustomIcon icon='icon-park-outline:left' />
+          </IconButton>
         </Toolbar>
         <Divider />
-        <List component='nav'>
-          {mainListItems}
-          <Divider sx={{ my: 1 }} />
-          {secondaryListItems}
-        </List>
+        <ListVerticalLayout openVertical={open} />
       </Drawer>
     </Box>
   )

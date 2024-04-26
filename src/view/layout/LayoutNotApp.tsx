@@ -18,8 +18,8 @@ type TProps = {
   children: ReactNode
 }
 
-const UserLayout: NextPage<TProps> = ({ children }) => {
-  const [open, setOpen] = useState(true)
+const LayoutNotApp: NextPage<TProps> = ({ children }) => {
+  const [open, setOpen] = useState(false)
   const toggleDrawer = () => {
     setOpen(!open)
   }
@@ -28,7 +28,6 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <HorizontalLayout open={open} toggleDrawer={toggleDrawer} />
-      <VerticalLayout open={open} toggleDrawer={toggleDrawer} />
       <Box
         component='main'
         sx={{
@@ -48,4 +47,4 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
   )
 }
 
-export default UserLayout
+export default LayoutNotApp

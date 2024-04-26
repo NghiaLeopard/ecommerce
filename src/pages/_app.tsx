@@ -80,7 +80,6 @@ export default function App(props: ExtendedAppProps) {
   const { settings } = useSettings()
 
   // Variables
-  console.log({ Component })
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   const setConfig = Component.setConfig ?? undefined
