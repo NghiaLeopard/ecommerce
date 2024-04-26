@@ -10,7 +10,9 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
 // ** Style
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
+
+// ** Custom
 import CustomIcon from 'src/components/Icon'
 
 const drawerWidth: number = 240
@@ -28,6 +30,9 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: prop => prop !== 'open'
 })<AppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  background:
+    theme.palette.mode === 'light' ? theme.palette.customColors.lightPaperBg : theme.palette.customColors.darkPaperBg,
+  color: theme.palette.primary.main,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -48,21 +53,24 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
       <AppBar position='absolute' open={open}>
         <Toolbar
           sx={{
-            pr: '24px' // keep right padding when drawer closed
+            pr: '30px',
+            margin: '0 20px' // keep right padding when drawer closed
           }}
         >
-          <IconButton
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            onClick={toggleDrawer}
-            sx={{
-              marginRight: '36px',
-              ...(open && { display: 'none' })
-            }}
-          >
-            <CustomIcon icon='ic:round-menu' />
-          </IconButton>
+          {open && (
+            <IconButton
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={toggleDrawer}
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' })
+              }}
+            >
+              <CustomIcon icon='ic:round-menu' />
+            </IconButton>
+          )}
           <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
             Dashboard
           </Typography>

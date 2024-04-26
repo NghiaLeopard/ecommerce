@@ -49,6 +49,8 @@ const LoginPage: NextPage<TProps> = () => {
 
   const { login } = useAuth()
 
+  console.log(theme)
+
   const {
     control,
     handleSubmit,
@@ -67,6 +69,8 @@ const LoginPage: NextPage<TProps> = () => {
     }
   }
 
+  console.log(theme)
+
   return (
     <Box
       sx={{
@@ -79,8 +83,9 @@ const LoginPage: NextPage<TProps> = () => {
     >
       <Box
         display={{
-          sm: 'flex',
-          xs: 'none'
+          sm: 'none',
+          xs: 'none',
+          md: 'flex'
         }}
         sx={{
           alignItems: 'center',

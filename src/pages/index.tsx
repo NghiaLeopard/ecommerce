@@ -1,4 +1,7 @@
+import { NextPage } from 'next'
 import Head from 'next/head'
+import { ReactNode } from 'react'
+import LayoutNotApp from 'src/view/layout/LayoutNotApp'
 
 export default function Home() {
   return (
@@ -12,3 +15,5 @@ export default function Home() {
     </>
   )
 }
+
+Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
