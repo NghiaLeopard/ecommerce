@@ -67,7 +67,6 @@ const LoginPage: NextPage<TProps> = () => {
     }
   }
 
-
   return (
     <Box
       sx={{
@@ -191,7 +190,7 @@ const LoginPage: NextPage<TProps> = () => {
                 {"Don't have an account?"}
               </Grid>
               <Grid item>
-                <Link href='/register'>{' Sign Up'}</Link>
+                <Link href='/register'>{'Register'}</Link>
               </Grid>
             </Grid>
 

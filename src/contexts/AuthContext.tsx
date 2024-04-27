@@ -12,9 +12,18 @@ import authConfig from 'src/configs/auth'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+
+// ** Services
 import { loginAuth } from 'src/services/auth'
+
+// ** Configs
 import { CONFIG_API } from 'src/configs/api'
+
+// ** Helpers
 import { getLocalUserData, removeLocalUserData, setLocalUserData } from 'src/helpers/storage'
+
+// ** Axios
+import instanceAxios from 'src/helpers/axios'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -45,12 +54,8 @@ const AuthProvider = ({ children }: Props) => {
       const storedToken = getLocalUserData().accessToken
       if (storedToken) {
         setLoading(true)
-        await axios
-          .get(CONFIG_API.AUTH.AUTH_ME, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            }
-          })
+        await instanceAxios
+          .get(CONFIG_API.AUTH.AUTH_ME)
           .then(async response => {
             setLoading(false)
             setUser({ ...response.data.data })

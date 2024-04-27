@@ -2,20 +2,21 @@
 import { ReactNode } from 'react'
 
 // ** Next Imports
-import Head from 'next/head'
-import { Router } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import { Router } from 'next/router'
 
 // ** Store Imports
 import { Provider } from 'react-redux'
+import { store } from 'src/stores'
 
 // ** Loader Import
 import NProgress from 'nprogress'
 
 // ** Config Imports
-import 'src/configs/i18n'
 import { defaultACLObj } from 'src/configs/acl'
+import 'src/configs/i18n'
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Third Party Import
@@ -23,19 +24,28 @@ import { Toaster } from 'react-hot-toast'
 
 // ** Contexts
 import { AuthProvider } from 'src/contexts/AuthContext'
+import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext'
 
 // ** Global css styles
 import 'src/styles/globals.scss'
 
-import { store } from 'src/stores'
-import GuestGuard from 'src/components/auth/GuestGuard'
+// Components
 import AuthGuard from 'src/components/auth/AuthGuard'
+import GuestGuard from 'src/components/auth/GuestGuard'
 import FallbackSpinner from 'src/components/fall-back'
-import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext'
-import AclGuard from 'src/components/auth/AclGuard'
 import ReactHotToast from 'src/components/react-hot-toast'
+import AclGuard from 'src/components/auth/AclGuard'
+
+// ** Axios
+import { AxiosInterceptor } from 'src/helpers/axios'
+
+// ** Hooks
 import { useSettings } from 'src/hooks/useSettings'
+
+// ** Theme
 import ThemeComponent from 'src/theme/ThemeComponent'
+
+// ** Layout
 import UserLayout from 'src/view/layout/UserLayout'
 
 // ** Layout
@@ -84,8 +94,10 @@ export default function App(props: ExtendedAppProps) {
 
   const setConfig = Component.setConfig ?? undefined
 
+  // check user login ? in page : back page login
   const authGuard = Component.authGuard ?? true
 
+  // user don't login into page (this page don't login) and user logged in then don't back page login until logout
   const guestGuard = Component.guestGuard ?? false
 
   const aclAbilities = Component.acl ?? defaultACLObj
@@ -118,24 +130,26 @@ export default function App(props: ExtendedAppProps) {
       </Head>
 
       <AuthProvider>
-        <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-          <SettingsConsumer>
-            {({ settings }) => {
-              return (
-                <ThemeComponent settings={settings}>
-                  <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                    <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
-                      {getLayout(<Component {...pageProps} />)}
-                    </AclGuard>
-                  </Guard>
-                  <ReactHotToast>
-                    <Toaster position={settings.toastPosition} toastOptions={toastOptions} />
-                  </ReactHotToast>
-                </ThemeComponent>
-              )
-            }}
-          </SettingsConsumer>
-        </SettingsProvider>
+        <AxiosInterceptor>
+          <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+            <SettingsConsumer>
+              {({ settings }) => {
+                return (
+                  <ThemeComponent settings={settings}>
+                    <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                      <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
+                        {getLayout(<Component {...pageProps} />)}
+                      </AclGuard>
+                    </Guard>
+                    <ReactHotToast>
+                      <Toaster position={settings.toastPosition} toastOptions={toastOptions} />
+                    </ReactHotToast>
+                  </ThemeComponent>
+                )
+              }}
+            </SettingsConsumer>
+          </SettingsProvider>
+        </AxiosInterceptor>
       </AuthProvider>
     </Provider>
   )
