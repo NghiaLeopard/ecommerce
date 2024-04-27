@@ -63,9 +63,7 @@ const RegisterPage: NextPage<TProps> = () => {
     resolver: yupResolver(schema)
   })
 
-  const handleOnSubmit = (data: { email: string; password: string; confirmPassword: string }) => {
-    console.log('data', { data })
-  }
+  const handleOnSubmit = (data: { email: string; password: string; confirmPassword: string }) => {}
 
   return (
     <Box

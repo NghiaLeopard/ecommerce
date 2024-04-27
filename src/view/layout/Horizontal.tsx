@@ -12,8 +12,9 @@ import Typography from '@mui/material/Typography'
 // ** Style
 import { styled, useTheme } from '@mui/material/styles'
 
-// ** Custom
+// ** components
 import CustomIcon from 'src/components/Icon'
+import UserDropDown from 'src/components/user-dropdown'
 
 const drawerWidth: number = 240
 
@@ -74,11 +75,8 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
           <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
             Dashboard
           </Typography>
-          <IconButton color='inherit'>
-            <Badge badgeContent={4} color='secondary'>
-              <CustomIcon icon='carbon:notification' />
-            </Badge>
-          </IconButton>
+
+          <UserDropDown />
         </Toolbar>
       </AppBar>
     </Box>

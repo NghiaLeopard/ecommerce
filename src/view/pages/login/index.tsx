@@ -49,16 +49,14 @@ const LoginPage: NextPage<TProps> = () => {
 
   const { login } = useAuth()
 
-  console.log(theme)
-
   const {
     control,
     handleSubmit,
     formState: { errors }
   } = useForm({
     defaultValues: {
-      email: '',
-      password: ''
+      email: 'admin@gmail.com',
+      password: '123456789Kha@'
     },
     resolver: yupResolver(schema)
   })
@@ -68,8 +66,6 @@ const LoginPage: NextPage<TProps> = () => {
       login({ ...data, rememberMe: isRemember })
     }
   }
-
-  console.log(theme)
 
   return (
     <Box
@@ -194,7 +190,7 @@ const LoginPage: NextPage<TProps> = () => {
                 {"Don't have an account?"}
               </Grid>
               <Grid item>
-                <Link href='/register'>{' Sign Up'}</Link>
+                <Link href='/register'>{'Register'}</Link>
               </Grid>
             </Grid>
 
