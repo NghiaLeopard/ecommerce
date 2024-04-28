@@ -78,7 +78,7 @@ const LanguageDropDown: NextPage<TProps> = () => {
         {LANGUAGE_OPTION.map(item => {
           return (
             <MenuItem key={item.value} onClick={() => handleChangeLanguage(item.value)}>
-              <Typography>{item.lang}</Typography>
+              {item.lang}
             </MenuItem>
           )
         })}

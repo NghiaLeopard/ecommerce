@@ -42,7 +42,7 @@ export default i18n
 
 export const LANGUAGE_OPTION = [
   {
-    lang: 'TIếng Việt',
+    lang: 'Tiếng Việt',
     value: 'vi'
   },
   {
