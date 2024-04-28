@@ -39,6 +39,8 @@ const AuthGuard = (props: AuthGuardProps) => {
     }
   }, [router.route])
 
+  // haven't route product , when initial url have pathname: /product then running to useEffect if haven't condition authContext.user === null , render will have a little page appear.
+
   if (authContext.loading || authContext.user === null) return fallback
 
   return <>{children}</>

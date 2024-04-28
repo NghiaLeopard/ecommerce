@@ -13,12 +13,20 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
+
+// ** Hook
 import { useAuth } from 'src/hooks/useAuth'
-import CustomIcon from '../Icon'
+
+// ** Components
+import CustomIcon from '../../../../components/Icon'
+
+// ** i18n
+import { useTranslation } from 'react-i18next'
 
 interface TProps {}
 
 const UserDropDown: NextPage<TProps> = () => {
+  const { t } = useTranslation()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { user, logout } = useAuth()
   const open = Boolean(anchorEl)
@@ -32,7 +40,7 @@ const UserDropDown: NextPage<TProps> = () => {
   return (
     <Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Tooltip title='Account settings'>
+        <Tooltip title={t('Account')}>
           <IconButton
             onClick={handleClick}
             size='small'

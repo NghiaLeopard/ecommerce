@@ -14,7 +14,9 @@ import { styled, useTheme } from '@mui/material/styles'
 
 // ** components
 import CustomIcon from 'src/components/Icon'
-import UserDropDown from 'src/components/user-dropdown'
+import UserDropDown from 'src/view/layout/components/user-dropdown'
+import ModeToggle from './components/mode-toggle'
+import LanguageDropDown from './components/language-dropdown'
 
 const drawerWidth: number = 240
 
@@ -76,6 +78,8 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             Dashboard
           </Typography>
 
+          <LanguageDropDown />
+          <ModeToggle />
           <UserDropDown />
         </Toolbar>
       </AppBar>

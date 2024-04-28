@@ -40,7 +40,7 @@ const AuthContext = createContext(defaultProvider)
 type Props = {
   children: ReactNode
 }
-
+  
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
@@ -49,6 +49,8 @@ const AuthProvider = ({ children }: Props) => {
   // ** Hooks
   const router = useRouter()
 
+  // this useEffect is impact : when refresh page : call api/auth/me with accessToken
+  // access token contains information to know : who account ?
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const storedToken = getLocalUserData().accessToken
@@ -77,6 +79,7 @@ const AuthProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // when login is success, initialize data
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
