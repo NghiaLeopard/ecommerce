@@ -26,7 +26,9 @@ const AuthGuard = (props: AuthGuardProps) => {
     }
 
     if (authContext.user === null && !getLocalUserData().userData && !getLocalUserData().accessToken) {
-      if (router.asPath !== '/') {
+
+      // check asPath === login in case : api log in fail , url add returnUrl: login .
+      if (router.asPath !== '/' && router.asPath !== '/login') {
         router.replace({
           pathname: 'login',
           query: { returnUrl: router.asPath }

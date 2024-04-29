@@ -1,13 +1,13 @@
 // ** Next
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 // ** React
-import React, { Fragment, MouseEvent } from 'react'
+import React, { Fragment, MouseEvent, useState } from 'react'
 
 // ** Mui
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
@@ -23,18 +23,29 @@ import CustomIcon from '../../../../components/Icon'
 // ** i18n
 import { useTranslation } from 'react-i18next'
 
+// ** Config
+import { CONFIG_ROUTE } from 'src/configs/route'
+
 interface TProps {}
 
 const UserDropDown: NextPage<TProps> = () => {
+  const route = useRouter()
   const { t } = useTranslation()
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { user, logout } = useAuth()
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  
   const open = Boolean(anchorEl)
+
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleNavigate = () => {
+    setAnchorEl(null)
+    route.push(`/${CONFIG_ROUTE.MY_PROFILE}`)
   }
 
   return (
@@ -91,20 +102,9 @@ const UserDropDown: NextPage<TProps> = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleClose}>{user?.email}</MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>{/* <PersonAdd fontSize='small' /> */}</ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>{/* <Settings fontSize='small' /> */}</ListItemIcon>
-          Settings
+        <MenuItem onClick={handleNavigate}>
+          <Avatar />
+          {t('my-profile')}
         </MenuItem>
         <MenuItem onClick={logout}>
           <ListItemIcon>{/* <Logout fontSize='small' /> */}</ListItemIcon>

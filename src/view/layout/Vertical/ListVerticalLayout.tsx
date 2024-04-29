@@ -8,7 +8,6 @@ import List from '@mui/material/List'
 import { VerticalItems } from 'src/configs/layout'
 import { ItemVerticalLayout } from './ItemVerticalLayout'
 
-
 interface TProps {
   openVertical: boolean
 }
