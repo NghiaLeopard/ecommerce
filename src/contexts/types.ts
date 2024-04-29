@@ -6,6 +6,13 @@ export type LoginParams = {
   rememberMe?: boolean
 }
 
+export type RegisterParams = {
+  email: string
+  password: string
+  confirmPassword: string
+  rememberMe?: boolean
+}
+
 export type UserDataType = {
   id: number
   role: string

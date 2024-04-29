@@ -33,10 +33,9 @@ const AclGuard = (props: AclGuardProps) => {
 
   const auth = useAuth()
   const router = useRouter()
-  console.log(auth)
 
   // @ts-ignore
-  const permissionUser = auth.user?.role.permissions ?? []
+  const permissionUser = auth.user?.role?.permissions ?? []
 
   let ability: AppAbility
 

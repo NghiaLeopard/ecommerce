@@ -12,7 +12,7 @@ import { ReactNode, useState } from 'react'
 
 // ** layout
 import HorizontalLayout from './Horizontal'
-import VerticalLayout from './VerticalLayout'
+import VerticalLayout from './Vertical/VerticalLayout'
 
 type TProps = {
   children: ReactNode

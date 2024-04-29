@@ -1,11 +1,15 @@
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 // ** MUI
-import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, IconButton, Typography } from '@mui/material'
+import { Box, Button, CssBaseline, Grid, IconButton, Typography, useTheme } from '@mui/material'
+
+// ** Components
+import FallbackSpinner from 'src/components/fall-back'
 import CustomTextField from 'src/components/text-field'
-import { useTheme } from '@mui/material'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -18,13 +22,25 @@ import * as yup from 'yup'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
 // ** React
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomIcon from 'src/components/Icon'
 
 // ** Image
 import RegisterDark from '/public/images/register-dark.png'
 import RegisterLight from '/public/images/register-light.png'
-import Link from 'next/link'
+
+// ** Redux
+import { useDispatch, useSelector } from 'react-redux'
+
+// Store
+import { AppDispatch, RootState } from 'src/stores'
+import { registerAuthSync, resetInitialState } from 'src/stores/apps/auth'
+
+// ** Toast
+import toast from 'react-hot-toast'
+
+// ** Config
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {}
 
@@ -43,6 +59,10 @@ const schema = yup.object({
 
 const RegisterPage: NextPage<TProps> = () => {
   const theme = useTheme()
+  const router = useRouter()
+  const dispatch: AppDispatch = useDispatch()
+
+  const { isError, isLoading, isSuccess, message } = useSelector((state: RootState) => state.auth)
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -63,7 +83,23 @@ const RegisterPage: NextPage<TProps> = () => {
     resolver: yupResolver(schema)
   })
 
-  const handleOnSubmit = (data: { email: string; password: string; confirmPassword: string }) => {}
+  const handleOnSubmit = (data: { email: string; password: string; confirmPassword: string }) => {
+    dispatch(registerAuthSync({ email: data.email, password: data.password }))
+  }
+
+  useEffect(() => {
+    if (message) {
+      if (isError) {
+        toast.error(message)
+      } else if (isSuccess) {
+        toast.success(message)
+        router.push(CONFIG_ROUTE.LOGIN)
+      }
+    }
+  }, [isError, isSuccess, message])
+
+  console.log(isLoading)
+  if (isLoading) return <FallbackSpinner />
 
   return (
     <Box
@@ -209,10 +245,6 @@ const RegisterPage: NextPage<TProps> = () => {
               />
             </Box>
 
-            <Box>
-              <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
-              <Link href='#'>Forgot password?</Link>
-            </Box>
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>

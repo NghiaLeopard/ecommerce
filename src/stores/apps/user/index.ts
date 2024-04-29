@@ -15,13 +15,13 @@ interface DataParams {
 interface Redux {
   getState: any
   dispatch: Dispatch<any>
-}
+} 
 
 // ** Fetch Users
 export const fetchData = createAsyncThunk('appUsers/fetchData', async (params: DataParams) => {
   const response = await axios.get('/apps/users/list', {
     params
-  })
+  })  
 
   return response.data
 })

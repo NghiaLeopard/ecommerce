@@ -1,9 +1,12 @@
 // ** Axios
+import axios from 'axios'
 import instanceAxios from 'src/helpers/axios'
 
 // ** Config
 import { CONFIG_API } from 'src/configs/api'
-import { LoginParams } from 'src/contexts/types'
+
+// ** Context
+import { LoginParams, RegisterParams } from 'src/contexts/types'
 
 export const loginAuth = async (data: LoginParams) => {
   try {
@@ -11,6 +14,16 @@ export const loginAuth = async (data: LoginParams) => {
 
     return res.data
   } catch (error) {
-    return null
+    console.log(error)
+  }
+}
+
+export const registerAuth = async (data: RegisterParams) => {
+  try {
+    const res = await axios.post(`${CONFIG_API.AUTH.INDEX}/register`, data)
+
+    return res.data
+  } catch (error) {
+    return error
   }
 }
