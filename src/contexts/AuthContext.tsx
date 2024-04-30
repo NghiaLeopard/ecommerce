@@ -14,7 +14,7 @@ import authConfig from 'src/configs/auth'
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 
 // ** Services
-import { loginAuth } from 'src/services/auth'
+import { loginAuth, logoutAuth } from 'src/services/auth'
 
 // ** Configs
 import { CONFIG_API } from 'src/configs/api'
@@ -108,9 +108,11 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    removeLocalUserData()
-    router.push('/login')
+    logoutAuth().then(res => {
+      setUser(null)
+      removeLocalUserData()
+      router.push('/login')
+    })
   }
 
   const values = {

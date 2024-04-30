@@ -47,6 +47,7 @@ import ThemeComponent from 'src/theme/ThemeComponent'
 
 // ** Layout
 import UserLayout from 'src/view/layout/UserLayout'
+import NoGuard from 'src/components/auth/NoGuard'
 
 // ** Layout
 
@@ -77,7 +78,7 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
   if (guestGuard) {
     return <GuestGuard fallback={<FallbackSpinner />}>{children}</GuestGuard>
   } else if (!guestGuard && !authGuard) {
-    return <>{children}</>
+    return <NoGuard fallback={<FallbackSpinner />} >{children}</NoGuard>
   } else {
     return <AuthGuard fallback={<FallbackSpinner />}>{children}</AuthGuard>
   }

@@ -25,15 +25,54 @@ import { useTranslation } from 'react-i18next'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
+import Image from 'next/image'
+import { Badge, Divider, Typography, styled } from '@mui/material'
+import { toFullName } from 'src/utils'
 
 interface TProps {}
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""'
+    }
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0
+    }
+  }
+}))
+
+const SmallAvatar = styled(Avatar)(({ theme }) => ({
+  width: 22,
+  height: 22,
+  border: `2px solid ${theme.palette.background.paper}`
+}))
 
 const UserDropDown: NextPage<TProps> = () => {
   const route = useRouter()
   const { t } = useTranslation()
   const { user, logout } = useAuth()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  
+  const { i18n } = useTranslation()
+
   const open = Boolean(anchorEl)
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -44,8 +83,8 @@ const UserDropDown: NextPage<TProps> = () => {
   }
 
   const handleNavigate = () => {
-    setAnchorEl(null)
-    route.push(`/${CONFIG_ROUTE.MY_PROFILE}`)
+    route.push(`${CONFIG_ROUTE.MY_PROFILE}`)
+    handleClose()
   }
 
   return (
@@ -60,9 +99,21 @@ const UserDropDown: NextPage<TProps> = () => {
             aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>
-              {user ? user.avatar : <CustomIcon icon='gravity-ui:person' />}
-            </Avatar>
+            <StyledBadge overlap='circular' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant='dot'>
+              <Avatar sx={{ width: 32, height: 32 }}>
+                {user?.avatar ? (
+                  <Image
+                    src={user?.avatar || ''}
+                    alt='avatar'
+                    width={0}
+                    height={0}
+                    style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <CustomIcon icon='gravity-ui:person' />
+                )}
+              </Avatar>
+            </StyledBadge>
           </IconButton>
         </Tooltip>
       </Box>
@@ -101,11 +152,43 @@ const UserDropDown: NextPage<TProps> = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>{user?.email}</MenuItem>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 2, px: 2 }}>
+          <StyledBadge overlap='circular' anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} variant='dot'>
+            <Avatar sx={{ width: 32, height: 32 }}>
+              {user?.avatar ? (
+                <Image
+                  src={user?.avatar || ''}
+                  alt='avatar'
+                  width={0}
+                  height={0}
+                  style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+                />
+              ) : (
+                <CustomIcon icon='gravity-ui:person' />
+              )}
+            </Avatar>
+          </StyledBadge>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography>
+              {toFullName(user?.lastName || '', user?.middleName || '', user?.firstName || '', i18n.language)}
+            </Typography>
+
+            <Typography>
+              {
+                
+                //@ts-ignore
+                user?.role?.name
+              }
+            </Typography>
+          </Box>
+        </Box>
+        <Divider />
         <MenuItem onClick={handleNavigate}>
           <Avatar />
           {t('my-profile')}
         </MenuItem>
+
         <MenuItem onClick={logout}>
           <ListItemIcon>{/* <Logout fontSize='small' /> */}</ListItemIcon>
           Logout
