@@ -1,5 +1,4 @@
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
-  console.log(language)
   if (language === 'vi') {
     return `${lastName ? lastName : ''} ${middleName ? middleName : ''} ${firstName ? firstName : ''}`
   }
