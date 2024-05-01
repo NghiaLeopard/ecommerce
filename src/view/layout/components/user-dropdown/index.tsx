@@ -67,11 +67,11 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 }))
 
 const UserDropDown: NextPage<TProps> = () => {
+
   const route = useRouter()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user, logout } = useAuth()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const { i18n } = useTranslation()
 
   const open = Boolean(anchorEl)
 

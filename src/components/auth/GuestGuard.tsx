@@ -9,6 +9,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** LocalStorage
 import { getLocalUserData, removeLocalUserData } from 'src/helpers/storage'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/configs/auth'
 
 interface GuestGuardProps {
   children: ReactNode
@@ -26,7 +27,7 @@ const GuestGuard = (props: GuestGuardProps) => {
       return
     }
 
-    if (getLocalUserData().userData && getLocalUserData().accessToken) {
+    if (window.localStorage.getItem(ACCESS_TOKEN) && window.localStorage.getItem(REFRESH_TOKEN)) {
       router.replace('/')
     }
   }, [router])
