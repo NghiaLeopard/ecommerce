@@ -3,10 +3,16 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
+// ** React
+import { useState } from 'react'
+
 // ** MUI
 import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, IconButton, Typography } from '@mui/material'
-import CustomTextField from 'src/components/text-field'
 import { useTheme } from '@mui/material'
+
+// ** Components
+import CustomTextField from 'src/components/text-field'
+import CustomIcon from 'src/components/Icon'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -18,17 +24,17 @@ import * as yup from 'yup'
 // ** Regex
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
-// ** React
-import { useState } from 'react'
-import CustomIcon from 'src/components/Icon'
-
 // ** Image
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
 
-// Hook Auth
+// Hook
 import { useAuth } from 'src/hooks/useAuth'
+
+// ** Context
 import { LoginParams } from 'src/contexts/types'
+
+// ** Hook
 import toast from 'react-hot-toast'
 
 type TProps = {}

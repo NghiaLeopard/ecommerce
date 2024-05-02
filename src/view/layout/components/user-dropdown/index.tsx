@@ -1,18 +1,19 @@
 // ** Next
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 
 // ** React
-import React, { Fragment, MouseEvent, useState } from 'react'
+import { Fragment, MouseEvent, useState } from 'react'
 
 // ** Mui
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
+import { Badge, Divider, Typography, styled } from '@mui/material'
 
 // ** Hook
 import { useAuth } from 'src/hooks/useAuth'
@@ -25,8 +26,8 @@ import { useTranslation } from 'react-i18next'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
-import Image from 'next/image'
-import { Badge, Divider, Typography, styled } from '@mui/material'
+
+// ** Utils
 import { toFullName } from 'src/utils'
 
 interface TProps {}
@@ -194,7 +195,7 @@ const UserDropDown: NextPage<TProps> = () => {
           <Avatar>
             <CustomIcon icon='arcticons:password' />
           </Avatar>
-          {t('Change-password')}
+          {t('change-password')}
         </MenuItem>
 
         <MenuItem onClick={logout}>

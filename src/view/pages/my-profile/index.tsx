@@ -1,6 +1,10 @@
 // ** Next
 import { NextPage } from 'next'
 
+// ** React
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 // ** MUI
 import { Avatar, Box, Button, Grid, IconButton, useTheme } from '@mui/material'
 import CustomTextField from 'src/components/text-field'
@@ -9,23 +13,18 @@ import CustomTextField from 'src/components/text-field'
 import { Controller, useForm } from 'react-hook-form'
 
 // **Yup
-import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 // ** Regex
 import { EMAIL_REG } from 'src/configs/regex'
 
-// ** React
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 // ** I18n
-import { t } from 'i18next'
 
 // ** Component
-import WrapperFileUpload from 'src/components/wrapper-file-upload'
-import FallbackSpinner from 'src/components/fall-back'
 import CustomIcon from 'src/components/Icon'
+import Spinner from 'src/components/spinner'
+import WrapperFileUpload from 'src/components/wrapper-file-upload'
 
 // ** Hooks
 
@@ -40,13 +39,14 @@ import toast from 'react-hot-toast'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
+
+// ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/apps/auth'
 import { updateAuthMeSync } from 'src/stores/apps/auth/actions'
 
 // ** utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
-import Spinner from 'src/components/spinner'
 
 type TProps = {}
 
@@ -70,7 +70,7 @@ const schema = yup.object({
 
 const MyProfilePage: NextPage<TProps> = () => {
   const theme = useTheme()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<UserDataType | null>(null)
@@ -128,6 +128,7 @@ const MyProfilePage: NextPage<TProps> = () => {
         setUser(null)
       })
   }
+
   const handleOnSubmit = (data: any) => {
     const { firstName, lastName, middleName } = separationFullName(data?.fullName, i18n.language)
     dispatch(
@@ -233,7 +234,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1, mt: 3 }}
                         >
                           <CustomIcon icon='gravity-ui:camera'></CustomIcon>
-                          <span>{t('upload_image')}</span>
+                          <span>{t('upload-image')}</span>
                         </Button>
                       </WrapperFileUpload>
                     </Box>
@@ -253,7 +254,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onBlur={onBlur}
                           value={value}
                           fullWidth
-                          label={t('Email')}
+                          label={t('email')}
                           placeholder={t('enter_your_email')}
                           inputRef={ref}
                           error={Boolean(errors.email)}
@@ -278,7 +279,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onBlur={onBlur}
                           value={value}
                           fullWidth
-                          label={t('Role')}
+                          label={t('role')}
                           placeholder={t('enter_your_role')}
                           inputRef={ref}
                           error={Boolean(errors.role)}
@@ -319,7 +320,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onBlur={onBlur}
                           value={value}
                           fullWidth
-                          label={t('Full_Name')}
+                          label={t('full_name')}
                           placeholder={t('enter_your_full_name')}
                           inputRef={ref}
                           error={Boolean(errors.fullName)}
@@ -347,7 +348,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onBlur={onBlur}
                           value={value}
                           fullWidth
-                          label={t('Phone_Number')}
+                          label={t('phone_number')}
                           placeholder={t('enter_your_phone_number')}
                           inputRef={ref}
                           error={Boolean(errors.phoneNumber)}
@@ -371,7 +372,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onBlur={onBlur}
                           value={value}
                           fullWidth
-                          label={t('Address')}
+                          label={t('address')}
                           placeholder={t('enter_your_address')}
                           inputRef={ref}
                           error={Boolean(errors.city)}
@@ -395,7 +396,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           onBlur={onBlur}
                           value={value}
                           fullWidth
-                          label={t('City')}
+                          label={t('city')}
                           placeholder={t('enter_your_city')}
                           inputRef={ref}
                           error={Boolean(errors.city)}
@@ -413,7 +414,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-            {t('Change')}
+            {t('change')}
           </Button>
         </Box>
       </form>

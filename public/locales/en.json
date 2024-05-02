@@ -1,4 +1,23 @@
 {
   "Account": "Account",
-  "my-profile": "My profile"
+  "my-profile": "My profile",
+  "sign-in": "Sign in",
+  "change-password": "Change password",
+  "enter_your_email": "Enter your email",
+  "enter_your_role": "Enter your role",
+  "role": "Role",
+  "full_name": "Full name",
+  "enter_your_full_name": "Enter your full name",
+  "phone_number": "Phone number",
+  "enter_your_phone_number": "Enter your phone number",
+  "address": "Address",
+  "enter_your_address": "Enter your address",
+  "city": "City",
+  "enter_your_city": "Enter your city",
+  "change": "Change",
+  "upload-image": "Upload image",
+  "password": "Password",
+  "new-password": "New password",
+  "confirm-new-password": "Confirm new password",
+  "change-password": "Change password"
 }

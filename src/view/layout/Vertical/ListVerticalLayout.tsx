@@ -6,6 +6,8 @@ import List from '@mui/material/List'
 
 // ** layout
 import { VerticalItems } from 'src/configs/layout'
+
+// component
 import { ItemVerticalLayout } from './ItemVerticalLayout'
 
 interface TProps {

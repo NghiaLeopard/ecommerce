@@ -1,19 +1,20 @@
 // ** Next
 import { NextPage } from 'next'
 
+// ** React
+import { ReactNode, useState } from 'react'
+
 // ** Mui
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
 import Toolbar from '@mui/material/Toolbar'
 
-// ** React
-import { ReactNode, useState } from 'react'
-
 // ** layout
-import HorizontalLayout from './Horizontal'
-import VerticalLayout from './Vertical/VerticalLayout'
 import { useTheme } from '@mui/material'
+
+// ** component
+import HorizontalLayout from './Horizontal'
 
 type TProps = {
   children: ReactNode

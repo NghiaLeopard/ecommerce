@@ -34,13 +34,13 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Store
 import { AppDispatch, RootState } from 'src/stores'
+import { registerAuthSync } from 'src/stores/apps/auth/actions'
 
 // ** Toast
 import toast from 'react-hot-toast'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
-import { registerAuthSync } from 'src/stores/apps/auth/actions'
 
 type TProps = {}
 
