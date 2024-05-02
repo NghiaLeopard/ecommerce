@@ -1,29 +1,26 @@
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 // ** MUI
-import { Box, Button, CssBaseline, Grid, IconButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, CssBaseline, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
-import FallbackSpinner from 'src/components/fall-back'
 import CustomTextField from 'src/components/text-field'
+import CustomIcon from 'src/components/Icon'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
 
 // **Yup
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 // ** Regex
-import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import { PASSWORD_REG } from 'src/configs/regex'
 
 // ** React
 import { useEffect, useState } from 'react'
-import CustomIcon from 'src/components/Icon'
+import { useTranslation } from 'react-i18next'
 
 // ** Image
 import RegisterDark from '/public/images/register-dark.png'
@@ -34,14 +31,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Store
 import { AppDispatch, RootState } from 'src/stores'
+import { changePasswordAuthSync } from 'src/stores/apps/auth/actions'
 
 // ** Toast
 import toast from 'react-hot-toast'
 
-// ** Config
-import { CONFIG_ROUTE } from 'src/configs/route'
-import { changePasswordAuthSync, registerAuthSync } from 'src/stores/apps/auth/actions'
+// ** Hook
 import { useAuth } from 'src/hooks/useAuth'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type TProps = {}
 
@@ -65,6 +62,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
   const theme = useTheme()
   const dispatch: AppDispatch = useDispatch()
   const { logout } = useAuth()
+  const { t } = useTranslation()
 
   const { isErrorChangePassword, isLoading, isSuccessChangePassword, messageChangePassword } = useSelector(
     (state: RootState) => state.auth
@@ -149,7 +147,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
           }}
         >
           <Typography component='h1' variant='h5'>
-            Change Password
+            {t('change-password')}
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box mt={2} width='300px'>
@@ -164,7 +162,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label='Password'
+                    label={t('password')}
                     inputRef={ref}
                     type={showCurrentPassword ? 'text' : 'password'}
                     error={Boolean(errors.currentPassword)}
@@ -199,7 +197,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label='New Password'
+                    label={t('new-password')}
                     inputRef={ref}
                     type={showNewPassword ? 'text' : 'password'}
                     error={Boolean(errors.newPassword)}
@@ -228,16 +226,13 @@ const ChangePasswordPage: NextPage<TProps> = () => {
             <Box mt={2} width='300px'>
               <Controller
                 control={control}
-                rules={{
-                  required: true
-                }}
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                   <CustomTextField
                     onChange={onChange}
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label='Confirm New Password'
+                    label={t('confirm-new-password')}
                     inputRef={ref}
                     type={showConfirmNewPassword ? 'text' : 'password'}
                     error={Boolean(errors.confirmNewPassword)}
@@ -264,7 +259,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
             </Box>
 
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-              Change Password
+              {t('change-password')}
             </Button>
           </form>
         </Box>

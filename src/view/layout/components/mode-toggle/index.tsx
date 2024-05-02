@@ -1,13 +1,17 @@
 // ** Next
-import { IconButton } from '@mui/material'
 import { NextPage } from 'next'
-import CustomIcon from 'src/components/Icon'
-import { useSettings } from 'src/hooks/useSettings'
-import { Mode } from 'src/types/layouts'
-
-// ** React
 
 // ** Mui
+import { IconButton } from '@mui/material'
+
+// ** Components
+import CustomIcon from 'src/components/Icon'
+
+// ** Hook
+import { useSettings } from 'src/hooks/useSettings'
+
+// ** Types
+import { Mode } from 'src/types/layouts'
 
 interface TProps {}
 

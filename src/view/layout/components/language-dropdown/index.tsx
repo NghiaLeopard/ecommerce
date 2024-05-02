@@ -12,6 +12,8 @@ import CustomIcon from 'src/components/Icon'
 
 // ** i18n
 import { useTranslation } from 'react-i18next'
+
+// ** Configs
 import { LANGUAGE_OPTION } from 'src/configs/i18n'
 
 interface TProps {}

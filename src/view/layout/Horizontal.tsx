@@ -3,27 +3,30 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
 // ** Mui
+import { Button } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material'
-
-// ** Style
 import { styled } from '@mui/material/styles'
 
 // ** Hook
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Components
-import UserDropDown from 'src/view/layout/components/user-dropdown'
 import CustomIcon from 'src/components/Icon'
+import UserDropDown from 'src/view/layout/components/user-dropdown'
 import LanguageDropDown from './components/language-dropdown'
 import ModeToggle from './components/mode-toggle'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
+
+// ** React
+import { useTranslation } from 'react-i18next'
+
+// ** i18n
 
 const drawerWidth: number = 240
 
@@ -60,6 +63,7 @@ const AppBar = styled(MuiAppBar, {
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
   const { user } = useAuth()
   const router = useRouter()
+  const { t } = useTranslation()
 
   const handleNavigate = () => {
     router.push(CONFIG_ROUTE.LOGIN)
@@ -98,7 +102,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             <UserDropDown />
           ) : (
             <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleNavigate}>
-              Sign In
+              {t('sign-in')}
             </Button>
           )}
         </Toolbar>
