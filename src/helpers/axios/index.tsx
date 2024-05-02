@@ -43,11 +43,12 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
 
 const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   const router = useRouter()
-  const { accessToken, refreshToken } = getLocalUserData()
   const { setUser } = useAuth()
 
   instanceAxios.interceptors.request.use(
     async function (config) {
+      const { accessToken, refreshToken } = getLocalUserData()
+
       if (accessToken) {
         const decodeAccessToken: any = jwtDecode(accessToken)
 
@@ -56,7 +57,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
         } else {
           if (refreshToken) {
             const decodeRefreshToken: any = jwtDecode(refreshToken)
-            if (decodeRefreshToken.exp > Date.now() / 1000) {
+            if (decodeRefreshToken?.exp > Date.now() / 1000) {
               await axios
                 .post(
                   `${CONFIG_API.AUTH.INDEX}/refresh-token`,
@@ -68,9 +69,10 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                   }
                 )
                 .then(res => {
-                  console.log(res)
-                  if (res.data.data.access_token) {
-                    config.headers['Authorization'] = `Bearer ${res.data.data.access_token}`
+                  if (res?.data?.data.access_token) {
+                    config.headers['Authorization'] = `Bearer ${res?.data?.data.access_token}`
+                  } else {
+                    handleRedirectLogin(router, setUser)
                   }
                 })
                 .catch(() => {

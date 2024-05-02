@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { registerAuthSync, updateAuthMeSync } from './actions'
+import { changePasswordAuthSync, registerAuthSync, updateAuthMeSync } from './actions'
 
 const initialState = {
   isLoading: false,
@@ -9,7 +9,10 @@ const initialState = {
   typeError: '',
   isSuccessUpdateMe: true,
   isErrorUpdateMe: false,
-  messageUpdateMe: ''
+  messageUpdateMe: '',
+  isSuccessChangePassword: false,
+  isErrorChangePassword: false,
+  messageChangePassword: ''
 }
 
 export const authSlice = createSlice({
@@ -25,6 +28,9 @@ export const authSlice = createSlice({
       state.isSuccessUpdateMe = false
       state.isErrorUpdateMe = false
       state.messageUpdateMe = ''
+      state.isSuccessChangePassword = false
+      state.isErrorChangePassword = false
+      state.messageChangePassword = ''
     }
   },
   extraReducers: builder => {
@@ -70,6 +76,38 @@ export const authSlice = createSlice({
         state.isSuccessUpdateMe = false
         state.isErrorUpdateMe = false
         state.messageUpdateMe = ''
+      })
+
+    // change password
+    builder.addCase(changePasswordAuthSync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(changePasswordAuthSync.fulfilled, (state, actions) => {
+        console.log('action', actions)
+        state.isLoading = true
+        state.isSuccess = !!actions.payload?.data?.email
+        state.isError = !actions.payload?.data?.email
+        state.message = actions?.payload?.message
+        state.typeError = actions?.payload?.typeError
+        state.isSuccessUpdateMe = !!actions.payload?.data?.email
+        state.isErrorUpdateMe = !actions.payload?.data?.email
+        state.messageUpdateMe = actions?.payload?.message
+        state.isSuccessChangePassword = !!actions.payload?.message
+        state.isErrorChangePassword = !actions.payload?.message
+        state.messageChangePassword = actions?.payload?.message
+      }),
+      builder.addCase(changePasswordAuthSync.rejected, (state, actions) => {
+        state.isLoading = false
+        state.isSuccess = false
+        state.isError = true
+        state.message = ''
+        state.typeError = ''
+        state.isSuccessUpdateMe = false
+        state.isErrorUpdateMe = false
+        state.messageUpdateMe = ''
+        state.isSuccessChangePassword = false
+        state.isErrorChangePassword = false
+        state.messageChangePassword = ''
       })
   }
 })

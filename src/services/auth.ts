@@ -9,13 +9,9 @@ import { CONFIG_API } from 'src/configs/api'
 import { LoginParams, RegisterParams } from 'src/contexts/types'
 
 export const loginAuth = async (data: LoginParams) => {
-  try {
-    const res = await instanceAxios.post(`${CONFIG_API.AUTH.INDEX}/login`, data)
+  const res = await axios.post(`${CONFIG_API.AUTH.INDEX}/login`, data)
 
-    return res.data
-  } catch (error) {
-    console.log(error)
-  }
+  return res.data
 }
 
 export const logoutAuth = async () => {
@@ -51,6 +47,16 @@ export const updateAuthMe = async (data: any) => {
 export const getAuthMe = async () => {
   try {
     const res = await instanceAxios.get(`${CONFIG_API.AUTH.INDEX}/me`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const changePasswordAuth = async (data: any) => {
+  try {
+    const res = await instanceAxios.patch(`${CONFIG_API.AUTH.INDEX}/change-password`, data)
 
     return res.data
   } catch (error) {

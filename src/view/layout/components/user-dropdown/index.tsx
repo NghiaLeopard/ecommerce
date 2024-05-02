@@ -67,7 +67,6 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 }))
 
 const UserDropDown: NextPage<TProps> = () => {
-
   const route = useRouter()
   const { t, i18n } = useTranslation()
   const { user, logout } = useAuth()
@@ -82,8 +81,13 @@ const UserDropDown: NextPage<TProps> = () => {
     setAnchorEl(null)
   }
 
-  const handleNavigate = () => {
+  const handleNavigateMyProfile = () => {
     route.push(`${CONFIG_ROUTE.MY_PROFILE}`)
+    handleClose()
+  }
+
+  const handleNavigateChangePassword = () => {
+    route.push(`${CONFIG_ROUTE.CHANGE_PASSWORD}`)
     handleClose()
   }
 
@@ -174,23 +178,29 @@ const UserDropDown: NextPage<TProps> = () => {
               {toFullName(user?.lastName || '', user?.middleName || '', user?.firstName || '', i18n.language)}
             </Typography>
 
-            <Typography>
-              {
-                
-                //@ts-ignore
-                user?.role?.name
-              }
-            </Typography>
+            <Typography>{user?.role?.name}</Typography>
           </Box>
         </Box>
         <Divider />
-        <MenuItem onClick={handleNavigate}>
-          <Avatar />
+        <MenuItem onClick={handleNavigateMyProfile}>
+          <Avatar>
+            <CustomIcon icon='healthicons:ui-user-profile' />
+          </Avatar>
+
           {t('my-profile')}
         </MenuItem>
 
+        <MenuItem onClick={handleNavigateChangePassword}>
+          <Avatar>
+            <CustomIcon icon='arcticons:password' />
+          </Avatar>
+          {t('Change-password')}
+        </MenuItem>
+
         <MenuItem onClick={logout}>
-          <ListItemIcon>{/* <Logout fontSize='small' /> */}</ListItemIcon>
+          <Avatar>
+            <CustomIcon icon='tabler:logout' />
+          </Avatar>
           Logout
         </MenuItem>
       </Menu>
