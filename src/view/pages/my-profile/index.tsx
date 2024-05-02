@@ -164,6 +164,9 @@ const MyProfilePage: NextPage<TProps> = () => {
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])
 
+  // ? : don't helpful, isLoading = true , loading = false to loading = true, isLoading = false
+  // render layout will one moment render form , UX is awful!
+  // example ? <Spinner /> : <form> , will have  a little time appear form then hide form.
   return (
     <>
       {loading || (isLoading && <Spinner />)}

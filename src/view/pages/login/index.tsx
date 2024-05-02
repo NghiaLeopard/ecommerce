@@ -29,6 +29,7 @@ import LoginLight from '/public/images/login-light.png'
 // Hook Auth
 import { useAuth } from 'src/hooks/useAuth'
 import { LoginParams } from 'src/contexts/types'
+import toast from 'react-hot-toast'
 
 type TProps = {}
 
@@ -52,7 +53,8 @@ const LoginPage: NextPage<TProps> = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setError
   } = useForm({
     defaultValues: {
       email: 'admin@gmail.com',
@@ -63,7 +65,11 @@ const LoginPage: NextPage<TProps> = () => {
 
   const handleOnSubmit = (data: LoginParams) => {
     if (!Object.keys(errors)?.length) {
-      login({ ...data, rememberMe: isRemember })
+      login({ ...data, rememberMe: isRemember }, error => {
+        const message = error?.response?.data?.message
+
+        if (message) toast.error(message)
+      })
     }
   }
 

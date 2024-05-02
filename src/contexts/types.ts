@@ -1,4 +1,4 @@
-export type ErrCallbackType = (err: { [key: string]: string }) => void
+export type ErrCallbackType = (err: any) => void
 
 export type LoginParams = {
   email: string
@@ -29,7 +29,7 @@ export type UserDataType = {
 export type AuthValuesType = {
   loading: boolean
   logout: () => void
-  user: UserDataType | null
+  user: UserDataType | null | any
   setLoading: (value: boolean) => void
   setUser: (value: UserDataType | null) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void

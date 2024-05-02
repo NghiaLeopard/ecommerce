@@ -24,6 +24,7 @@ import { getLocalUserData, removeLocalUserData, setLocalUserData } from 'src/hel
 
 // ** Axios
 import instanceAxios from 'src/helpers/axios'
+import toast from 'react-hot-toast'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -81,10 +82,8 @@ const AuthProvider = ({ children }: Props) => {
 
   // when login is success, initialize data
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    setLoading(true)
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        setLoading(false)
         params.rememberMe
           ? setLocalUserData(
               JSON.stringify(response.data.user),
@@ -92,8 +91,10 @@ const AuthProvider = ({ children }: Props) => {
               response.data.refresh_token
             )
           : null
+
         const returnUrl = router.query.returnUrl
 
+        toast.success(response?.message)
         setUser({ ...response.data.user })
 
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
@@ -102,7 +103,6 @@ const AuthProvider = ({ children }: Props) => {
       })
 
       .catch(err => {
-        setLoading(false)
         if (errorCallback) errorCallback(err)
       })
   }
@@ -111,6 +111,7 @@ const AuthProvider = ({ children }: Props) => {
     logoutAuth().then(res => {
       setUser(null)
       removeLocalUserData()
+      router.replace('/login')
     })
   }
 
