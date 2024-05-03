@@ -11,7 +11,14 @@ import axios from 'axios'
 import { BASE_URL, CONFIG_API } from 'src/configs/api'
 
 // ** Local storage
-import { getLocalUserData, removeLocalUserData } from '../storage'
+import {
+  clearTemporaryToken,
+  getLocalUserData,
+  getTemporaryToken,
+  removeLocalUserData,
+  setLocalUserData,
+  setTemporaryToken
+} from '../storage'
 
 // ** Jwt
 import { jwtDecode } from 'jwt-decode'
@@ -38,22 +45,29 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
     router.replace('/login')
   }
   removeLocalUserData()
+  clearTemporaryToken()
   setUser(null)
 }
 
 const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   const router = useRouter()
-  const { setUser } = useAuth()
+  const { user, setUser } = useAuth()
 
   instanceAxios.interceptors.request.use(
     async function (config) {
       const { accessToken, refreshToken } = getLocalUserData()
+      const temporaryToken = getTemporaryToken()?.temporaryToken
 
-      if (accessToken) {
-        const decodeAccessToken: any = jwtDecode(accessToken)
+      let decodeAccessToken: any = ''
+      if (accessToken || temporaryToken) {
+        if (accessToken) {
+          decodeAccessToken = jwtDecode(accessToken)
+        } else if (temporaryToken) {
+          decodeAccessToken = jwtDecode(temporaryToken)
+        }
 
         if (decodeAccessToken.exp > Date.now() / 1000) {
-          config.headers['Authorization'] = `Bearer ${accessToken}`
+          config.headers['Authorization'] = `Bearer ${accessToken ? accessToken : temporaryToken}`
         } else {
           if (refreshToken) {
             const decodeRefreshToken: any = jwtDecode(refreshToken)
@@ -70,7 +84,11 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                 )
                 .then(res => {
                   if (res?.data?.data.access_token) {
+                    console.log(res)
                     config.headers['Authorization'] = `Bearer ${res?.data?.data.access_token}`
+                    if (accessToken) {
+                      setLocalUserData(JSON.stringify(user), res?.data?.data?.access_token, refreshToken)
+                    }
                   } else {
                     handleRedirectLogin(router, setUser)
                   }

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 // ** React Imports
 import { ReactNode, ReactElement, useEffect } from 'react'
-import { getLocalUserData, removeLocalUserData } from 'src/helpers/storage'
+import { clearTemporaryToken, getLocalUserData, getTemporaryToken, removeLocalUserData } from 'src/helpers/storage'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -26,7 +26,6 @@ const AuthGuard = (props: AuthGuardProps) => {
     }
 
     if (authContext.user === null && !getLocalUserData().userData && !getLocalUserData().accessToken) {
-
       // check asPath === login in case : api log in fail , url add returnUrl: login .
       if (router.asPath !== '/' && router.asPath !== '/login') {
         router.replace({
@@ -37,6 +36,8 @@ const AuthGuard = (props: AuthGuardProps) => {
         router.replace('/login')
       }
       removeLocalUserData()
+
+      // clearTemporaryToken()
       authContext.setUser(null)
     }
   }, [router.route])
