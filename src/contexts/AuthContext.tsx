@@ -20,7 +20,14 @@ import { loginAuth, logoutAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
 
 // ** Helpers
-import { getLocalUserData, removeLocalUserData, setLocalUserData } from 'src/helpers/storage'
+import {
+  clearTemporaryToken,
+  getLocalUserData,
+  getTemporaryToken,
+  removeLocalUserData,
+  setLocalUserData,
+  setTemporaryToken
+} from 'src/helpers/storage'
 
 // ** Axios
 import instanceAxios from 'src/helpers/axios'
@@ -54,8 +61,10 @@ const AuthProvider = ({ children }: Props) => {
   // access token contains information to know : who account ?
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      const storedToken = getLocalUserData().accessToken
-      if (storedToken) {
+      const storedToken = getLocalUserData()?.accessToken
+      const temporaryToken = getTemporaryToken()?.temporaryToken
+
+      if (storedToken || temporaryToken) {
         setLoading(true)
         await instanceAxios
           .get(CONFIG_API.AUTH.AUTH_ME)
@@ -90,7 +99,7 @@ const AuthProvider = ({ children }: Props) => {
               response.data.access_token,
               response.data.refresh_token
             )
-          : null
+          : setTemporaryToken(response.data.access_token)
 
         const returnUrl = router.query.returnUrl
 
@@ -111,6 +120,7 @@ const AuthProvider = ({ children }: Props) => {
     logoutAuth().then(res => {
       setUser(null)
       removeLocalUserData()
+      clearTemporaryToken()
       router.replace('/login')
     })
   }

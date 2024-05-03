@@ -144,7 +144,7 @@ const RegisterPage: NextPage<TProps> = () => {
           }}
         >
           <Typography component='h1' variant='h5'>
-            Sign in
+            Sign Up
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box mt={2} width='300px'>
@@ -246,14 +246,16 @@ const RegisterPage: NextPage<TProps> = () => {
             </Box>
 
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-              Sign In
+              Sign Up
             </Button>
             <Grid container>
               <Grid item xs>
                 {"Don't have an account?"}
               </Grid>
               <Grid item>
-                <Link href='/login'>{' Login in'}</Link>
+                <Link href='/login' style={{ color: '#7367f0' }}>
+                  {' Login in'}
+                </Link>
               </Grid>
             </Grid>
 

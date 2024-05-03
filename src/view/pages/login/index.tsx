@@ -185,14 +185,16 @@ const LoginPage: NextPage<TProps> = () => {
                 name='password'
               />
             </Box>
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <FormControlLabel
                 control={
                   <Checkbox onChange={e => setRemember(e.target.checked)} checked={isRemember} color='primary' />
                 }
                 label='Remember me'
               />
-              <Link href='#'>Forgot password?</Link>
+              <Link href='#' style={{ color: '#7367f0' }}>
+                Forgot password?
+              </Link>
             </Box>
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
               Sign In
@@ -202,7 +204,9 @@ const LoginPage: NextPage<TProps> = () => {
                 {"Don't have an account?"}
               </Grid>
               <Grid item>
-                <Link href='/register'>{'Register'}</Link>
+                <Link href='/register' style={{ color: '#7367f0' }}>
+                  {'Register'}
+                </Link>
               </Grid>
             </Grid>
 

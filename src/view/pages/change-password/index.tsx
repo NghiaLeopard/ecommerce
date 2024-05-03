@@ -110,6 +110,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
     <Box
       sx={{
         display: 'flex',
+        height: '89vh',
         padding: '40px',
         backgroundColor: theme.palette.background.paper
       }}
