@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Avatar, Box, Button, Grid, IconButton, useTheme } from '@mui/material'
+import { Avatar, Box, Button, FormHelperText, Grid, IconButton, InputLabel, useTheme } from '@mui/material'
 import CustomTextField from 'src/components/text-field'
 
 // **Form
@@ -47,6 +47,7 @@ import { updateAuthMeSync } from 'src/stores/apps/auth/actions'
 
 // ** utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
+import { CustomSelect } from 'src/components/custom-select'
 
 type TProps = {}
 
@@ -273,18 +274,37 @@ const MyProfilePage: NextPage<TProps> = () => {
                         required: true
                       }}
                       render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <CustomTextField
-                          disabled
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          fullWidth
-                          label={t('role')}
-                          placeholder={t('enter_your_role')}
-                          inputRef={ref}
-                          error={Boolean(errors.role)}
-                          helperText={errors.role?.message}
-                        />
+                        <Box>
+                          <InputLabel
+                            sx={{
+                              fontSize: '13px',
+                              mb: '6px',
+                              color: Boolean(errors.role)
+                                ? theme.palette.error.main
+                                : `rgba(${theme.palette.customColors.bodyBg},0.42)`
+                            }}
+                          >
+                            {t('role')}
+                          </InputLabel>
+                          <CustomSelect
+                            fullWidth
+                            onChange={onChange}
+                            options={[]}
+                            value={value}
+                            placeholder={t('choose_your_role')}
+                            inputRef={ref}
+                            error={Boolean(errors.role)}
+                          />
+                          {Boolean(errors.role) && (
+                            <FormHelperText
+                              sx={{
+                                color: `${theme.palette.error.main} !important`
+                              }}
+                            >
+                              {t('enter_your_role')}
+                            </FormHelperText>
+                          )}
+                        </Box>
                       )}
                       name='role'
                     />
@@ -375,8 +395,8 @@ const MyProfilePage: NextPage<TProps> = () => {
                           label={t('address')}
                           placeholder={t('enter_your_address')}
                           inputRef={ref}
-                          error={Boolean(errors.city)}
-                          helperText={errors.city?.message}
+                          error={Boolean(errors.address)}
+                          helperText={errors.address?.message}
                         />
                       )}
                       name='address'
@@ -387,21 +407,38 @@ const MyProfilePage: NextPage<TProps> = () => {
                   <Box mt={2}>
                     <Controller
                       control={control}
-                      rules={{
-                        required: true
-                      }}
                       render={({ field: { onChange, onBlur, value, ref } }) => (
-                        <CustomTextField
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          value={value}
-                          fullWidth
-                          label={t('city')}
-                          placeholder={t('enter_your_city')}
-                          inputRef={ref}
-                          error={Boolean(errors.city)}
-                          helperText={errors.city?.message}
-                        />
+                        <Box>
+                          <InputLabel
+                            sx={{
+                              fontSize: '13px',
+                              mb: '6px',
+                              color: Boolean(errors.role)
+                                ? theme.palette.error.main
+                                : `rgba(${theme.palette.customColors.bodyBg},0.42)`
+                            }}
+                          >
+                            {t('city')}
+                          </InputLabel>
+                          <CustomSelect
+                            fullWidth
+                            onChange={onChange}
+                            options={[]}
+                            value={value}
+                            placeholder={t('choose_your_city')}
+                            inputRef={ref}
+                            error={Boolean(errors.role)}
+                          />
+                          {Boolean(errors.role) && (
+                            <FormHelperText
+                              sx={{
+                                color: `${theme.palette.error.main} !important`
+                              }}
+                            >
+                              {t('enter_your_role')}
+                            </FormHelperText>
+                          )}
+                        </Box>
                       )}
                       name='city'
                     />
