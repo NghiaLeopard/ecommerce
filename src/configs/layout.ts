@@ -1,33 +1,66 @@
+import { CONFIG_ROUTE } from './route'
+
 export const VerticalItems = [
   {
-    title: 'email',
-    icon: 'clarity:email-solid',
+    title: 'Hệ thống',
+    icon: 'eos-icons:file-system',
     children: [
       {
-        title: 'sent email',
-        icon: 'wpf:sent',
-        children: [
-          {
-            title: 'sent email 1',
-            icon: 'wpf:sent',
-            children: [
-              {
-                title: 'sent email 1',
-                icon: 'wpf:sent'
-              }
-            ]
-          }
-        ]
+        title: 'Người dùng',
+        icon: 'solar:users-group-rounded-bold-duotone',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.SYSTEM.USER
+      },
+      {
+        title: 'Nhóm vai trò',
+        icon: 'icon-park-outline:permissions',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.SYSTEM.ROLE
       }
     ]
   },
   {
-    title: 'gmail',
-    icon: 'clarity:email-solid',
+    title: 'Quản trị sản phẩm',
+    icon: 'eos-icons:products-outlined',
     children: [
       {
-        title: 'sent email',
-        icon: 'wpf:sent'
+        title: 'Danh sách sản phẩm',
+        icon: 'fluent-mdl2:product',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_PRODUCT
+      },
+      {
+        title: 'Danh mục đánh giá',
+        icon: 'material-symbols:category-outline',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_REVIEWS
+      },
+      {
+        title: 'Danh sách đơn hàng',
+        icon: 'lets-icons:order-fill',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_ORDER
+      },
+      {
+        title: 'Danh sách đánh giá',
+        icon: 'material-symbols:reviews-outline',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_REVIEWS
+      }
+    ]
+  },
+  {
+    title: 'Cài đặt',
+    icon: 'uil:setting',
+    children: [
+      {
+        title: 'Cài đặt thành phố',
+        icon: 'solar:city-bold',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.SETTINGS.CITY
+      },
+      {
+        title: 'Phương thức giao hàng',
+        icon: 'carbon:delivery',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.SETTINGS.DELIVERY_TYPE
+      },
+      {
+        title: 'Phương thức thanh toán',
+        icon: 'streamline:payment-10',
+        path: CONFIG_ROUTE.MANAGE_SYSTEM.SETTINGS.PAYMENT_TYPE
       }
     ]
   }

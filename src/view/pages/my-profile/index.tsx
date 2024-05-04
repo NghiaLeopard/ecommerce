@@ -250,6 +250,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                       }}
                       render={({ field: { onChange, onBlur, value, ref } }) => (
                         <CustomTextField
+                          disabled
                           required
                           onChange={onChange}
                           onBlur={onBlur}
@@ -278,7 +279,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <InputLabel
                             sx={{
                               fontSize: '13px',
-                              mb: '6px',
+                              mb: '0.25rem',
                               color: Boolean(errors.role)
                                 ? theme.palette.error.main
                                 : `rgba(${theme.palette.customColors.bodyBg},0.42)`
@@ -289,7 +290,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <CustomSelect
                             fullWidth
                             onChange={onChange}
-                            options={[]}
+                            options={[{ value: '1', label: 'No data' }]}
                             value={value}
                             placeholder={t('choose_your_role')}
                             inputRef={ref}
@@ -412,7 +413,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <InputLabel
                             sx={{
                               fontSize: '13px',
-                              mb: '6px',
+                              mb: '4px',
                               color: Boolean(errors.role)
                                 ? theme.palette.error.main
                                 : `rgba(${theme.palette.customColors.bodyBg},0.42)`
@@ -423,7 +424,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <CustomSelect
                             fullWidth
                             onChange={onChange}
-                            options={[]}
+                            options={[{ value: '1', label: 'No data' }]}
                             value={value}
                             placeholder={t('choose_your_city')}
                             inputRef={ref}

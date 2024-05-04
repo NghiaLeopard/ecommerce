@@ -10,12 +10,18 @@ type TCustomSelect = SelectProps & {
 }
 
 const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
+  marginTop: '-3px',
+
   '& .MuiSelect-select': {
-    padding: '8px 8px 5px 10px !important',
+    marginTop: '3px',
+    padding: '8px 10px 8px 10px !important',
     height: '1.2rem'
   },
   '& legend': {
     display: 'none'
+  },
+  '.MuiOutlinedInput-notchedOutline': {
+    top: '0px !important'
   }
 }))
 
@@ -23,7 +29,7 @@ const StyledMenu = styled(MenuItem)<MenuItemProps>(theme => ({}))
 
 const CustomPlaceholder = styled(InputLabel)<InputLabelProps>(({ theme }) => ({
   position: 'absolute',
-  top: '5px',
+  top: '7px',
   left: '10px',
   color: `rgba(${theme.palette.customColors.main},0.32)`
 }))
@@ -36,7 +42,7 @@ export const CustomSelect = ({ value, label, onChange, fullWidth, options, place
         {options.map(item => {
           return (
             <MenuItem key={item.value} value={item.value}>
-              {item.label}
+              {item.label || 'No data'}
             </MenuItem>
           )
         })}
