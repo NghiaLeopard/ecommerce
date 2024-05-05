@@ -48,6 +48,7 @@ import { updateAuthMeSync } from 'src/stores/apps/auth/actions'
 // ** utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
 import { CustomSelect } from 'src/components/custom-select'
+import CustomModal from 'src/components/custom-modal'
 
 type TProps = {}
 
@@ -172,6 +173,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   return (
     <>
       {loading || (isLoading && <Spinner />)}
+
       <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
         <Grid container>
           <Grid
