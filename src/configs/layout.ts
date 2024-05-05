@@ -8,12 +8,12 @@ export const VerticalItems = [
       {
         title: 'Người dùng',
         icon: 'solar:users-group-rounded-bold-duotone',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.SYSTEM.USER
+        path: CONFIG_ROUTE.SYSTEM.USER
       },
       {
         title: 'Nhóm vai trò',
         icon: 'icon-park-outline:permissions',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.SYSTEM.ROLE
+        path: CONFIG_ROUTE.SYSTEM.ROLE
       }
     ]
   },
@@ -24,22 +24,22 @@ export const VerticalItems = [
       {
         title: 'Danh sách sản phẩm',
         icon: 'fluent-mdl2:product',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_PRODUCT
+        path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_PRODUCT
       },
       {
-        title: 'Danh mục đánh giá',
+        title: 'Danh mục sản phẩm',
         icon: 'material-symbols:category-outline',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_REVIEWS
+        path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT
       },
       {
         title: 'Danh sách đơn hàng',
         icon: 'lets-icons:order-fill',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_ORDER
+        path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_ORDER
       },
       {
         title: 'Danh sách đánh giá',
         icon: 'material-symbols:reviews-outline',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.PRODUCT.MANAGE_REVIEWS
+        path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_REVIEWS
       }
     ]
   },
@@ -50,17 +50,17 @@ export const VerticalItems = [
       {
         title: 'Cài đặt thành phố',
         icon: 'solar:city-bold',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.SETTINGS.CITY
+        path: CONFIG_ROUTE.SETTINGS.CITY
       },
       {
         title: 'Phương thức giao hàng',
         icon: 'carbon:delivery',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.SETTINGS.DELIVERY_TYPE
+        path: CONFIG_ROUTE.SETTINGS.DELIVERY_TYPE
       },
       {
         title: 'Phương thức thanh toán',
         icon: 'streamline:payment-10',
-        path: CONFIG_ROUTE.MANAGE_SYSTEM.SETTINGS.PAYMENT_TYPE
+        path: CONFIG_ROUTE.SETTINGS.PAYMENT_TYPE
       }
     ]
   }

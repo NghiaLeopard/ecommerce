@@ -12,10 +12,10 @@ import MyProfilePage from 'src/view/pages/my-profile'
 
 type TProps = {}
 
-const ManageProduct: NextPage<TProps> = () => {
+const Role: NextPage<TProps> = () => {
   return <MyProfilePage />
 }
 
-export default ManageProduct
+export default Role
 
-ManageProduct.getLayout = (page: ReactNode) => <UserLayout>{page}</UserLayout>
+Role.getLayout = (page: ReactNode) => <UserLayout>{page}</UserLayout>
