@@ -20,7 +20,7 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
   return (
     <>
       <List
-        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', padding: 0 }}
         component='nav'
         aria-labelledby='nested-list-subheader'
       >

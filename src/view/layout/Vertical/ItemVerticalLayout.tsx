@@ -21,18 +21,18 @@ import { useState } from 'react'
 import CustomIcon from 'src/components/Icon'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 interface TListItemText extends ListItemTextProps {
   active: boolean
+  open: boolean
 }
 
-const StyledListItemText = styled(ListItemText)<TListItemText>(({ theme, active }) => ({
+const StyledListItemText = styled(ListItemText)<TListItemText>(({ theme, active, open }) => ({
   '.MuiTypography-root.MuiTypography-body1.MuiListItemText-primary': {
-    width: '100%',
-    display: 'block',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    color: active ? '#fff !important' : `rgba(${theme.palette.customColors.main},0.78)`
+    color:
+      active || open ? `${theme.palette.primary.main} !important` : `rgba(${theme.palette.customColors.main},0.78)`,
+    marginLeft: active || open ? '3px' : ''
   }
 }))
 
@@ -52,6 +52,10 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
     setOpen(x => !x)
   }
 
+  const handleSelectItem = (path: string) => {
+    router.push(path)
+  }
+
   return (
     <>
       <ListItemButton
@@ -59,36 +63,47 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
           if (data.children) {
             handleClick()
           }
+          handleSelectItem(data.path)
         }}
         sx={{
           padding: ` 8px 20px 8px ${level === 0 ? 13 : level * 25}px`,
+          my: '1px',
           backgroundColor:
             router.pathname === data.path || open
-              ? `${theme.palette.primary.main} !important`
+              ? `${hexToRGBA(theme.palette.secondary.main, 0.08)} !important`
               : theme.palette.background.paper
         }}
       >
-        <Link href={data.path ? data.path : ''}>
-          <Tooltip title={data.title} disableInteractive>
-            <Box sx={{ display: 'flex' }}>
-              <ListItemIcon
-                sx={{
-                  color: Boolean(router.pathname === data.path)
-                    ? '#fff !important'
-                    : `rgba(${theme.palette.customColors.main},0.78)`
-                }}
-              >
-                <CustomIcon icon={data.icon} />
-              </ListItemIcon>
-
+        <Tooltip title={data.title} disableInteractive>
+          <ListItemIcon>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '30px',
+                height: '30px',
+                backgroundColor:
+                  Boolean(router.pathname === data.path) || open
+                    ? `${theme.palette.primary.main} !important`
+                    : theme.palette.background.paper,
+                borderRadius: '8px',
+                color: Boolean(router.pathname === data.path)
+                  ? '#fff !important'
+                  : `rgba(${theme.palette.customColors.main},0.78)`
+              }}
+            >
+              <CustomIcon icon={data.icon} />
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1 }}>
               <StyledListItemText
                 primary={data.title}
-                sx={{ ml: '3px' }}
                 active={Boolean(router.pathname === data.path)}
+                open={open}
               ></StyledListItemText>
             </Box>
-          </Tooltip>
-        </Link>
+          </ListItemIcon>
+        </Tooltip>
 
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
           {data.children && (open ? <CustomIcon icon='mdi:expand-less' /> : <CustomIcon icon='mdi:expand-more' />)}
