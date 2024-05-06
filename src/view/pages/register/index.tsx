@@ -34,7 +34,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Store
 import { AppDispatch, RootState } from 'src/stores'
-import { registerAuthSync } from 'src/stores/apps/auth/actions'
+import { registerAuthSync } from 'src/stores/auth/actions'
 
 // ** Toast
 import toast from 'react-hot-toast'

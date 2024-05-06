@@ -13,7 +13,7 @@ import MyProfilePage from 'src/view/pages/my-profile'
 type TProps = {}
 
 const Payment: NextPage<TProps> = () => {
-  return <MyProfilePage />
+  return <h1>Payment</h1>
 }
 
 export default Payment

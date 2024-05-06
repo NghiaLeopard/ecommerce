@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Store
 import { AppDispatch, RootState } from 'src/stores'
-import { changePasswordAuthSync } from 'src/stores/apps/auth/actions'
+import { changePasswordAuthSync } from 'src/stores/auth/actions'
 
 // ** Toast
 import toast from 'react-hot-toast'

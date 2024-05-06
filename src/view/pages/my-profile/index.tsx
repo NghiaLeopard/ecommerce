@@ -42,8 +42,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/apps/auth'
-import { updateAuthMeSync } from 'src/stores/apps/auth/actions'
+import { resetInitialState } from 'src/stores/auth'
+import { updateAuthMeSync } from 'src/stores/auth/actions'
 
 // ** utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'

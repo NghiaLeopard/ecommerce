@@ -13,7 +13,7 @@ import MyProfilePage from 'src/view/pages/my-profile'
 type TProps = {}
 
 const Product: NextPage<TProps> = () => {
-  return <MyProfilePage />
+  return <h1>Product</h1>
 }
 
 export default Product

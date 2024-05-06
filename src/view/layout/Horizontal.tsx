@@ -78,7 +78,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             margin: '0 20px' // keep right padding when drawer closed
           }}
         >
-          {open && (
+          {
             <IconButton
               edge='start'
               color='inherit'
@@ -91,7 +91,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             >
               <CustomIcon icon='ic:round-menu' />
             </IconButton>
-          )}
+          }
           <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
             Dashboard
           </Typography>

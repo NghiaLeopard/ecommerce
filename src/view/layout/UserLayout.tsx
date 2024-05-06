@@ -13,6 +13,7 @@ import { ReactNode, useState } from 'react'
 // ** layout
 import HorizontalLayout from './Horizontal'
 import VerticalLayout from './Vertical/VerticalLayout'
+import { useTheme } from '@mui/material'
 
 type TProps = {
   children: ReactNode
@@ -20,6 +21,7 @@ type TProps = {
 
 const UserLayout: NextPage<TProps> = ({ children }) => {
   const [open, setOpen] = useState(true)
+  const theme = useTheme()
   const toggleDrawer = () => {
     setOpen(!open)
   }
@@ -40,7 +42,15 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
         }}
       >
         <Toolbar />
-        <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+        <Container
+          sx={{
+            m: 4,
+            width: `calc(100% - 32px)`,
+            height: `100vh - ${theme.mixins}`,
+            maxWidth: 'calc(100% - 32px) !important',
+            padding: '0px !important'
+          }}
+        >
           <>{children}</>
         </Container>
       </Box>

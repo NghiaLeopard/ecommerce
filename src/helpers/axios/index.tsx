@@ -8,7 +8,7 @@ import { FC, ReactNode } from 'react'
 import axios from 'axios'
 
 // ** Configs
-import { BASE_URL, CONFIG_API } from 'src/configs/api'
+import { BASE_URL, API_ENDPOINT } from 'src/configs/api'
 
 // ** Local storage
 import {
@@ -74,7 +74,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
             if (decodeRefreshToken?.exp > Date.now() / 1000) {
               await axios
                 .post(
-                  `${CONFIG_API.AUTH.INDEX}/refresh-token`,
+                  `${API_ENDPOINT.AUTH.INDEX}/refresh-token`,
                   {},
                   {
                     headers: {
