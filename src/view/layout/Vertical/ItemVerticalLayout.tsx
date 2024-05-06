@@ -52,8 +52,10 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
     setOpen(x => !x)
   }
 
-  const handleSelectItem = (path: string) => {
-    router.push(path)
+  const handleSelectItem = async (path: string) => {
+    if (path) {
+      router.push(path)
+    }
   }
 
   return (
@@ -63,7 +65,7 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
           if (data.children) {
             handleClick()
           }
-          handleSelectItem(data.path)
+          handleSelectItem(data?.path)
         }}
         sx={{
           padding: ` 8px 20px 8px ${level === 0 ? 13 : level * 25}px`,
@@ -88,9 +90,10 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
                     ? `${theme.palette.primary.main} !important`
                     : theme.palette.background.paper,
                 borderRadius: '8px',
-                color: Boolean(router.pathname === data.path)
-                  ? '#fff !important'
-                  : `rgba(${theme.palette.customColors.main},0.78)`
+                color:
+                  Boolean(router.pathname === data.path) || open
+                    ? '#fff !important'
+                    : `rgba(${theme.palette.customColors.main},0.78)`
               }}
             >
               <CustomIcon icon={data.icon} />

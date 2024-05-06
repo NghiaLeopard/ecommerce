@@ -17,7 +17,7 @@ import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './ty
 import { loginAuth, logoutAuth } from 'src/services/auth'
 
 // ** Configs
-import { CONFIG_API } from 'src/configs/api'
+import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Helpers
 import {
@@ -67,7 +67,7 @@ const AuthProvider = ({ children }: Props) => {
       if (storedToken || temporaryToken) {
         setLoading(true)
         await instanceAxios
-          .get(CONFIG_API.AUTH.AUTH_ME)
+          .get(API_ENDPOINT.AUTH.AUTH_ME)
           .then(async response => {
             setLoading(false)
             setUser({ ...response.data.data })

@@ -13,7 +13,7 @@ import MyProfilePage from 'src/view/pages/my-profile'
 type TProps = {}
 
 const Order: NextPage<TProps> = () => {
-  return <MyProfilePage />
+  return <h1>Order</h1>
 }
 
 export default Order

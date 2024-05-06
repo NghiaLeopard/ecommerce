@@ -6,7 +6,17 @@ import { Ref, forwardRef } from 'react'
 const StyledDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
   '& .MuiDataGrid-main': {
     border: `1px solid ${theme.palette.customColors.borderColor}`,
-    borderRadius: '8px'
+    borderTopRightRadius: '8px',
+    borderTopLeftRadius: '8px'
+  },
+  '& .MuiDataGrid-footerContainer': {
+    border: `1px solid ${theme.palette.customColors.borderColor} `,
+    borderTop: 'none',
+    borderBottomRightRadius: '8px',
+    borderBottomLeftRadius: '8px'
+  },
+  '& .MuiDataGrid-virtualScroller': {
+    overflowX: 'hidden'
   }
 }))
 

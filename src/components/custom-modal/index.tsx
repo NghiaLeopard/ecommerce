@@ -1,16 +1,19 @@
-import { Box, Modal, ModalProps, styled } from '@mui/material'
+import { Box, IconButton, Modal, ModalProps, styled, useTheme } from '@mui/material'
+import CustomIcon from '../Icon'
 
 interface TCustomModal extends ModalProps {
-  handleClose: () => void
+  onClose: () => void
 }
 
 const StyledModal = styled(Modal)<ModalProps>(({ theme }) => ({
   zIndex: 1300
 }))
 
-const CustomModal = ({ open, children, handleClose }: TCustomModal) => {
+const CustomModal = ({ open, children, onClose }: TCustomModal) => {
+  const theme = useTheme()
+
   return (
-    <StyledModal open={open} onClose={handleClose} aria-labelledby='modal-modal-title'>
+    <StyledModal open={open} aria-labelledby='modal-modal-title'>
       <Box sx={{ height: '100%', width: '100vw' }}>
         <Box sx={{ maxHeight: '100vh', overflow: 'auto' }}>
           <Box
@@ -23,7 +26,19 @@ const CustomModal = ({ open, children, handleClose }: TCustomModal) => {
               justifyContent: 'center'
             }}
           >
-            <Box sx={{ margin: '40px 0' }}>{children}</Box>
+            <Box>
+              <Box
+                sx={{
+                  margin: '40px 0',
+                  backgroundColor: `${theme.palette.background.paper} !important`
+                }}
+              >
+                <IconButton>
+                  <CustomIcon icon='typcn:delete' onClick={onClose} />
+                </IconButton>
+                {children}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>

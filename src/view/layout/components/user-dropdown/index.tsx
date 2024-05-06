@@ -92,6 +92,11 @@ const UserDropDown: NextPage<TProps> = () => {
     handleClose()
   }
 
+  const handleNavigateManageSystem = () => {
+    route.push(`${CONFIG_ROUTE.DASHBOARD}`)
+    handleClose()
+  }
+
   return (
     <Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -183,6 +188,13 @@ const UserDropDown: NextPage<TProps> = () => {
           </Box>
         </Box>
         <Divider />
+        <MenuItem onClick={handleNavigateManageSystem}>
+          <Avatar>
+            <CustomIcon icon='arcticons:nextdns-manager' />
+          </Avatar>
+
+          {t('manege-system')}
+        </MenuItem>
         <MenuItem onClick={handleNavigateMyProfile}>
           <Avatar>
             <CustomIcon icon='healthicons:ui-user-profile' />
