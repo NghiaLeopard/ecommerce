@@ -6,7 +6,6 @@ export const API_ENDPOINT = {
     AUTH_ME: `${BASE_URL}/auth/me`
   },
   ROLE: {
-    INDEX: `${BASE_URL}/roles`,
-    AUTH_ME: `${BASE_URL}/auth/me`
+    INDEX: `${BASE_URL}/roles`
   }
 }

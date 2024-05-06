@@ -1,19 +1,26 @@
 // ** Next
 
 // ** MUI
-import { Button } from '@mui/material'
-import { Box, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
-import CustomTextField from 'src/components/text-field'
+import CustomIcon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
+import CustomTextField from 'src/components/text-field'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
 
 // **Yup
-import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useDispatch } from 'react-redux'
+import * as yup from 'yup'
+
+// ** Store
+import { useEffect } from 'react'
+import { getDetailRole } from 'src/services/role'
+import { AppDispatch } from 'src/stores'
+import { createRolesAsync, editRolesAsync } from 'src/stores/roles/actions'
 
 interface TCreateEditRole {
   open: boolean
@@ -27,10 +34,12 @@ const schema = yup.object({
 
 export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
   const theme = useTheme()
+  const dispatch: AppDispatch = useDispatch()
 
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
     defaultValues: {
@@ -39,38 +48,76 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
     resolver: yupResolver(schema)
   })
 
-  const handleOnSubmit = (data: { name: string }) => {}
+  const handleOnSubmit = (data: { name: string }) => {
+    console.log(idRole)
+    if (!idRole) {
+      dispatch(createRolesAsync({ name: data?.name, permissions: [] }))
+    } else {
+      dispatch(editRolesAsync({ name: data?.name, permissions: [], idRole: idRole }))
+    }
+  }
+
+  const fetchDetailRole = async (idRole: string) => {
+    const res = await getDetailRole(idRole)
+    const data = res.data
+    if (data) {
+      reset({
+        name: data?.name
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (!open) {
+      reset({ name: '' })
+    } else if (idRole) {
+      fetchDetailRole(idRole)
+    }
+  }, [open, idRole])
 
   return (
     <CustomModal open={open} onClose={onClose}>
-      <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-        <Box mt={2} width='300px'>
-          <Controller
-            control={control}
-            rules={{
-              required: true
-            }}
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <CustomTextField
-                required
-                onChange={onChange}
-                onBlur={onBlur}
-                value={value}
-                fullWidth
-                label='Name'
-                inputRef={ref}
-                error={Boolean(errors.name)}
-                helperText={errors.name?.message}
-              />
-            )}
-            name='name'
-          />
+      <Box
+        sx={{ backgroundColor: `${theme.palette.background.paper} !important`, borderRadius: '15px', padding: '30px' }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant='h3' sx={{ fontWeight: 600 }}>
+            Tạo nhóm vai trò
+          </Typography>
+          <IconButton onClick={onClose}>
+            <CustomIcon icon='typcn:delete' />
+          </IconButton>
         </Box>
 
-        <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-          Sign Up
-        </Button>
-      </form>
+        <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
+          <Box mt={2} width='350px'>
+            <Controller
+              control={control}
+              rules={{
+                required: true
+              }}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <CustomTextField
+                  required
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  fullWidth
+                  label='Name'
+                  inputRef={ref}
+                  error={Boolean(errors.name)}
+                  helperText={errors.name?.message}
+                />
+              )}
+              name='name'
+            />
+          </Box>
+
+          <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
+            Create
+          </Button>
+        </form>
+      </Box>
     </CustomModal>
   )
 }

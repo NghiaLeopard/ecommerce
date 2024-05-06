@@ -7,14 +7,16 @@ import { useTranslation } from 'react-i18next'
 // ** Custom
 import CustomIcon from '../Icon'
 
-interface TGridEdit {}
+interface TGridEdit {
+  onClick: () => void
+}
 
-const CustomGridEdit = ({}: TGridEdit) => {
+const CustomGridEdit = ({ onClick }: TGridEdit) => {
   const { t } = useTranslation()
 
   return (
     <Tooltip title='Edit'>
-      <IconButton>
+      <IconButton onClick={onClick}>
         <CustomIcon icon='iconamoon:edit-bold' />
       </IconButton>
     </Tooltip>
