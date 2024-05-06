@@ -3,3 +3,14 @@ export type TParamsGetRoles = {
   page: number
   search: string
 }
+
+export type TParamsEditRole = {
+  idRole: string
+  name: string
+  permissions: []
+}
+
+export type TParamsCreateRole = {
+  name: string
+  permissions: []
+}

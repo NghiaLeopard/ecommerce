@@ -4,8 +4,6 @@ import { changePasswordAuth, registerAuth, updateAuthMe } from 'src/services/aut
 export const registerAuthSync = createAsyncThunk('auth/register', async (data: any) => {
   const response = await registerAuth(data)
 
-  console.log('response', { response })
-
   if (response?.data) {
     return response
   }
@@ -20,8 +18,6 @@ export const registerAuthSync = createAsyncThunk('auth/register', async (data: a
 export const updateAuthMeSync = createAsyncThunk('auth/update-me', async (data: any) => {
   const response = await updateAuthMe(data)
 
-  console.log('response', { response })
-
   if (response?.data) {
     return response
   }
@@ -35,8 +31,6 @@ export const updateAuthMeSync = createAsyncThunk('auth/update-me', async (data: 
 
 export const changePasswordAuthSync = createAsyncThunk('auth/change-password', async (data: any) => {
   const response = await changePasswordAuth(data)
-
-  console.log('response', { response })
 
   if (response?.message) {
     return response

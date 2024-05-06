@@ -7,13 +7,15 @@ import { useTranslation } from 'react-i18next'
 // ** Custom
 import CustomIcon from '../Icon'
 
-interface TGridDelete {}
+interface TGridDelete {
+  onClick: () => void
+}
 
-const CustomGridDelete = ({}: TGridDelete) => {
+const CustomGridDelete = ({ onClick }: TGridDelete) => {
   const { t } = useTranslation()
 
   return (
-    <Tooltip title='Delete'>
+    <Tooltip title='Delete' onClick={onClick}>
       <IconButton>
         <CustomIcon icon='mingcute:delete-2-fill' />
       </IconButton>
