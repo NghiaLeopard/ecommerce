@@ -22,7 +22,6 @@ export const logoutAuth = async () => {
 
     return res.data
   } catch (error) {
-    console.log(error)
   }
 }
 

@@ -16,6 +16,7 @@ interface TProps {
 
 export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
   const level = 0
+  const Vertical = VerticalItems()
 
   return (
     <>
@@ -24,7 +25,7 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
         component='nav'
         aria-labelledby='nested-list-subheader'
       >
-        {VerticalItems.map(item => {
+        {Vertical.map(item => {
           return (
             <li key={item.title}>
               <ItemVerticalLayout data={item} level={level} openVertical={openVertical} />

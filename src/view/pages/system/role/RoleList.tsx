@@ -33,6 +33,7 @@ import { resetInitialState } from 'src/stores/roles'
 // ** Toast
 import toast from 'react-hot-toast'
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
 
 type TProps = {}
 
@@ -41,7 +42,7 @@ const RoleListPage: NextPage<TProps> = () => {
   const theme = useTheme()
 
   // ** i18n
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   // ** useState
   const [openDialog, setOpenDialog] = useState({
@@ -67,7 +68,8 @@ const RoleListPage: NextPage<TProps> = () => {
     isLoading,
     isErrorDelete,
     isMessageDelete,
-    isSuccessDelete
+    isSuccessDelete,
+    typeError
   } = useSelector((state: RootState) => state.role)
 
   const dispatch: AppDispatch = useDispatch()
@@ -83,10 +85,23 @@ const RoleListPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageCreateEdit) {
       if (isSuccessCreateEdit) {
-        toast.success(isMessageCreateEdit)
+        if (openCreateEdit.idRole) {
+          toast.success(t('update-role-success'))
+        } else {
+          toast.success(t('create-role-success'))
+        }
         handleCloseModal()
       } else if (isErrorCreateEdit) {
-        toast.error(isMessageCreateEdit)
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          if (openCreateEdit.idRole) {
+            toast.error(t('update-role-error'))
+          } else {
+            toast.error(t('create-role-error'))
+          }
+        }
       }
       getListRole()
       dispatch(resetInitialState())
@@ -134,18 +149,17 @@ const RoleListPage: NextPage<TProps> = () => {
   const columns: GridColDef<[number]>[] = [
     {
       field: 'name',
-      headerName: 'NAME',
+      headerName: t('name'),
       flex: 1
     },
     {
       field: 'action',
-      headerName: 'ACTIONS',
+      headerName: t('action'),
       minWidth: 150,
       sortable: false,
       align: 'left',
       renderCell: (rows: any) => {
         const { row } = rows
-        console.log(row)
 
         return (
           <>

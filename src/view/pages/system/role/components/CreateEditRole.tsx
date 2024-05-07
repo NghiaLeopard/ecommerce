@@ -21,6 +21,7 @@ import { useEffect } from 'react'
 import { getDetailRole } from 'src/services/role'
 import { AppDispatch } from 'src/stores'
 import { createRolesAsync, editRolesAsync } from 'src/stores/roles/actions'
+import { t } from 'i18next'
 
 interface TCreateEditRole {
   open: boolean
@@ -49,7 +50,6 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
   })
 
   const handleOnSubmit = (data: { name: string }) => {
-    console.log(idRole)
     if (!idRole) {
       dispatch(createRolesAsync({ name: data?.name, permissions: [] }))
     } else {
@@ -114,7 +114,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
           </Box>
 
           <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-            Create
+            {idRole ? t('update') : t('create')}
           </Button>
         </form>
       </Box>

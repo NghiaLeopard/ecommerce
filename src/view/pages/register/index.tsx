@@ -41,6 +41,7 @@ import toast from 'react-hot-toast'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
+import { t } from 'i18next'
 
 type TProps = {}
 
@@ -98,7 +99,6 @@ const RegisterPage: NextPage<TProps> = () => {
     }
   }, [isError, isSuccess, message])
 
-  console.log(isLoading)
   if (isLoading) return <FallbackSpinner />
 
   return (
@@ -144,7 +144,7 @@ const RegisterPage: NextPage<TProps> = () => {
           }}
         >
           <Typography component='h1' variant='h5'>
-            Sign Up
+            {t('sign-up')}
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box mt={2} width='300px'>
@@ -181,7 +181,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label='Password'
+                    label={t('password')}
                     inputRef={ref}
                     type={showPassword ? 'text' : 'password'}
                     error={Boolean(errors.password)}
@@ -219,7 +219,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label='Confirm Password'
+                    label={t('confirm-password')}
                     inputRef={ref}
                     type={showConfirmPassword ? 'text' : 'password'}
                     error={Boolean(errors.confirmPassword)}
@@ -246,20 +246,20 @@ const RegisterPage: NextPage<TProps> = () => {
             </Box>
 
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-              Sign Up
+              {t('sign-up')}
             </Button>
             <Grid container>
               <Grid item xs>
-                {"Don't have an account?"}
+                {t('dont-have-an-account?')}
               </Grid>
               <Grid item>
                 <Link href='/login' style={{ color: '#7367f0' }}>
-                  {' Login in'}
+                  {t('log-in')}
                 </Link>
               </Grid>
             </Grid>
 
-            <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
+            <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{t('or')}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
               <IconButton sx={{ color: '#497ce2' }}>
                 <svg
