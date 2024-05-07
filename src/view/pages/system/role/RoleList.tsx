@@ -32,6 +32,7 @@ import { resetInitialState } from 'src/stores/roles'
 
 // ** Toast
 import toast from 'react-hot-toast'
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 
 type TProps = {}
 
@@ -43,12 +44,18 @@ const RoleListPage: NextPage<TProps> = () => {
   const { t, i18n } = useTranslation()
 
   // ** useState
+  const [openDialog, setOpenDialog] = useState({
+    open: false,
+    idRole: ''
+  })
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idRole: ''
   })
+
+  const [sortBy, setSortBy] = useState('create asc')
 
   // ** use selector
 
@@ -66,12 +73,12 @@ const RoleListPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
 
   const getListRole = () => {
-    dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: '' } }))
+    dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: '', order: sortBy } }))
   }
 
   useEffect(() => {
     getListRole()
-  }, [isSuccessCreateEdit, isErrorCreateEdit, isErrorDelete, isSuccessDelete])
+  }, [sortBy])
 
   useEffect(() => {
     if (isMessageCreateEdit) {
@@ -81,7 +88,7 @@ const RoleListPage: NextPage<TProps> = () => {
       } else if (isErrorCreateEdit) {
         toast.error(isMessageCreateEdit)
       }
-
+      getListRole()
       dispatch(resetInitialState())
     }
   }, [isErrorCreateEdit, isSuccessCreateEdit])
@@ -93,7 +100,7 @@ const RoleListPage: NextPage<TProps> = () => {
       } else if (isErrorDelete) {
         toast.error(isMessageDelete)
       }
-
+      getListRole()
       dispatch(resetInitialState())
     }
   }, [isErrorDelete, isSuccessDelete])
@@ -119,6 +126,11 @@ const RoleListPage: NextPage<TProps> = () => {
     })
   }
 
+  const handleSort = (sort: any) => {
+    const sortOptions = sort[0]
+    setSortBy(`${sortOptions.field} ${sortOptions.sort}`)
+  }
+
   const columns: GridColDef<[number]>[] = [
     {
       field: 'name',
@@ -132,29 +144,57 @@ const RoleListPage: NextPage<TProps> = () => {
       sortable: false,
       align: 'left',
       renderCell: (rows: any) => {
+        const { row } = rows
+        console.log(row)
+
         return (
-          <Box>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idRole: rows?.id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                dispatch(deleteRolesAsync(rows?.id))
-              }}
-            />
-          </Box>
+          <>
+            {!row?.permissions?.some((per: string) => ['BASIC.PUBLIC', 'ADMIN.GRANTED'].includes(per)) && (
+              <Box>
+                <CustomGridEdit
+                  onClick={() =>
+                    setOpenCreateEdit({
+                      open: true,
+                      idRole: rows?.id
+                    })
+                  }
+                />
+                <CustomGridDelete
+                  onClick={() => {
+                    setOpenDialog({
+                      open: true,
+                      idRole: rows?.id
+                    })
+                  }}
+                />
+              </Box>
+            )}
+          </>
         )
       }
     }
   ]
 
+  const handleOnOpenDialog = () => {
+    setOpenDialog({
+      open: false,
+      idRole: ''
+    })
+  }
+
   return (
     <>
+      <CustomConfirmDialog
+        onOpen={handleOnOpenDialog}
+        open={openDialog.open}
+        onClick={() => {
+          dispatch(deleteRolesAsync(openDialog?.idRole))
+          setOpenDialog({
+            open: false,
+            idRole: ''
+          })
+        }}
+      />
       {isLoading && <Spinner />}
       <CreateEditRole open={openCreateEdit.open} onClose={handleCloseModal} idRole={openCreateEdit.idRole} />
       <Box
@@ -188,6 +228,9 @@ const RoleListPage: NextPage<TProps> = () => {
               disableRowSelectionOnClick
               disableColumnFilter
               disableColumnMenu
+              sortingOrder={['desc', 'asc']}
+              sortingMode='server'
+              onSortModelChange={handleSort}
               initialState={{
                 pagination: {
                   paginationModel: {
