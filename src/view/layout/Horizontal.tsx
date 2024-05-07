@@ -69,6 +69,10 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
     router.push(CONFIG_ROUTE.LOGIN)
   }
 
+  const handleClickHome = () => {
+    router.push('/')
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position='absolute' open={open}>
@@ -78,7 +82,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             margin: '0 20px' // keep right padding when drawer closed
           }}
         >
-          {
+          {router.pathname === '/dashboard' && (
             <IconButton
               edge='start'
               color='inherit'
@@ -91,8 +95,17 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             >
               <CustomIcon icon='ic:round-menu' />
             </IconButton>
-          }
-          <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
+          )}
+
+          <Typography
+            component='h1'
+            variant='h6'
+            color='inherit'
+            noWrap
+            sx={{ flexGrow: 1 }}
+            onClick={handleClickHome}
+            style={{ cursor: 'pointer' }}
+          >
             Dashboard
           </Typography>
 

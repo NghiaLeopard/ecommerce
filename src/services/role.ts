@@ -34,7 +34,7 @@ export const createRole = async (data: TParamsCreateRole) => {
 
     return res.data
   } catch (error: any) {
-    return error?.response?.data
+    return error
   }
 }
 

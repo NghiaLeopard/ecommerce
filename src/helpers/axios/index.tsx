@@ -84,7 +84,6 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                 )
                 .then(res => {
                   if (res?.data?.data.access_token) {
-                    console.log(res)
                     config.headers['Authorization'] = `Bearer ${res?.data?.data.access_token}`
                     if (accessToken) {
                       setLocalUserData(JSON.stringify(user), res?.data?.data?.access_token, refreshToken)

@@ -83,7 +83,6 @@ export const authSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(changePasswordAuthSync.fulfilled, (state, actions) => {
-        console.log('action', actions)
         state.isLoading = true
         state.isSuccess = !!actions.payload?.data?.email
         state.isError = !actions.payload?.data?.email

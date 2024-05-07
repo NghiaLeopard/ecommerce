@@ -193,7 +193,7 @@ const UserDropDown: NextPage<TProps> = () => {
             <CustomIcon icon='arcticons:nextdns-manager' />
           </Avatar>
 
-          {t('manege-system')}
+          {t('manage-system')}
         </MenuItem>
         <MenuItem onClick={handleNavigateMyProfile}>
           <Avatar>
@@ -214,7 +214,7 @@ const UserDropDown: NextPage<TProps> = () => {
           <Avatar>
             <CustomIcon icon='tabler:logout' />
           </Avatar>
-          Logout
+          {`${t('log-out')}`}
         </MenuItem>
       </Menu>
     </Fragment>

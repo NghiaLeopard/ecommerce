@@ -24,8 +24,8 @@ export const editRolesAsync = createAsyncThunk('role/edit', async (data: TParams
     data: {
       _id: null
     },
-    message: response?.message,
-    typeError: response?.typeError
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
   }
 })
 
@@ -36,12 +36,14 @@ export const createRolesAsync = createAsyncThunk('role/create', async (data: TPa
     return response
   }
 
+  console.log(response)
+
   return {
     data: {
       _id: null
     },
-    message: response?.message,
-    typeError: response?.typeError
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
   }
 })
 
@@ -56,7 +58,7 @@ export const deleteRolesAsync = createAsyncThunk('role/delete', async (idRole: s
     data: {
       _id: null
     },
-    message: response?.message,
-    typeError: response?.typeError
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
   }
 })

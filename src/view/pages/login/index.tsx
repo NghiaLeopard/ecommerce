@@ -36,6 +36,7 @@ import { LoginParams } from 'src/contexts/types'
 
 // ** Hook
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 type TProps = {}
 
@@ -49,6 +50,7 @@ const schema = yup.object({
 
 const LoginPage: NextPage<TProps> = () => {
   const theme = useTheme()
+  const { t } = useTranslation()
 
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setRemember] = useState(false)
@@ -123,7 +125,7 @@ const LoginPage: NextPage<TProps> = () => {
           }}
         >
           <Typography component='h1' variant='h5'>
-            Sign in
+            {`${t('sign-in')}`}
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box mt={2} width='300px'>
@@ -160,7 +162,7 @@ const LoginPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label='Password'
+                    label={t('password')}
                     inputRef={ref}
                     type={showPassword ? 'text' : 'password'}
                     error={Boolean(errors.password)}
@@ -190,10 +192,10 @@ const LoginPage: NextPage<TProps> = () => {
                 control={
                   <Checkbox onChange={e => setRemember(e.target.checked)} checked={isRemember} color='primary' />
                 }
-                label='Remember me'
+                label={t('remember-me')}
               />
               <Link href='#' style={{ color: '#7367f0' }}>
-                Forgot password?
+                {`${t('forget-password')}`}
               </Link>
             </Box>
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
@@ -201,16 +203,16 @@ const LoginPage: NextPage<TProps> = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                {"Don't have an account?"}
+                {t('dont-have-an-account?')}
               </Grid>
               <Grid item>
                 <Link href='/register' style={{ color: '#7367f0' }}>
-                  {'Register'}
+                  {t('register')}
                 </Link>
               </Grid>
             </Grid>
 
-            <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
+            <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{`${t('or')}`}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
               <IconButton sx={{ color: '#497ce2' }}>
                 <svg
