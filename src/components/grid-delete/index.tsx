@@ -15,8 +15,8 @@ const CustomGridDelete = ({ onClick }: TGridDelete) => {
   const { t } = useTranslation()
 
   return (
-    <Tooltip title='Delete' onClick={onClick}>
-      <IconButton>
+    <Tooltip title='Delete'>
+      <IconButton onClick={onClick}>
         <CustomIcon icon='mingcute:delete-2-fill' />
       </IconButton>
     </Tooltip>
