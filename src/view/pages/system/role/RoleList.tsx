@@ -57,6 +57,7 @@ const RoleListPage: NextPage<TProps> = () => {
   })
 
   const [sortBy, setSortBy] = useState('create asc')
+  const [search, setSearch] = useState('')
 
   // ** use selector
 
@@ -75,12 +76,12 @@ const RoleListPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
 
   const getListRole = () => {
-    dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: '', order: sortBy } }))
+    dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: search, order: sortBy } }))
   }
 
   useEffect(() => {
     getListRole()
-  }, [sortBy])
+  }, [sortBy, search])
 
   useEffect(() => {
     if (isMessageCreateEdit) {
@@ -196,8 +197,13 @@ const RoleListPage: NextPage<TProps> = () => {
     })
   }
 
+  const handleOnChangeSearch = (value: string) => {
+    setSearch(value)
+  }
+
   return (
     <>
+      {isLoading && <Spinner />}
       <CustomConfirmDialog
         onOpen={handleOnOpenDialog}
         open={openDialog.open}
@@ -209,20 +215,20 @@ const RoleListPage: NextPage<TProps> = () => {
           })
         }}
       />
-      {isLoading && <Spinner />}
       <CreateEditRole open={openCreateEdit.open} onClose={handleCloseModal} idRole={openCreateEdit.idRole} />
       <Box
         sx={{
           display: 'flex',
           padding: '40px',
-          backgroundColor: theme.palette.background.paper
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: '15px'
         }}
       >
         <Grid container>
           <Grid item md={5} xs={12}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3 }}>
               <Box sx={{ width: '200px' }}>
-                <InputSearch />
+                <InputSearch onChange={handleOnChangeSearch} />
               </Box>
               <CustomGridCreate
                 onClick={() =>

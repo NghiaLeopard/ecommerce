@@ -3,6 +3,8 @@ import { InputBase, alpha, styled } from '@mui/material'
 
 // ** Custom
 import CustomIcon from '../Icon'
+import { useDebounce } from 'src/hooks/useDebounce'
+import { useEffect, useState } from 'react'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -48,13 +50,34 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   justifyContent: 'center'
 }))
 
-const InputSearch = () => {
+interface TInputSearch {
+  onChange: (value: string) => void
+}
+
+const InputSearch = ({ onChange }: TInputSearch) => {
+  const [valueSearch, setValueSearch] = useState('')
+  const valueDebounce = useDebounce(valueSearch, 500)
+
+  useEffect(() => {
+    onChange(valueDebounce)
+  }, [valueDebounce])
+  const handleChange = (value: string) => {
+    setValueSearch(value)
+  }
+
   return (
     <Search>
       <SearchIconWrapper>
         <CustomIcon icon='wpf:search' />
       </SearchIconWrapper>
-      <StyledInputBase placeholder='Search…' inputProps={{ 'aria-label': 'search' }} />
+      <StyledInputBase
+        placeholder=' Search…'
+        inputProps={{ 'aria-label': 'search' }}
+        onChange={e => {
+          console.log(e.target.value)
+          handleChange(e.target.value)
+        }}
+      />
     </Search>
   )
 }
