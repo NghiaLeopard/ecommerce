@@ -4,11 +4,15 @@ import { DataGrid, DataGridProps, GridColDef, GridValueGetterParams } from '@mui
 import { Ref, forwardRef } from 'react'
 
 const StyledDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
+  '& .MuiDataGrid-root': {
+    borderRadius: '9px'
+  },
   '& .MuiDataGrid-main': {
     border: `1px solid ${theme.palette.customColors.borderColor}`,
-    borderTopRightRadius: '8px',
-    borderTopLeftRadius: '8px'
+    borderTopRightRadius: '14px',
+    borderTopLeftRadius: '14px'
   },
+
   '& .MuiDataGrid-footerContainer': {
     border: `1px solid ${theme.palette.customColors.borderColor} `,
     borderTop: 'none',
