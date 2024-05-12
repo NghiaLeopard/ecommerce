@@ -1,4 +1,5 @@
-// ** Next
+// ** React
+import { useEffect } from 'react'
 
 // ** MUI
 import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
@@ -17,10 +18,11 @@ import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
 
 // ** Store
-import { useEffect } from 'react'
 import { getDetailRole } from 'src/services/role'
 import { AppDispatch } from 'src/stores'
 import { createRolesAsync, editRolesAsync } from 'src/stores/roles/actions'
+
+// ** i18next
 import { t } from 'i18next'
 
 interface TCreateEditRole {
@@ -75,8 +77,6 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
     }
   }, [open, idRole])
 
-  
-
   return (
     <CustomModal open={open} onClose={onClose}>
       <Box
@@ -84,7 +84,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant='h3' sx={{ fontWeight: 600 }}>
-            Tạo nhóm vai trò
+            {t('create-role')}
           </Typography>
           <IconButton onClick={onClose}>
             <CustomIcon icon='typcn:delete' />
@@ -105,7 +105,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
                   onBlur={onBlur}
                   value={value}
                   fullWidth
-                  label='Name'
+                  label={t('name-role')}
                   inputRef={ref}
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}

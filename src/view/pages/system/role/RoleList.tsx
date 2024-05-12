@@ -6,34 +6,42 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Grid, useTheme } from '@mui/material'
-import { GridColDef } from '@mui/x-data-grid'
+import { Box, Button, Grid, useTheme } from '@mui/material'
+import { GridColDef, GridRowClassNameParams } from '@mui/x-data-grid'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { deleteRolesAsync, getAllRolesAsync } from 'src/stores/roles/actions'
+import { deleteRolesAsync, editRolesAsync, getAllRolesAsync } from 'src/stores/roles/actions'
 
 // ** Component
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomDataGrid from 'src/components/custom-data-grid'
-import CustomPagination from 'src/components/custom-pagination'
 import CustomGridCreate from 'src/components/grid-create'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
-import { CreateEditRole } from './components/CreateEditRole'
 import Spinner from 'src/components/spinner'
+import { CreateEditRole } from './components/CreateEditRole'
+import { TablePermissions } from './components/tablePermissions'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import { CONFIG_PERMISSIONS } from 'src/configs/permission'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
 import { resetInitialState } from 'src/stores/roles'
 
 // ** Toast
 import toast from 'react-hot-toast'
-import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
+
+// ** Services
+import { getDetailRole } from 'src/services/role'
+
+// ** utils
+import { getValuePermissions } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 type TProps = {}
 
@@ -49,15 +57,21 @@ const RoleListPage: NextPage<TProps> = () => {
     open: false,
     idRole: ''
   })
+  const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [sortBy, setSortBy] = useState('create asc')
+  const [search, setSearch] = useState('')
+  const [isDisabled, setIsDisable] = useState(false)
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idRole: ''
   })
-
-  const [sortBy, setSortBy] = useState('create asc')
-  const [search, setSearch] = useState('')
+  const [permissionSelected, setPermissionSelected] = useState<string[]>([])
+  const [rowSelected, setRowSelected] = useState({
+    id: '',
+    name: ''
+  })
 
   // ** use selector
 
@@ -77,62 +91,6 @@ const RoleListPage: NextPage<TProps> = () => {
 
   const getListRole = () => {
     dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: search, order: sortBy } }))
-  }
-
-  useEffect(() => {
-    getListRole()
-  }, [sortBy, search])
-
-  useEffect(() => {
-    if (isMessageCreateEdit) {
-      if (isSuccessCreateEdit) {
-        if (openCreateEdit.idRole) {
-          toast.success(t('update-role-success'))
-        } else {
-          toast.success(t('create-role-success'))
-        }
-        handleCloseModal()
-      } else if (isErrorCreateEdit) {
-        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
-        if (errorConfig) {
-          toast.error(t(`${errorConfig}`))
-        } else {
-          if (openCreateEdit.idRole) {
-            toast.error(t('update-role-error'))
-          } else {
-            toast.error(t('create-role-error'))
-          }
-        }
-      }
-      getListRole()
-      dispatch(resetInitialState())
-    }
-  }, [isErrorCreateEdit, isSuccessCreateEdit])
-
-  useEffect(() => {
-    if (isMessageDelete) {
-      if (isSuccessDelete) {
-        toast.success(isMessageDelete)
-      } else if (isErrorDelete) {
-        toast.error(isMessageDelete)
-      }
-      getListRole()
-      dispatch(resetInitialState())
-    }
-  }, [isErrorDelete, isSuccessDelete])
-
-  const handleOnChangePagination = () => {}
-
-  const PaginationComponent = () => {
-    return (
-      <CustomPagination
-        page={page}
-        pageSize={pageSize}
-        rowLength={roles.total}
-        pageSizeOptions={[10, 20, 30, 40, 50]}
-        onChangePagination={handleOnChangePagination}
-      />
-    )
   }
 
   const handleCloseModal = () => {
@@ -201,9 +159,99 @@ const RoleListPage: NextPage<TProps> = () => {
     setSearch(value)
   }
 
+  const getRoleDetail = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+      const res = await getDetailRole(rowSelected.id)
+
+      const valuePermissions = getValuePermissions(CONFIG_PERMISSIONS, [
+        CONFIG_PERMISSIONS.ADMIN,
+        CONFIG_PERMISSIONS.BASIC
+      ])
+
+      if (res?.data?.permissions.includes(CONFIG_PERMISSIONS.ADMIN)) {
+        setIsDisable(true)
+        setPermissionSelected(valuePermissions)
+      } else if (res?.data?.permissions.includes(CONFIG_PERMISSIONS.BASIC)) {
+        setIsDisable(true)
+        setPermissionSelected([CONFIG_PERMISSIONS.DASHBOARD])
+      } else {
+        setIsDisable(false)
+        setPermissionSelected(res?.data?.permissions)
+      }
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  const handleUpdateRole = () => {
+    dispatch(
+      editRolesAsync({
+        idRole: rowSelected.id,
+        name: rowSelected.name,
+        permissions: permissionSelected
+      })
+    )
+  }
+
+  useEffect(() => {
+    getListRole()
+  }, [sortBy, search])
+
+  console.log(openCreateEdit.idRole)
+
+  useEffect(() => {
+    if (isMessageCreateEdit) {
+      if (isSuccessCreateEdit) {
+        if (!openCreateEdit.idRole) {
+          toast.success(t('create-role-success'))
+        } else {
+          toast.success(t('update-role-success'))
+        }
+        handleCloseModal()
+      } else if (isErrorCreateEdit) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          if (!openCreateEdit.idRole) {
+            toast.error(t('create-role-error'))
+          } else {
+            toast.error(t('update-role-error'))
+          }
+        }
+      }
+      getListRole()
+      dispatch(resetInitialState())
+    }
+  }, [isErrorCreateEdit, isSuccessCreateEdit])
+
+  useEffect(() => {
+    if (isMessageDelete) {
+      if (isSuccessDelete) {
+        toast.success(isMessageDelete)
+      } else if (isErrorDelete) {
+        toast.error(isMessageDelete)
+      }
+      getListRole()
+      dispatch(resetInitialState())
+    }
+  }, [isErrorDelete, isSuccessDelete])
+
+  useEffect(() => {
+    if (rowSelected.id) {
+      getRoleDetail()
+    }
+  }, [rowSelected])
+
   return (
     <>
       {isLoading && <Spinner />}
+      {loading && <Spinner />}
+
+      <CreateEditRole open={openCreateEdit.open} onClose={handleCloseModal} idRole={openCreateEdit.idRole} />
+
       <CustomConfirmDialog
         onOpen={handleOnOpenDialog}
         open={openDialog.open}
@@ -215,17 +263,20 @@ const RoleListPage: NextPage<TProps> = () => {
           })
         }}
       />
-      <CreateEditRole open={openCreateEdit.open} onClose={handleCloseModal} idRole={openCreateEdit.idRole} />
+
       <Box
         sx={{
           display: 'flex',
-          padding: '40px',
+          padding: '20px',
+          alignItems: 'center',
           backgroundColor: theme.palette.background.paper,
-          borderRadius: '15px'
+          borderRadius: '15px',
+          height: '100%',
+          maxHeight: '100%'
         }}
       >
-        <Grid container>
-          <Grid item md={5} xs={12}>
+        <Grid container spacing={10} sx={{ height: '100%', width: '100%' }}>
+          <Grid item md={4} xs={12}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3 }}>
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
@@ -243,27 +294,60 @@ const RoleListPage: NextPage<TProps> = () => {
               rows={roles.data}
               columns={columns}
               getRowId={row => row._id}
-              pageSizeOptions={[5]}
+              sortingMode='server'
+              sortingOrder={['desc', 'asc']}
               autoHeight
               disableRowSelectionOnClick
               disableColumnFilter
               disableColumnMenu
-              sortingOrder={['desc', 'asc']}
-              sortingMode='server'
+              hideFooter
               onSortModelChange={handleSort}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5
-                  }
-                }
+              getRowClassName={(row: GridRowClassNameParams) => {
+                return row.id === rowSelected.id ? 'row-selected' : ''
               }}
-              slots={{
-                pagination: PaginationComponent
+              onRowClick={rows => {
+                const { row } = rows
+                setRowSelected({
+                  id: row._id,
+                  name: row.name
+                })
+              }}
+              sx={{
+                '.row-selected': {
+                  backgroundColor: `${hexToRGBA(theme.palette.secondary.main, 0.08)} !important`,
+                  color: `${theme.palette.primary.main} !important`
+                }
               }}
             />
           </Grid>
-          <Grid item md={5} xs={12}></Grid>
+          <Grid item md={8} xs={12} sx={{ height: 'calc(100% - 40px)' }}>
+            {rowSelected.id && (
+              <Box sx={{ height: '100%' }}>
+                <TablePermissions
+                  permissionSelected={permissionSelected}
+                  setPermissionSelected={setPermissionSelected}
+                  disabled={isDisabled}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    type='submit'
+                    variant='contained'
+                    sx={{ mt: 3 }}
+                    onClick={() => {
+                      handleUpdateRole()
+                      setOpenCreateEdit({
+                        idRole: rowSelected.id,
+                        open: false
+                      })
+                    }}
+                    disabled={isDisabled}
+                  >
+                    {t('update')}
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Grid>
         </Grid>
       </Box>
     </>

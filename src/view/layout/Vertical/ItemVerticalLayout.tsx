@@ -18,13 +18,16 @@ import {
 import { useState } from 'react'
 
 // Custom
-import CustomIcon from 'src/components/Icon'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+
+// ** Component
+import CustomIcon from 'src/components/Icon'
+
+// ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 interface TListItemText extends ListItemTextProps {
-  active: boolean
+  active: boolean | undefined
   open: boolean
 }
 
@@ -65,6 +68,7 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
           if (data.children) {
             handleClick()
           }
+
           handleSelectItem(data?.path)
         }}
         sx={{
@@ -101,7 +105,7 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1 }}>
               <StyledListItemText
                 primary={data.title}
-                active={Boolean(router.pathname === data.path)}
+                active={Boolean(router.pathname === data.path) ? true : undefined}
                 open={open}
               ></StyledListItemText>
             </Box>

@@ -46,9 +46,9 @@ import { resetInitialState } from 'src/stores/auth'
 import { updateAuthMeSync } from 'src/stores/auth/actions'
 
 // ** utils
-import { convertBase64, separationFullName, toFullName } from 'src/utils'
 import { CustomSelect } from 'src/components/custom-select'
-import CustomModal from 'src/components/custom-modal'
+import { getAllRoles } from 'src/services/role'
+import { convertBase64, separationFullName, toFullName } from 'src/utils'
 
 type TProps = {}
 
@@ -78,8 +78,10 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [user, setUser] = useState<UserDataType | null>(null)
   const [avatar, setAvatar] = useState('')
   const [roleId, setRoleID] = useState('')
+  const [role, setRole] = useState([])
   const dispatch: AppDispatch = useDispatch()
 
+  console.log(role)
   const { isErrorUpdateMe, isSuccessUpdateMe, isLoading, messageUpdateMe } = useSelector(
     (state: RootState) => state.auth
   )
@@ -130,6 +132,21 @@ const MyProfilePage: NextPage<TProps> = () => {
         setUser(null)
       })
   }
+  const fetchRole = async () => {
+    setLoading(true)
+    try {
+      setLoading(true)
+
+      const response = await getAllRoles({ params: { limit: -1, page: -1 } })
+      setRole(response?.data?.roles)
+    } catch (error) {
+      setLoading(true)
+    }
+  }
+
+  useEffect(() => {
+    fetchRole()
+  }, [])
 
   const handleOnSubmit = (data: any) => {
     const { firstName, lastName, middleName } = separationFullName(data?.fullName, i18n.language)
@@ -292,7 +309,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <CustomSelect
                             fullWidth
                             onChange={onChange}
-                            options={[{ value: '1', label: 'No data' }]}
+                            options={role}
                             value={value}
                             placeholder={t('choose_your_role')}
                             inputRef={ref}
@@ -426,7 +443,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <CustomSelect
                             fullWidth
                             onChange={onChange}
-                            options={[{ value: '1', label: 'No data' }]}
+                            options={[{ value: '1', name: 'No data', id: 0 }]}
                             value={value}
                             placeholder={t('choose_your_city')}
                             inputRef={ref}

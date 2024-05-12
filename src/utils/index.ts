@@ -1,3 +1,5 @@
+import { object } from 'yup'
+
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
   if (language === 'vi') {
     return `${lastName ? lastName : ''} ${middleName ? middleName : ''} ${firstName ? firstName : ''}`
@@ -45,4 +47,23 @@ export const separationFullName = (fullName: string, language: string) => {
   }
 
   return result
+}
+
+export const getValuePermissions = (obj: any, exclude: string[]) => {
+  try {
+    const valueArray: string[] = []
+    for (const key in obj) {
+      if (typeof obj[key] === 'object') {
+        valueArray.push(...getValuePermissions(obj[key], exclude))
+      } else {
+        if (!exclude.includes(obj[key])) {
+          valueArray.push(obj[key])
+        }
+      }
+    }
+
+    return valueArray
+  } catch (error) {
+    return []
+  }
 }

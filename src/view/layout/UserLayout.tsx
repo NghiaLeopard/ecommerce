@@ -2,6 +2,7 @@
 import { NextPage } from 'next'
 
 // ** Mui
+import { useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -13,7 +14,6 @@ import { ReactNode, useState } from 'react'
 // ** layout
 import HorizontalLayout from './Horizontal'
 import VerticalLayout from './Vertical/VerticalLayout'
-import { useTheme } from '@mui/material'
 
 type TProps = {
   children: ReactNode
@@ -37,8 +37,7 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
           backgroundColor: theme =>
             theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
           flexGrow: 1,
-          height: '100vh',
-          overflow: 'auto'
+          height: '100vh'
         }}
       >
         <Toolbar />
@@ -46,8 +45,10 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
           sx={{
             m: 4,
             width: `calc(100% - 32px)`,
-            height: `100vh - ${theme.mixins}`,
             maxWidth: 'calc(100% - 32px) !important',
+            maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+            minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+            height: '100%',
             padding: '0px !important'
           }}
         >

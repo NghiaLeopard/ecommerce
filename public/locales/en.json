@@ -36,6 +36,7 @@
   "method-payment": "Method payment",
   "name": "NAME",
   "action": "ACTION",
+  "name-role": "Name role",
   "remember-me": "Remember me",
   "forget-password": "Forget password",
   "dont-have-an-account?": "Don't have an account ?",
@@ -44,9 +45,17 @@
   "or": "Or",
   "create": "Create",
   "update": "update",
+  "create-role": "Create role",
   "create-role-error": "Create role error",
   "update-role-error": "Update role error",
   "create-role-success": "Create role update",
   "update-role-success": "Update role update",
-  "data-existed-in-system": "Data existed in system"
+  "data-existed-in-system": "Data existed in system",
+  "manage-order": "Manage order",
+  "product": "Product",
+  "product-type": "Product type",
+  "review": "Review",
+  "order": "Order",
+  "payment-type": "Payment type",
+  "delivery-type": "Delivery-type"
 }
