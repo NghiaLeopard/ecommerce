@@ -5,7 +5,7 @@ import Select from '@mui/material/Select'
 
 type TCustomSelect = SelectProps & {
   value: any
-  options: { value: string; label: string }[]
+  options: { name: string; value: string; id: number }[]
   onChange: () => void
 }
 
@@ -39,10 +39,10 @@ export const CustomSelect = ({ value, label, onChange, fullWidth, options, place
     <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
       <CustomPlaceholder>{placeholder}</CustomPlaceholder>
       <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={onChange} {...rest}>
-        {options.map(item => {
+        {options?.map(item => {
           return (
-            <MenuItem key={item.value} value={item.value}>
-              {item.label || 'No data'}
+            <MenuItem key={item.name} value={item.value}>
+              {item.name || 'No data'}
             </MenuItem>
           )
         })}

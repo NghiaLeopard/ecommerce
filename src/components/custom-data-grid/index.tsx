@@ -1,6 +1,6 @@
 import { styled } from '@mui/material'
 import Box from '@mui/material/Box'
-import { DataGrid, DataGridProps, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
+import { DataGrid, DataGridProps } from '@mui/x-data-grid'
 import { Ref, forwardRef } from 'react'
 
 const StyledDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
@@ -9,16 +9,9 @@ const StyledDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
   },
   '& .MuiDataGrid-main': {
     border: `1px solid ${theme.palette.customColors.borderColor}`,
-    borderTopRightRadius: '14px',
-    borderTopLeftRadius: '14px'
+    borderRadius: '15px'
   },
 
-  '& .MuiDataGrid-footerContainer': {
-    border: `1px solid ${theme.palette.customColors.borderColor} `,
-    borderTop: 'none',
-    borderBottomRightRadius: '8px',
-    borderBottomLeftRadius: '8px'
-  },
   '& .MuiDataGrid-virtualScroller': {
     overflowX: 'hidden'
   }
@@ -26,7 +19,7 @@ const StyledDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
 
 const CustomDataGrid = forwardRef((props: DataGridProps, ref: Ref<any>) => {
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: '100%', width: '100%', overflow: 'auto' }}>
       <StyledDataGrid {...props} />
     </Box>
   )
