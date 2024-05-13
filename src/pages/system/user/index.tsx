@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 
 // ** React
 import { ReactNode } from 'react'
+import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
@@ -15,6 +16,8 @@ type TProps = {}
 const User: NextPage<TProps> = () => {
   return <h1>User</h1>
 }
+
+User.permissions = [CONFIG_PERMISSIONS.SYSTEM.USER.VIEW]
 
 export default User
 

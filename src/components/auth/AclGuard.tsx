@@ -19,28 +19,36 @@ import { useRouter } from 'next/router'
 
 // ** Acl
 import { AbilityContext } from '../acl/Can'
+import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 interface AclGuardProps {
   children: ReactNode
   authGuard?: boolean
   guestGuard?: boolean
   aclAbilities: ACLObj
+  permissions?: string[]
 }
 
 const AclGuard = (props: AclGuardProps) => {
   // ** Props
-  const { aclAbilities, children, guestGuard = false, authGuard = true } = props
+  const { aclAbilities, children, guestGuard = false, authGuard = true, permissions } = props
 
   const auth = useAuth()
   const router = useRouter()
 
-  // @ts-ignore
-  const permissionUser = auth.user?.role?.permissions ?? []
+  // check BASIC , because BASIC just have permissions VIEW DASHBOARD
+  // const permissionUser = auth.user?.role?.permissions
+  //   ? auth.user?.role?.permissions.includes(CONFIG_PERMISSIONS.BASIC)
+  //     ? [CONFIG_PERMISSIONS.BASIC]
+  //     : auth.user?.role?.permissions
+  //   : []
+
+  const permissionUser = [CONFIG_PERMISSIONS.SYSTEM.ROLE.VIEW]
 
   let ability: AppAbility
 
   if (auth.user && !ability) {
-    ability = buildAbilityFor(permissionUser, aclAbilities.subject)
+    ability = buildAbilityFor(permissionUser, permissions)
   }
 
   if (guestGuard || router.route === '/500' || router.route === '/400' || !authGuard) {

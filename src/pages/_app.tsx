@@ -78,7 +78,7 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
   if (guestGuard) {
     return <GuestGuard fallback={<FallbackSpinner />}>{children}</GuestGuard>
   } else if (!guestGuard && !authGuard) {
-    return <NoGuard fallback={<FallbackSpinner />} >{children}</NoGuard>
+    return <NoGuard fallback={<FallbackSpinner />}>{children}</NoGuard>
   } else {
     return <AuthGuard fallback={<FallbackSpinner />}>{children}</AuthGuard>
   }
@@ -102,6 +102,8 @@ export default function App(props: ExtendedAppProps) {
   const guestGuard = Component.guestGuard ?? false
 
   const aclAbilities = Component.acl ?? defaultACLObj
+
+  const permissions = Component.permissions
 
   const toastOptions = {
     success: {
@@ -138,7 +140,12 @@ export default function App(props: ExtendedAppProps) {
                 return (
                   <ThemeComponent settings={settings}>
                     <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                      <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
+                      <AclGuard
+                        permissions={permissions}
+                        aclAbilities={aclAbilities}
+                        guestGuard={guestGuard}
+                        authGuard={authGuard}
+                      >
                         {getLayout(<Component {...pageProps} />)}
                       </AclGuard>
                     </Guard>
