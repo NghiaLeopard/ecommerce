@@ -81,7 +81,6 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [role, setRole] = useState([])
   const dispatch: AppDispatch = useDispatch()
 
-  console.log(role)
   const { isErrorUpdateMe, isSuccessUpdateMe, isLoading, messageUpdateMe } = useSelector(
     (state: RootState) => state.auth
   )

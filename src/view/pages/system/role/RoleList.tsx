@@ -199,8 +199,6 @@ const RoleListPage: NextPage<TProps> = () => {
     getListRole()
   }, [sortBy, search])
 
-  console.log(openCreateEdit.idRole)
-
   useEffect(() => {
     if (isMessageCreateEdit) {
       if (isSuccessCreateEdit) {
