@@ -10,6 +10,12 @@ export const VerticalItems = () => {
 
   return [
     {
+      title: t('dashboard'),
+      icon: 'eos-icons:file-system',
+      path: CONFIG_ROUTE.DASHBOARD,
+      permissions: CONFIG_PERMISSIONS.DASHBOARD
+    },
+    {
       title: t('system'),
       icon: 'eos-icons:file-system',
       path: '/system',
