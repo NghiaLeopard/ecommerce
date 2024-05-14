@@ -20,7 +20,7 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
   const level = 0
   const router = useRouter()
   const vertical = VerticalItems()
-  const permissionsUser: any = ['SYSTEM.ROLE.VIEW']
+  const permissionsUser: any = ['SYSTEM.ROLE.VIEW', 'SYSTEM.USER.VIEW']
 
   const isParentHaveChildActive = (item: any) => {
     if (!item.children) {
@@ -31,7 +31,7 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
   }
 
   const hasPermissions = (permission: string, permissionsUser: string[]) => {
-    return permissionsUser.includes(permission) || !permission || permissionsUser.includes(CONFIG_PERMISSIONS.ADMIN)
+    return permissionsUser.includes(permission) || !permission
   }
 
   const handleFormatToPermissions = (menu: any, permissionsUser: string[]) => {
@@ -42,6 +42,8 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
             item.children = handleFormatToPermissions(item.children, permissionsUser)
           }
 
+          if (item?.children?.length <= 0) return false
+
           return true
         }
 
@@ -51,7 +53,10 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
 
     return []
   }
-  const formatted = handleFormatToPermissions(vertical, permissionsUser)
+
+  const formatted = !permissionsUser.includes(CONFIG_PERMISSIONS.ADMIN)
+    ? handleFormatToPermissions(vertical, permissionsUser)
+    : vertical
 
   return (
     <>
@@ -64,16 +69,9 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
           const isParentActive = isParentHaveChildActive(item)
 
           return (
-            item.children.length > 0 && (
-              <li key={item.title}>
-                <ItemVerticalLayout
-                  data={item}
-                  level={level}
-                  openVertical={openVertical}
-                  fatherActive={isParentActive}
-                />
-              </li>
-            )
+            <li key={item.title}>
+              <ItemVerticalLayout data={item} level={level} openVertical={openVertical} fatherActive={isParentActive} />
+            </li>
           )
         })}
       </List>

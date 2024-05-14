@@ -25,6 +25,7 @@ import CustomIcon from 'src/components/Icon'
 
 // ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { usePermissions } from 'src/hooks/usePermissions'
 
 // ** Type
 
@@ -53,6 +54,9 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const theme = useTheme()
+  const test = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
+  console.log(test);
 
   const handleClick = () => {
     setOpen(x => !x)
