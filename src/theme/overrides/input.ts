@@ -48,7 +48,6 @@ const input = () => {
       }
     },
 
-    // Radio, Checkbox & Switch
     MuiFormControlLabel: {
       styleOverrides: {
         label: ({ theme }: OwnerStateThemeType) => ({

@@ -6,6 +6,7 @@ export type TParamsGetUsers = {
 }
 
 export type TParamsEditUsers = {
+  idUsers?: string
   email: string
   password: string
   role: string
