@@ -28,7 +28,6 @@ import { CreateEditRole } from './components/CreateEditRole'
 import { TablePermissions } from './components/tablePermissions'
 
 // ** Config
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
 import { resetInitialState } from 'src/stores/roles'
@@ -42,6 +41,7 @@ import { getDetailRole } from 'src/services/role'
 // ** utils
 import { getValuePermissions } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}
 
@@ -52,14 +52,16 @@ const RoleListPage: NextPage<TProps> = () => {
   // ** i18n
   const { t } = useTranslation()
 
+  // ** hook
+
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
   // ** useState
   const [openDialog, setOpenDialog] = useState({
     open: false,
     idRole: ''
   })
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [sortBy, setSortBy] = useState('create asc')
   const [search, setSearch] = useState('')
   const [isDisabled, setIsDisable] = useState(false)
@@ -124,22 +126,26 @@ const RoleListPage: NextPage<TProps> = () => {
           <>
             {!row?.permissions?.some((per: string) => ['BASIC.PUBLIC', 'ADMIN.GRANTED'].includes(per)) && (
               <Box>
-                <CustomGridEdit
-                  onClick={() =>
-                    setOpenCreateEdit({
-                      open: true,
-                      idRole: rows?.id
-                    })
-                  }
-                />
-                <CustomGridDelete
-                  onClick={() => {
-                    setOpenDialog({
-                      open: true,
-                      idRole: rows?.id
-                    })
-                  }}
-                />
+                {UPDATE && (
+                  <CustomGridEdit
+                    onClick={() =>
+                      setOpenCreateEdit({
+                        open: true,
+                        idRole: rows?.id
+                      })
+                    }
+                  />
+                )}
+                {DELETE && (
+                  <CustomGridDelete
+                    onClick={() => {
+                      setOpenDialog({
+                        open: true,
+                        idRole: rows?.id
+                      })
+                    }}
+                  />
+                )}
               </Box>
             )}
           </>
@@ -279,14 +285,16 @@ const RoleListPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>
-              <CustomGridCreate
-                onClick={() =>
-                  setOpenCreateEdit(x => ({
-                    open: true,
-                    idRole: ''
-                  }))
-                }
-              />
+              {CREATE && (
+                <CustomGridCreate
+                  onClick={() =>
+                    setOpenCreateEdit(x => ({
+                      open: true,
+                      idRole: ''
+                    }))
+                  }
+                />
+              )}
             </Box>
             <CustomDataGrid
               rows={roles.data}

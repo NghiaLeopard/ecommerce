@@ -7,8 +7,6 @@ const StyledModal = styled(Modal)<ModalProps>(({ theme }) => ({
 }))
 
 const CustomModal = ({ open, children }: TCustomModal) => {
-  const theme = useTheme()
-
   return (
     <StyledModal open={open} aria-labelledby='modal-modal-title'>
       <Box sx={{ height: '100%', width: '100vw' }}>

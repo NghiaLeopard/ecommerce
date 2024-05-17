@@ -56,8 +56,6 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
   const theme = useTheme()
   const test = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
-  console.log(test);
-
   const handleClick = () => {
     setOpen(x => !x)
   }

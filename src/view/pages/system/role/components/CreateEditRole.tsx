@@ -84,7 +84,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant='h3' sx={{ fontWeight: 600 }}>
-            {t('create-role')}
+            {idRole ? t('update-role') : t('create-role')}
           </Typography>
           <IconButton onClick={onClose}>
             <CustomIcon icon='typcn:delete' />
