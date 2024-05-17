@@ -2,13 +2,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 // ** Reducers
-import user from 'src/stores/user'
+import users from 'src/stores/user'
 import auth from 'src/stores/auth'
 import role from 'src/stores/roles'
 
 export const store = configureStore({
   reducer: {
-    user,
+    users,
     auth,
     role
   },

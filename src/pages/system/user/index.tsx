@@ -9,12 +9,12 @@ import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 import UserLayout from 'src/view/layout/UserLayout'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
+import UserPage from 'src/view/pages/system/user'
 
 type TProps = {}
 
 const User: NextPage<TProps> = () => {
-  return <h1>User</h1>
+  return <UserPage />
 }
 
 User.permissions = [CONFIG_PERMISSIONS.SYSTEM.USER.VIEW]

@@ -1,12 +1,13 @@
 // ** Mui
 import { Box, InputLabel, InputLabelProps, MenuItemProps, SelectProps, styled } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { useState } from 'react'
 
 type TCustomSelect = SelectProps & {
   value: any
   options: { name: string; value: string; id: number }[]
-  onChange: () => void
+  onChange: (value: any) => void
 }
 
 const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
@@ -25,8 +26,6 @@ const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
   }
 }))
 
-const StyledMenu = styled(MenuItem)<MenuItemProps>(theme => ({}))
-
 const CustomPlaceholder = styled(InputLabel)<InputLabelProps>(({ theme }) => ({
   position: 'absolute',
   top: '7px',
@@ -35,10 +34,14 @@ const CustomPlaceholder = styled(InputLabel)<InputLabelProps>(({ theme }) => ({
 }))
 
 export const CustomSelect = ({ value, label, onChange, fullWidth, options, placeholder, ...rest }: TCustomSelect) => {
+  const handleChange = (event: any) => {
+    onChange(event.target.value)
+  }
+
   return (
     <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
-      <CustomPlaceholder>{placeholder}</CustomPlaceholder>
-      <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={onChange} {...rest}>
+      {!value && <CustomPlaceholder>{placeholder}</CustomPlaceholder>}
+      <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={handleChange} {...rest}>
         {options?.map(item => {
           return (
             <MenuItem key={item.name} value={item.value}>

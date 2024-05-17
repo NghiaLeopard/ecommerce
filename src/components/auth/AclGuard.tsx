@@ -43,7 +43,7 @@ const AclGuard = (props: AclGuardProps) => {
   //     : auth.user?.role?.permissions
   //   : []
 
-  const permissionUser = [CONFIG_PERMISSIONS.SYSTEM.ROLE.VIEW]
+  const permissionUser = auth?.user?.role?.permissions
 
   let ability: AppAbility
 

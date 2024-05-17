@@ -48,6 +48,7 @@
   "update": "Cập nhật",
   "delete": "Xoá",
   "create-role": "Tạo nhóm vai trò",
+  "update-role": "Cập nhật vai trò",
   "create-role-error": "Tạo nhóm  vai trò thất bại",
   "update-role-error": "Cập nhật nhóm vai trò thất bại",
   "create-role-success": "Tạo nhóm  vai trò Thành công",

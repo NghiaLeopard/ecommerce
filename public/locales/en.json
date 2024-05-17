@@ -46,6 +46,7 @@
   "create": "Create",
   "update": "update",
   "create-role": "Create role",
+  "update-role": "Update role",
   "create-role-error": "Create role error",
   "update-role-error": "Update role error",
   "create-role-success": "Create role update",

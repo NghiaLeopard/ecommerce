@@ -65,9 +65,9 @@ const schema = yup.object({
   email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
   fullName: yup.string().required('Please enter email'),
   phoneNumber: yup.string().required('Please enter email').min(8, 'The number phone is min 8 number'),
-  role: yup.string().required('Please enter email'),
-  city: yup.string().required('Please enter email'),
-  address: yup.string().required('Please enter email')
+  role: yup.string().required('Please enter role'),
+  city: yup.string().required('Please enter city'),
+  address: yup.string().required('Please enter address')
 })
 
 const MyProfilePage: NextPage<TProps> = () => {
@@ -77,8 +77,8 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<UserDataType | null>(null)
   const [avatar, setAvatar] = useState('')
-  const [roleId, setRoleID] = useState('')
-  const [role, setRole] = useState([])
+  const [roleId, setRoleId] = useState('')
+  const [allRole, setAllRole] = useState([])
   const dispatch: AppDispatch = useDispatch()
 
   const { isErrorUpdateMe, isSuccessUpdateMe, isLoading, messageUpdateMe } = useSelector(
@@ -86,10 +86,8 @@ const MyProfilePage: NextPage<TProps> = () => {
   )
 
   const defaultValues: TDefaultValue = {
-    email: user?.email || '',
-
-    // @ts-ignore
-    role: user?.role?.name || '',
+    email: '',
+    role: '',
     fullName: '',
     phoneNumber: '',
     city: '',
@@ -111,14 +109,13 @@ const MyProfilePage: NextPage<TProps> = () => {
     await getAuthMe()
       .then(res => {
         setLoading(false)
-        setUser(res)
         const data = res?.data
         if (data) {
-          setRoleID(data?.role?._id)
+          setRoleId(data?.role?._id)
           setAvatar(data?.avatar)
           reset({
             email: data?.email,
-            role: data?.role?.name,
+            role: data?.role?._id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
             phoneNumber: data?.phoneNumber,
             city: data?.city,
@@ -128,16 +125,21 @@ const MyProfilePage: NextPage<TProps> = () => {
       })
       .catch(e => {
         setLoading(false)
-        setUser(null)
       })
   }
+
   const fetchRole = async () => {
     setLoading(true)
     try {
       setLoading(true)
 
       const response = await getAllRoles({ params: { limit: -1, page: -1 } })
-      setRole(response?.data?.roles)
+      const roleArr = response?.data?.roles.map((item: any) => ({
+        name: item.name,
+        value: item._id
+      }))
+
+      setAllRole(roleArr)
     } catch (error) {
       setLoading(true)
     }
@@ -148,6 +150,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   }, [])
 
   const handleOnSubmit = (data: any) => {
+    console.log(data)
     const { firstName, lastName, middleName } = separationFullName(data?.fullName, i18n.language)
     dispatch(
       updateAuthMeSync({
@@ -157,7 +160,7 @@ const MyProfilePage: NextPage<TProps> = () => {
         lastName: lastName,
         middleName: middleName,
         address: data?.address,
-        role: roleId,
+        role: data?.role,
         avatar
       })
     )
@@ -289,9 +292,6 @@ const MyProfilePage: NextPage<TProps> = () => {
                   <Box mt={2}>
                     <Controller
                       control={control}
-                      rules={{
-                        required: true
-                      }}
                       render={({ field: { onChange, onBlur, value, ref } }) => (
                         <Box>
                           <InputLabel
@@ -307,12 +307,12 @@ const MyProfilePage: NextPage<TProps> = () => {
                           </InputLabel>
                           <CustomSelect
                             fullWidth
-                            onChange={onChange}
-                            options={role}
                             value={value}
-                            placeholder={t('choose_your_role')}
                             inputRef={ref}
+                            options={allRole}
+                            onChange={onChange}
                             error={Boolean(errors.role)}
+                            placeholder={t('choose_your_role')}
                           />
                           {Boolean(errors.role) && (
                             <FormHelperText
@@ -446,9 +446,9 @@ const MyProfilePage: NextPage<TProps> = () => {
                             value={value}
                             placeholder={t('choose_your_city')}
                             inputRef={ref}
-                            error={Boolean(errors.role)}
+                            error={Boolean(errors.city)}
                           />
-                          {Boolean(errors.role) && (
+                          {Boolean(errors.city) && (
                             <FormHelperText
                               sx={{
                                 color: `${theme.palette.error.main} !important`

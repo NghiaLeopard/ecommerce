@@ -36,9 +36,9 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
         paddingLeft: '8px'
       }}
     >
-      {!isHideShowed ? (
+      {!isHideShowed && (
         <>
-          {rowLength > 0 ? (
+          {rowLength > 0 && (
             <Box>
               <span>{t('Đang hiển thị')} </span>
               <span style={{ fontWeight: 'bold' }}>
@@ -49,12 +49,8 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
               <span>{t('trên')} </span>
               <span style={{ fontWeight: 'bold' }}>{rowLength}</span>
             </Box>
-          ) : (
-            <Box></Box>
           )}
         </>
-      ) : (
-        <Box></Box>
       )}
       <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
         {!isHideShowed && (

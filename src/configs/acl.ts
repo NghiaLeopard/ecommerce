@@ -21,8 +21,8 @@ const defineRulesFor = (permissionUser: string[], permissions?: string[]) => {
 
   if (
     !permissions?.length ||
-    permissionUser.includes('ADMIN.GRANTED') ||
-    permissions.every(item => permissionUser.includes(item))
+    permissionUser?.includes('ADMIN.GRANTED') ||
+    permissions.every(item => permissionUser?.includes(item))
   ) {
     can('manage', 'all')
   }

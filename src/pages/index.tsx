@@ -2,9 +2,12 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import { ReactNode } from 'react'
 import CustomDataGrid from 'src/components/custom-data-grid'
+import { getTemporaryToken } from 'src/helpers/storage'
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
 
 export default function Home() {
+  const temporaryToken = getTemporaryToken()
+
   return (
     <>
       <Head>
