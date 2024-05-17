@@ -47,30 +47,6 @@ const input = () => {
         })
       }
     },
-    // MuiOutlinedInput: {
-    //    styleOverrides: {
-    //       root: ({ theme }: OwnerStateThemeType) => ({
-    //          "&:not(.MuiInputBase-sizeSmall)": {
-    //             borderRadius: 8
-    //          },
-    //          "&:hover:not(.Mui-focused):not(.Mui-disabled):not(.Mui-error) .MuiOutlinedInput-notchedOutline": {
-    //             borderColor: `rgba(${theme.palette.customColors.main}, 0.28)`
-    //          },
-    //          "&:hover.Mui-error .MuiOutlinedInput-notchedOutline": {
-    //             borderColor: theme.palette.error.main
-    //          },
-    //          "& .MuiOutlinedInput-notchedOutline": {
-    //             borderColor: `rgba(${theme.palette.customColors.main}, 0.2)`
-    //          },
-    //          "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-    //             borderColor: theme.palette.text.disabled
-    //          },
-    //          "&.Mui-focused": {
-    //             boxShadow: theme.shadows[2]
-    //          }
-    //       })
-    //    }
-    // },
 
     // Radio, Checkbox & Switch
     MuiFormControlLabel: {

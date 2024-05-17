@@ -13,7 +13,7 @@ const Switch = () => {
             height: 18,
             opacity: 1,
             borderRadius: 30,
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: `rgba(${theme.palette.background.paper})`,
             border: `1px solid rgba(${theme.palette.customColors.main}, ${theme.palette.mode === 'dark' ? 0.4 : 0.2})`,
             transition:
               'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out'
@@ -47,32 +47,32 @@ const Switch = () => {
           },
           '&.Mui-checked': {
             transform: 'translateX(11px)',
-            color: `${theme.palette.common.white} !important`,
+            color: `rgb(${theme.palette.common.white}) !important`,
             '& + .MuiSwitch-track': {
               opacity: 1,
               boxShadow: theme.shadows[2],
-              borderColor: theme.palette.primary.main,
-              backgroundColor: theme.palette.primary.main
+              borderColor: `(rgb(${theme.palette.primary.main})`,
+              backgroundColor: `rgb(${theme.palette.primary.main})`
             },
             '&.MuiSwitch-colorSecondary + .MuiSwitch-track': {
-              borderColor: theme.palette.secondary.main,
-              backgroundColor: theme.palette.secondary.main
+              borderColor: `rgb(${theme.palette.secondary.main})`,
+              backgroundColor: `rgb(${theme.palette.secondary.main})`
             },
             '&.MuiSwitch-colorSuccess + .MuiSwitch-track': {
-              borderColor: theme.palette.success.main,
-              backgroundColor: theme.palette.success.main
+              borderColor: `rgb(${theme.palette.success.main})`,
+              backgroundColor: `rgb(${theme.palette.success.main})`
             },
             '&.MuiSwitch-colorError + .MuiSwitch-track': {
-              borderColor: theme.palette.error.main,
-              backgroundColor: theme.palette.error.main
+              borderColor: `rgb(${theme.palette.error.main})`,
+              backgroundColor: `rgb(${theme.palette.error.main})`
             },
             '&.MuiSwitch-colorWarning + .MuiSwitch-track': {
-              borderColor: theme.palette.warning.main,
-              backgroundColor: theme.palette.warning.main
+              borderColor: `rgb(${theme.palette.warning.main})`,
+              backgroundColor: `rgb(${theme.palette.warning.main})`
             },
             '&.MuiSwitch-colorInfo + .MuiSwitch-track': {
-              borderColor: theme.palette.info.main,
-              backgroundColor: theme.palette.info.main
+              borderColor: `rgb(${theme.palette.info.main})`,
+              backgroundColor: `rgb(${theme.palette.info.main})`
             }
           }
         }),
