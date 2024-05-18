@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 
 // ** React
-import { Fragment, MouseEvent, useState } from 'react'
+import { Fragment, MouseEvent, useEffect, useState } from 'react'
 
 // ** Mui
 import Avatar from '@mui/material/Avatar'
@@ -29,6 +29,8 @@ import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** Utils
 import { toFullName } from 'src/utils'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/stores'
 
 interface TProps {}
 
@@ -70,8 +72,9 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 const UserDropDown: NextPage<TProps> = () => {
   const route = useRouter()
   const { t, i18n } = useTranslation()
-  const { user, logout } = useAuth()
+  const { user, logout, setUser } = useAuth()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const { userData } = useSelector((state: RootState) => state.auth)
 
   const open = Boolean(anchorEl)
 
@@ -96,6 +99,12 @@ const UserDropDown: NextPage<TProps> = () => {
     route.push(`${CONFIG_ROUTE.DASHBOARD}`)
     handleClose()
   }
+
+  useEffect(() => {
+    if (userData) {
+      setUser(userData)
+    }
+  }, [userData])
 
   return (
     <Fragment>

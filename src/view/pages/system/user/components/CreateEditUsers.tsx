@@ -6,13 +6,13 @@ import {
   Avatar,
   Box,
   Button,
+  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
   InputLabel,
-  useTheme,
-  FormControlLabel,
-  Switch
+  Switch,
+  useTheme
 } from '@mui/material'
 
 // ** Components
@@ -25,48 +25,28 @@ import { Controller, useForm } from 'react-hook-form'
 
 // **Yup
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
 
 // ** Store
-import { AppDispatch, RootState } from 'src/stores'
+import { AppDispatch } from 'src/stores'
 
 // ** i18next
 import { getDetailUsers } from 'src/services/users'
 
 // ** Redux
-import { createUsersAsync, editUsersAsync } from 'src/stores/user/actions'
 import { useTranslation } from 'react-i18next'
-import WrapperFileUpload from 'src/components/wrapper-file-upload'
 import { CustomSelect } from 'src/components/custom-select'
-import { convertBase64, separationFullName, toFullName } from 'src/utils'
-import { getAllRoles } from 'src/services/role'
-import { getAuthMe } from 'src/services/auth'
-import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 import Spinner from 'src/components/spinner'
-
-// firstName: { type: String },
-//     lastName: { type: String },
-//     middleName: { type: String },
-//     email: { type: String, required: true, unique: true },
-//     password: { type: String },
-//     role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
-//     phoneNumber: { type: String },
-//     address: { type: String },
-//     avatar: { type: String },
-//     city: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "City",
-//     },
-//     status: {
-//       type: Number,
-//       default: 1,
-//       enum: [0, 1],
-//     },
+import WrapperFileUpload from 'src/components/wrapper-file-upload'
+import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import { getAllRoles } from 'src/services/role'
+import { createUsersAsync, editUsersAsync } from 'src/stores/user/actions'
+import { convertBase64, separationFullName, toFullName } from 'src/utils'
 
 type TDefaultValue = {
   email: string
-  password: string
+  password?: string
   role: string
   fullName: string
   phoneNumber: string
@@ -80,20 +60,6 @@ interface TCreateEditUsers {
   onClose: () => void
   idUsers: string
 }
-
-const schema = yup.object({
-  email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
-  password: yup
-    .string()
-    .required('Please enter email')
-    .matches(PASSWORD_REG, 'the password is contain charact,special character,number'),
-  fullName: yup.string().required('Please enter email'),
-  phoneNumber: yup.string().required('Please enter email').min(8, 'The number phone is min 8 number'),
-  role: yup.string().required('Please enter role'),
-  city: yup.string().nonNullable(),
-  address: yup.string().nonNullable(),
-  status: yup.number().nonNullable()
-})
 
 export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) => {
   // ** Hook
@@ -111,10 +77,6 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
 
-  const { isErrorUpdateMe, isSuccessUpdateMe, isLoading, messageUpdateMe } = useSelector(
-    (state: RootState) => state.auth
-  )
-
   const defaultValues: TDefaultValue = {
     email: '',
     password: '',
@@ -125,6 +87,22 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
     address: '',
     status: 1
   }
+
+  const schema = yup.object({
+    email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
+    password: idUsers
+      ? yup.string().nonNullable()
+      : yup
+          .string()
+          .required('Please enter email')
+          .matches(PASSWORD_REG, 'the password is contain charact,special character,number'),
+    fullName: yup.string().required('Please enter email'),
+    phoneNumber: yup.string().required('Please enter email').min(8, 'The number phone is min 8 number'),
+    role: yup.string().required('Please enter role'),
+    city: yup.string().nonNullable(),
+    address: yup.string().nonNullable(),
+    status: yup.number().nonNullable()
+  })
 
   const {
     control,
@@ -138,6 +116,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
   const handleOnSubmit = (data: TDefaultValue) => {
     const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
+    console.log(data)
 
     if (!idUsers) {
       dispatch(
@@ -146,16 +125,30 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
           middleName: middleName,
           lastName: lastName,
           email: data.email,
-          password: data.password,
+          password: data.password || '',
           role: data.role,
           phoneNumber: data.phoneNumber,
-          city: data.city || '',
+          city: '',
           address: data.address || '',
           avatar: avatar
         })
       )
     } else {
-      // dispatch(editUsersAsync({ firstName: firstName, middleName: middleName, lastName: lastName, idUsers: idUsers }))
+      dispatch(
+        editUsersAsync({
+          idUsers: idUsers,
+          firstName: firstName,
+          middleName: middleName,
+          lastName: lastName,
+          email: data.email,
+          password: data.password || '',
+          role: data.role,
+          phoneNumber: data.phoneNumber,
+          address: data.address || '',
+          avatar: avatar,
+          city: ''
+        })
+      )
     }
   }
 
@@ -172,8 +165,11 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
           fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
           phoneNumber: data?.phoneNumber,
           city: data?.city,
-          address: data?.address
+          address: data?.address,
+          status: data.status,
+          password: data.password
         })
+        setAvatar(data.avatar)
       }
     } catch (error) {
       setLoading(false)
@@ -208,9 +204,11 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
   useEffect(() => {
     if (!open || !idUsers) {
+      setAvatar('')
       reset({
         email: '',
         role: '',
+        password: '',
         fullName: '',
         phoneNumber: '',
         city: '',
@@ -320,45 +318,47 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                       />
                     </Box>
                   </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Box mt={2}>
-                      <Controller
-                        control={control}
-                        rules={{
-                          required: true
-                        }}
-                        render={({ field: { onChange, onBlur, value, ref } }) => (
-                          <CustomTextField
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            value={value}
-                            fullWidth
-                            label={t('password')}
-                            inputRef={ref}
-                            type={password ? 'text' : 'password'}
-                            error={Boolean(errors.password)}
-                            helperText={errors.password?.message}
-                            InputProps={{
-                              endAdornment: (
-                                <IconButton
-                                  aria-label='toggle password visibility'
-                                  onClick={handleClickPassword}
-                                  edge='end'
-                                >
-                                  {password ? (
-                                    <CustomIcon icon='material-symbols:visibility-outline' />
-                                  ) : (
-                                    <CustomIcon icon='material-symbols:visibility-off-outline-rounded' />
-                                  )}
-                                </IconButton>
-                              )
-                            }}
-                          />
-                        )}
-                        name='password'
-                      />
-                    </Box>
-                  </Grid>
+                  {!idUsers && (
+                    <Grid item md={6} xs={12}>
+                      <Box mt={2}>
+                        <Controller
+                          control={control}
+                          rules={{
+                            required: true
+                          }}
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                            <CustomTextField
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                              fullWidth
+                              label={t('password')}
+                              inputRef={ref}
+                              type={password ? 'text' : 'password'}
+                              error={Boolean(errors.password)}
+                              helperText={errors.password?.message}
+                              InputProps={{
+                                endAdornment: (
+                                  <IconButton
+                                    aria-label='toggle password visibility'
+                                    onClick={handleClickPassword}
+                                    edge='end'
+                                  >
+                                    {password ? (
+                                      <CustomIcon icon='material-symbols:visibility-outline' />
+                                    ) : (
+                                      <CustomIcon icon='material-symbols:visibility-off-outline-rounded' />
+                                    )}
+                                  </IconButton>
+                                )
+                              }}
+                            />
+                          )}
+                          name='password'
+                        />
+                      </Box>
+                    </Grid>
+                  )}
                   <Grid item md={6} xs={12}>
                     <Box mt={2}>
                       <Controller
@@ -400,20 +400,28 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                       />
                     </Box>
                   </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Box mt={2}>
-                      <Controller
-                        control={control}
-                        render={({ field: { onChange, onBlur, value, ref } }) => (
-                          <FormControlLabel
-                            control={<Switch defaultChecked />}
-                            label={Boolean(value) ? t('Active') : t('Block')}
-                          />
-                        )}
-                        name='status'
-                      />
-                    </Box>
-                  </Grid>
+                  {idUsers && (
+                    <Grid item md={6} xs={12}>
+                      <Box mt={2}>
+                        <Controller
+                          control={control}
+                          name='status'
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={Boolean(value)}
+                                  onChange={() => onChange(Boolean(value) ? 0 : 1)}
+                                  value={value}
+                                />
+                              }
+                              label={Boolean(value) ? t('Active') : t('Block')}
+                            />
+                          )}
+                        />
+                      </Box>
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
             </Grid>

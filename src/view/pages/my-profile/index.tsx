@@ -75,9 +75,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   const { t, i18n } = useTranslation()
 
   const [loading, setLoading] = useState(false)
-  const [user, setUser] = useState<UserDataType | null>(null)
   const [avatar, setAvatar] = useState('')
-  const [roleId, setRoleId] = useState('')
   const [allRole, setAllRole] = useState([])
   const dispatch: AppDispatch = useDispatch()
 
@@ -103,6 +101,7 @@ const MyProfilePage: NextPage<TProps> = () => {
     defaultValues,
     resolver: yupResolver(schema)
   })
+  
 
   const fetchAuMe = async () => {
     setLoading(true)
@@ -111,7 +110,6 @@ const MyProfilePage: NextPage<TProps> = () => {
         setLoading(false)
         const data = res?.data
         if (data) {
-          setRoleId(data?.role?._id)
           setAvatar(data?.avatar)
           reset({
             email: data?.email,
@@ -150,7 +148,6 @@ const MyProfilePage: NextPage<TProps> = () => {
   }, [])
 
   const handleOnSubmit = (data: any) => {
-    console.log(data)
     const { firstName, lastName, middleName } = separationFullName(data?.fullName, i18n.language)
     dispatch(
       updateAuthMeSync({
@@ -182,6 +179,7 @@ const MyProfilePage: NextPage<TProps> = () => {
       } else if (isSuccessUpdateMe) {
         toast.success(messageUpdateMe)
       }
+
       dispatch(resetInitialState())
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])

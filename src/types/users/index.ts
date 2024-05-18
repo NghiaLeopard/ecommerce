@@ -17,6 +17,7 @@ export type TParamsEditUsers = {
   city: string
   address: string
   status?: number
+  avatar?: string
 }
 
 export type TParamsCreateUsers = {
