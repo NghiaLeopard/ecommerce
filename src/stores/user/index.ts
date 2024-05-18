@@ -43,7 +43,6 @@ export const usersSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(getAllUsersAsync.fulfilled, (state, actions) => {
-        console.log(actions)
         state.isLoading = false
         state.users.data = actions?.payload?.data?.users
         state.users.total = actions?.payload?.data?.totalCount
@@ -67,6 +66,7 @@ export const usersSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(editUsersAsync.fulfilled, (state, actions) => {
+        console.log(actions)
         state.isLoading = false
         state.isSuccessCreateEdit = !!actions.payload?.data?._id
         state.isErrorCreateEdit = !actions.payload?.data?._id

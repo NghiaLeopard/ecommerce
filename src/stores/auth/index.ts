@@ -1,6 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { changePasswordAuthSync, registerAuthSync, updateAuthMeSync } from './actions'
 
+// ** Type
+import { UserDataType } from 'src/contexts/types'
+
+type TInitialState = {
+  isLoading: boolean
+  isSuccess: boolean
+  isError: boolean
+  message: string
+  typeError: string
+  isSuccessUpdateMe: boolean
+  isErrorUpdateMe: boolean
+  messageUpdateMe: string
+  isSuccessChangePassword: boolean
+  isErrorChangePassword: boolean
+  messageChangePassword: string
+  userDate: UserDataType | null
+}
+
 const initialState = {
   isLoading: false,
   isSuccess: true,
@@ -12,7 +30,8 @@ const initialState = {
   messageUpdateMe: '',
   isSuccessChangePassword: false,
   isErrorChangePassword: false,
-  messageChangePassword: ''
+  messageChangePassword: '',
+  userData: null
 }
 
 export const authSlice = createSlice({
@@ -58,7 +77,8 @@ export const authSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(updateAuthMeSync.fulfilled, (state, actions) => {
-        state.isLoading = true
+        console.log(actions)
+        state.isLoading = false
         state.isSuccess = !!actions.payload?.data?.email
         state.isError = !actions.payload?.data?.email
         state.message = actions?.payload?.message
@@ -66,6 +86,7 @@ export const authSlice = createSlice({
         state.isSuccessUpdateMe = !!actions.payload?.data?.email
         state.isErrorUpdateMe = !actions.payload?.data?.email
         state.messageUpdateMe = actions?.payload?.message
+        state.userData = { ...actions.payload?.data }
       }),
       builder.addCase(updateAuthMeSync.rejected, (state, actions) => {
         state.isLoading = false

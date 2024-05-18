@@ -39,9 +39,10 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
 import { getDetailUsers } from 'src/services/users'
 import { resetInitialState } from 'src/stores/user'
 import { deleteUsersAsync, getAllUsersAsync } from 'src/stores/user/actions'
-import { getValuePermissions } from 'src/utils'
+import { getValuePermissions, toFullName } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { CreateEditUsers } from './components/CreateEditUsers'
+import i18n from 'src/configs/i18n'
 
 type TProps = {}
 
@@ -58,7 +59,7 @@ const UserPage: NextPage<TProps> = () => {
     idUsers: ''
   })
   const [loading, setLoading] = useState(false)
-  const [sortBy, setSortBy] = useState('create asc')
+  const [sortBy, setSortBy] = useState('createAt asc')
   const [search, setSearch] = useState('')
   const [isDisabled, setIsDisable] = useState(false)
   const [page, setPage] = useState(1)
@@ -114,8 +115,9 @@ const UserPage: NextPage<TProps> = () => {
       maxWidth: 275,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+        const fullName = toFullName(row.firstName, row.middleName, row.lastName, i18n.language)
 
-        return <Typography>{row?.name}</Typography>
+        return <Typography>{fullName}</Typography>
       }
     },
     {
@@ -130,25 +132,26 @@ const UserPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'Users',
-      headerName: t('Users'),
+      field: 'role',
+      headerName: t('Role'),
       minWidth: 275,
       maxWidth: 275,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.Users}</Typography>
+        return <Typography>{row?.role?._id}</Typography>
       }
     },
     {
       field: 'phone',
-      headerName: t('phone_number'),
+      headerName: t('Phone_number'),
       minWidth: 275,
       maxWidth: 275,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+        console.log(row)
 
-        return <Typography>{row?.phone}</Typography>
+        return <Typography>{row?.phoneNumber}</Typography>
       }
     },
     {
@@ -177,7 +180,7 @@ const UserPage: NextPage<TProps> = () => {
               onClick={() =>
                 setOpenCreateEdit({
                   open: true,
-                  idUsers: row?.role?._id
+                  idUsers: row?._id
                 })
               }
             />
@@ -185,7 +188,7 @@ const UserPage: NextPage<TProps> = () => {
               onClick={() => {
                 setOpenDialog({
                   open: true,
-                  idUsers: row?.role?._id
+                  idUsers: row?._id
                 })
               }}
             />
@@ -356,13 +359,6 @@ const UserPage: NextPage<TProps> = () => {
               }}
               getRowClassName={(row: GridRowClassNameParams) => {
                 return row.id === rowSelected.id ? 'row-selected' : ''
-              }}
-              onRowClick={rows => {
-                const { row } = rows
-                setRowSelected({
-                  id: row._id,
-                  name: row.name
-                })
               }}
               sx={{
                 '.row-selected': {
