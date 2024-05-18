@@ -15,13 +15,8 @@
     "incremental": true,
     "paths": {
       "src/*": ["./src/*"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/views/layouts/UserLayout.tss"],
   "exclude": ["node_modules"]
 }

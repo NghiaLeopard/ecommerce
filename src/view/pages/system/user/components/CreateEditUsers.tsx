@@ -39,10 +39,11 @@ import { createUsersAsync, editUsersAsync } from 'src/stores/user/actions'
 import { useTranslation } from 'react-i18next'
 import WrapperFileUpload from 'src/components/wrapper-file-upload'
 import { CustomSelect } from 'src/components/custom-select'
-import { convertBase64, toFullName } from 'src/utils'
+import { convertBase64, separationFullName, toFullName } from 'src/utils'
 import { getAllRoles } from 'src/services/role'
 import { getAuthMe } from 'src/services/auth'
-import { EMAIL_REG } from 'src/configs/regex'
+import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import Spinner from 'src/components/spinner'
 
 // firstName: { type: String },
 //     lastName: { type: String },
@@ -65,6 +66,7 @@ import { EMAIL_REG } from 'src/configs/regex'
 
 type TDefaultValue = {
   email: string
+  password: string
   role: string
   fullName: string
   phoneNumber: string
@@ -81,6 +83,10 @@ interface TCreateEditUsers {
 
 const schema = yup.object({
   email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
+  password: yup
+    .string()
+    .required('Please enter email')
+    .matches(PASSWORD_REG, 'the password is contain charact,special character,number'),
   fullName: yup.string().required('Please enter email'),
   phoneNumber: yup.string().required('Please enter email').min(8, 'The number phone is min 8 number'),
   role: yup.string().required('Please enter role'),
@@ -95,9 +101,12 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
   const { t, i18n } = useTranslation()
 
+  const [password, setPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   const [allRole, setAllRole] = useState([])
+
+  const handleClickPassword = () => setPassword(show => !show)
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
@@ -108,6 +117,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
   const defaultValues: TDefaultValue = {
     email: '',
+    password: '',
     role: '',
     fullName: '',
     phoneNumber: '',
@@ -127,25 +137,46 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   })
 
   const handleOnSubmit = (data: TDefaultValue) => {
+    const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
+
     if (!idUsers) {
-      // dispatch(createUsersAsync({ name: data?.name, permissions: [] }))
+      dispatch(
+        createUsersAsync({
+          firstName: firstName,
+          middleName: middleName,
+          lastName: lastName,
+          email: data.email,
+          password: data.password,
+          role: data.role,
+          phoneNumber: data.phoneNumber,
+          city: data.city || '',
+          address: data.address || '',
+          avatar: avatar
+        })
+      )
     } else {
-      // dispatch(editUsersAsync({ name: data?.name, permissions: [], idUsers: idUsers }))
+      // dispatch(editUsersAsync({ firstName: firstName, middleName: middleName, lastName: lastName, idUsers: idUsers }))
     }
   }
 
   const fetchDetailUsers = async (idUsers: string) => {
-    const res = await getDetailUsers(idUsers)
-    const data = res.data
-    if (data) {
-      reset({
-        email: data?.email,
-        role: data?.role?._id,
-        fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
-        phoneNumber: data?.phoneNumber,
-        city: data?.city,
-        address: data?.address
-      })
+    setLoading(true)
+    try {
+      const res = await getDetailUsers(idUsers)
+      const data = res.data
+      setLoading(false)
+      if (data) {
+        reset({
+          email: data?.email,
+          role: data?.role?._id,
+          fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
+          phoneNumber: data?.phoneNumber,
+          city: data?.city,
+          address: data?.address
+        })
+      }
+    } catch (error) {
+      setLoading(false)
     }
   }
 
@@ -157,7 +188,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   const fetchRole = async () => {
     setLoading(true)
     try {
-      setLoading(true)
+      setLoading(false)
 
       const response = await getAllRoles({ params: { limit: -1, page: -1 } })
       const roleArr = response?.data?.roles.map((item: any) => ({
@@ -167,7 +198,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
       setAllRole(roleArr)
     } catch (error) {
-      setLoading(true)
+      setLoading(false)
     }
   }
 
@@ -176,7 +207,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   }, [])
 
   useEffect(() => {
-    if (!open) {
+    if (!open || !idUsers) {
       reset({
         email: '',
         role: '',
@@ -193,6 +224,8 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   return (
     <CustomModal open={open}>
       <>
+        {loading && <Spinner />}
+
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <IconButton onClick={onClose}>
             <CustomIcon icon='typcn:delete' />
@@ -284,6 +317,45 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                           />
                         )}
                         name='email'
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Box mt={2}>
+                      <Controller
+                        control={control}
+                        rules={{
+                          required: true
+                        }}
+                        render={({ field: { onChange, onBlur, value, ref } }) => (
+                          <CustomTextField
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            value={value}
+                            fullWidth
+                            label={t('password')}
+                            inputRef={ref}
+                            type={password ? 'text' : 'password'}
+                            error={Boolean(errors.password)}
+                            helperText={errors.password?.message}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton
+                                  aria-label='toggle password visibility'
+                                  onClick={handleClickPassword}
+                                  edge='end'
+                                >
+                                  {password ? (
+                                    <CustomIcon icon='material-symbols:visibility-outline' />
+                                  ) : (
+                                    <CustomIcon icon='material-symbols:visibility-off-outline-rounded' />
+                                  )}
+                                </IconButton>
+                              )
+                            }}
+                          />
+                        )}
+                        name='password'
                       />
                     </Box>
                   </Grid>

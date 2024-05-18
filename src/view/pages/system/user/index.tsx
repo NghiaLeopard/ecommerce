@@ -177,7 +177,7 @@ const UserPage: NextPage<TProps> = () => {
               onClick={() =>
                 setOpenCreateEdit({
                   open: true,
-                  idUsers: row?.id
+                  idUsers: row?.role?._id
                 })
               }
             />
@@ -185,7 +185,7 @@ const UserPage: NextPage<TProps> = () => {
               onClick={() => {
                 setOpenDialog({
                   open: true,
-                  idUsers: row?.id
+                  idUsers: row?.role?._id
                 })
               }}
             />

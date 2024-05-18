@@ -48,8 +48,8 @@ export const usersSlice = createSlice({
         state.users.data = actions?.payload?.data?.users
         state.users.total = actions?.payload?.data?.totalCount
       }),
-      
       // eslint-disable-next-line lines-around-comment
+
       // create users
       builder.addCase(createUsersAsync.pending, (state, actions) => {
         state.isLoading = true

@@ -11,5 +11,9 @@ declare module 'next' {
     contentHeightFixed?: boolean
     getLayout?: (page: ReactElement) => ReactNode
     permissions?: string[]
+    title?: string
+    description?: string
+    keywords?: string
+    urlImage?: string
   }
 }

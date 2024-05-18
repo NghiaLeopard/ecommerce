@@ -37,6 +37,7 @@ import { LoginParams } from 'src/contexts/types'
 // ** Hook
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { Switch } from '@mui/material'
 
 type TProps = {}
 

@@ -3,7 +3,6 @@ import { deepmerge } from '@mui/utils'
 import { PaletteMode, ThemeOptions } from '@mui/material'
 
 // ** User Theme Options
-import UserThemeOptions from 'src/view/layout/UserThemeOptions'
 
 // ** Type Import
 
@@ -15,6 +14,7 @@ import overrides from './overrides'
 import typography from './typography'
 import breakpoints from './breakpoints'
 import { Settings } from 'src/contexts/SettingsContext'
+import UserThemeOptions from 'src/view/layout/UserThemeOptions'
 
 const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptions => {
   // ** Vars
@@ -31,7 +31,7 @@ const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptio
       palette: palette(mode === 'semi-dark' ? overrideMode : mode, skin),
       ...spacing,
       shape: {
-        borderRadius: 6
+        borderRadius: 1
       },
       mixins: {
         toolbar: {
