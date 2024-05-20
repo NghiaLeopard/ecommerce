@@ -13,12 +13,12 @@ import { Box } from '@mui/material'
 import { useTheme } from '@mui/material'
 
 interface TConfirmDialog {
-  onClick: () => void
-  onOpen: () => void
+  handleConfirm: () => void
+  onClose: () => void
   open: boolean
 }
 
-const CustomConfirmDialog = ({ onClick, onOpen, open }: TConfirmDialog) => {
+const CustomConfirmDialog = ({ handleConfirm, onClose, open }: TConfirmDialog) => {
   const theme = useTheme()
 
   return (
@@ -30,10 +30,10 @@ const CustomConfirmDialog = ({ onClick, onOpen, open }: TConfirmDialog) => {
         <DialogTitle variant='h3'>{'Bạn có chắc xóa nhóm vai trò này?'}</DialogTitle>
 
         <DialogActions sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mt: 4 }}>
-          <Button onClick={onClick} variant='contained'>
+          <Button onClick={handleConfirm} variant='contained'>
             Delete
           </Button>
-          <Button onClick={onOpen} variant='outlined' color='error'>
+          <Button onClick={onClose} variant='outlined' color='error'>
             Close
           </Button>
         </DialogActions>

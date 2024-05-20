@@ -2,7 +2,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Action
-import { createUsersAsync, deleteUsersAsync, editUsersAsync, getAllUsersAsync, serviceName } from './actions'
+import {
+  createUsersAsync,
+  deleteMultipleUsersAsync,
+  deleteUsersAsync,
+  editUsersAsync,
+  getAllUsersAsync,
+  serviceName
+} from './actions'
 
 const initialState = {
   isLoading: false,
@@ -16,7 +23,10 @@ const initialState = {
   isMessageCreateEdit: '',
   isSuccessDelete: false,
   isErrorDelete: false,
-  isMessageDelete: ''
+  isMessageDelete: '',
+  isSuccessMultipleDelete: false,
+  isErrorMultipleDelete: false,
+  isMessageMultipleDelete: ''
 }
 
 export const usersSlice = createSlice({
@@ -35,6 +45,9 @@ export const usersSlice = createSlice({
       state.isSuccessDelete = false
       state.isErrorDelete = false
       state.isMessageDelete = ''
+      state.isSuccessMultipleDelete = false
+      state.isErrorMultipleDelete = false
+      state.isMessageMultipleDelete = ''
     }
   },
   extraReducers: builder => {
@@ -83,6 +96,19 @@ export const usersSlice = createSlice({
         state.isSuccessDelete = !!actions.payload?.data?._id
         state.isErrorDelete = !actions.payload?.data?._id
         state.isMessageDelete = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
+
+    // Delete multiple users
+    builder.addCase(deleteMultipleUsersAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(deleteMultipleUsersAsync.fulfilled, (state, actions) => {
+        console.log(actions.payload)
+        state.isLoading = false
+        state.isSuccessMultipleDelete = !actions.payload?.typeError
+        state.isErrorMultipleDelete = !!actions.payload?.typeError
+        state.isMessageMultipleDelete = actions.payload?.message
         state.typeError = actions.payload?.typeError
       })
   }

@@ -33,3 +33,7 @@ export type TParamsCreateUsers = {
   status?: number
   avatar: string
 }
+
+export type TParamsDeleteMany = {
+  userIds: string[]
+}

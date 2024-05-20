@@ -7,9 +7,9 @@ import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
+import UserPage from 'src/view/pages/system/user/UserList'
 
 // ** Page
-import UserPage from 'src/view/pages/system/user'
 
 type TProps = {}
 
