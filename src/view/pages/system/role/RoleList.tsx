@@ -257,9 +257,9 @@ const RoleListPage: NextPage<TProps> = () => {
       <CreateEditRole open={openCreateEdit.open} onClose={handleCloseModal} idRole={openCreateEdit.idRole} />
 
       <CustomConfirmDialog
-        onOpen={handleOnOpenDialog}
+        onClose={handleOnOpenDialog}
         open={openDialog.open}
-        onClick={() => {
+        handleConfirm={() => {
           dispatch(deleteRolesAsync(openDialog?.idRole))
           setOpenDialog({
             open: false,
