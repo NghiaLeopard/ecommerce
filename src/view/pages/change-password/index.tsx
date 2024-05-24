@@ -148,7 +148,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
           }}
         >
           <Typography component='h1' variant='h5'>
-            {t('change-password')}
+            {t('Change_password')}
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box mt={2} width='300px'>
@@ -163,7 +163,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label={t('password')}
+                    label={t('Password')}
                     inputRef={ref}
                     type={showCurrentPassword ? 'text' : 'password'}
                     error={Boolean(errors.currentPassword)}
@@ -198,7 +198,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label={t('new-password')}
+                    label={t('New_password')}
                     inputRef={ref}
                     type={showNewPassword ? 'text' : 'password'}
                     error={Boolean(errors.newPassword)}
@@ -233,7 +233,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label={t('confirm-new-password')}
+                    label={t('Confirm_new_password')}
                     inputRef={ref}
                     type={showConfirmNewPassword ? 'text' : 'password'}
                     error={Boolean(errors.confirmNewPassword)}
@@ -260,7 +260,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
             </Box>
 
             <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-              {t('change-password')}
+              {t('Change_password')}
             </Button>
           </form>
         </Box>

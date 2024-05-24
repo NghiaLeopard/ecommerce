@@ -115,7 +115,7 @@ const RoleListPage: NextPage<TProps> = () => {
     },
     {
       field: 'action',
-      headerName: t('action'),
+      headerName: t('Actions'),
       minWidth: 150,
       sortable: false,
       align: 'left',
@@ -209,9 +209,9 @@ const RoleListPage: NextPage<TProps> = () => {
     if (isMessageCreateEdit) {
       if (isSuccessCreateEdit) {
         if (!openCreateEdit.idRole) {
-          toast.success(t('create-role-success'))
+          toast.success(t('Create_role_success'))
         } else {
-          toast.success(t('update-role-success'))
+          toast.success(t('Update_role_success'))
         }
         handleCloseModal()
       } else if (isErrorCreateEdit) {
@@ -220,9 +220,9 @@ const RoleListPage: NextPage<TProps> = () => {
           toast.error(t(`${errorConfig}`))
         } else {
           if (!openCreateEdit.idRole) {
-            toast.error(t('create-role-error'))
+            toast.error(t('Create_role_error'))
           } else {
-            toast.error(t('update-role-error'))
+            toast.error(t('Update_role_error'))
           }
         }
       }
@@ -273,6 +273,7 @@ const RoleListPage: NextPage<TProps> = () => {
           display: 'flex',
           padding: '20px',
           alignItems: 'center',
+          justifyContent: 'center',
           backgroundColor: theme.palette.background.paper,
           borderRadius: '15px',
           height: '100%',
@@ -281,7 +282,14 @@ const RoleListPage: NextPage<TProps> = () => {
       >
         <Grid container spacing={10} sx={{ height: '100%', width: '100%' }}>
           <Grid item md={4} xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 3
+              }}
+            >
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>

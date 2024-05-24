@@ -31,14 +31,12 @@ import { usePermissions } from 'src/hooks/usePermissions'
 
 interface TListItemText extends ListItemTextProps {
   active: boolean | undefined
-  open: boolean
 }
 
-const StyledListItemText = styled(ListItemText)<TListItemText>(({ theme, active, open }) => ({
+const StyledListItemText = styled(ListItemText)<TListItemText>(({ theme, active }) => ({
   '.MuiTypography-root.MuiTypography-body1.MuiListItemText-primary': {
-    color:
-      active || open ? `${theme.palette.primary.main} !important` : `rgba(${theme.palette.customColors.main},0.78)`,
-    marginLeft: active || open ? '3px' : ''
+    color: active ? `${theme.palette.primary.main} !important` : `rgba(${theme.palette.customColors.main},0.78)`,
+    marginLeft: active ? '3px' : ''
   }
 }))
 
@@ -100,11 +98,11 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
                 alignItems: 'center',
                 width: '30px',
                 height: '30px',
+                borderRadius: '8px',
                 backgroundColor:
                   Boolean(router.pathname === data.path) || (fatherActive && data.children) || (open && data.children)
                     ? `${theme.palette.primary.main} !important`
                     : theme.palette.background.paper,
-                borderRadius: '8px',
                 color:
                   Boolean(router.pathname === data.path) || (fatherActive && data.children) || (open && data.children)
                     ? '#fff !important'
@@ -116,8 +114,11 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1 }}>
               <StyledListItemText
                 primary={data.title}
-                active={Boolean(router.pathname === data.path) || (fatherActive && data.children) ? true : undefined}
-                open={open}
+                active={
+                  Boolean(router.pathname === data.path) || (fatherActive && data.children) || (open && data.children)
+                    ? true
+                    : undefined
+                }
               ></StyledListItemText>
             </Box>
           </ListItemIcon>

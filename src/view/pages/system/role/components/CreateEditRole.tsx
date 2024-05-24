@@ -84,7 +84,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant='h3' sx={{ fontWeight: 600 }}>
-            {idRole ? t('update-role') : t('create-role')}
+            {idRole ? t('Edit_role') : t('Create_role')}
           </Typography>
           <IconButton onClick={onClose}>
             <CustomIcon icon='typcn:delete' />
@@ -105,7 +105,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
                   onBlur={onBlur}
                   value={value}
                   fullWidth
-                  label={t('name-role')}
+                  label={t('Name_role')}
                   inputRef={ref}
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}
@@ -116,7 +116,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
           </Box>
 
           <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-            {idRole ? t('update') : t('create')}
+            {idRole ? t('Update') : t('Create')}
           </Button>
         </form>
       </Box>

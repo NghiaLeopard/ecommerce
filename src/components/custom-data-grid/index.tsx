@@ -8,24 +8,15 @@ interface TCustomDataGrid extends DataGridProps {
 }
 
 const StyledDataGrid = styled(DataGrid)<TCustomDataGrid>(({ theme, hasPagination }) => ({
-  '& .MuiDataGrid-root': {
-    borderRadius: '9px'
+  '.MuiDataGrid-withBorderColor': {
+    outline: 'none !important'
   },
-  '& .MuiDataGrid-main': {
-    border: `1px solid ${theme.palette.customColors.borderColor}`,
-    borderRadius: '15px',
-    borderBottomRightRadius: hasPagination ? '0px' : '15px',
-    borderBottomLeftRadius: hasPagination ? '0px' : '15px'
+  '.MuiDataGrid-selectedRowCount': {
+    display: 'none'
   },
-
-  '& .MuiDataGrid-virtualScroller': {
-    overflowX: 'hidden'
-  },
-  '& .MuiDataGrid-footerContainer': {
-    border: `1px solid ${theme.palette.customColors.borderColor}`,
-    borderTop: '0px',
-    borderBottomRightRadius: '15px ',
-    borderBottomLeftRadius: '15px'
+  '.MuiDataGrid-columnHeaderTitle': {
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main
   }
 }))
 
@@ -33,7 +24,7 @@ const CustomDataGrid = forwardRef((props: TCustomDataGrid, ref: Ref<any>) => {
   const { hasPagination } = props
 
   return (
-    <Box sx={{ height: '100%', width: '100%', overflow: 'auto' }}>
+    <Box sx={{ width: '100%', height: '97%', overflow: 'auto' }}>
       <StyledDataGrid {...props} hasPagination={hasPagination} />
     </Box>
   )

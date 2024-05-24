@@ -3,6 +3,8 @@ export type TParamsGetUsers = {
   page?: number
   search?: string
   order?: string
+  roleId: string
+  status?: number | string
 }
 
 export type TParamsEditUsers = {

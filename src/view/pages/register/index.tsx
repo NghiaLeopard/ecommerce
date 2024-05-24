@@ -144,7 +144,7 @@ const RegisterPage: NextPage<TProps> = () => {
           }}
         >
           <Typography component='h1' variant='h5'>
-            {t('sign-up')}
+            {t('Register')}
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box mt={2} width='300px'>
@@ -181,7 +181,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label={t('password')}
+                    label={t('Password')}
                     inputRef={ref}
                     type={showPassword ? 'text' : 'password'}
                     error={Boolean(errors.password)}
@@ -219,7 +219,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     onBlur={onBlur}
                     value={value}
                     fullWidth
-                    label={t('confirm-password')}
+                    label={t('Confirm_password')}
                     inputRef={ref}
                     type={showConfirmPassword ? 'text' : 'password'}
                     error={Boolean(errors.confirmPassword)}
@@ -250,16 +250,16 @@ const RegisterPage: NextPage<TProps> = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                {t('dont-have-an-account?')}
+                {t('You_have_account')}
               </Grid>
               <Grid item>
                 <Link href='/login' style={{ color: '#7367f0' }}>
-                  {t('log-in')}
+                  {t('Login')}
                 </Link>
               </Grid>
             </Grid>
 
-            <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{t('or')}</Typography>
+            <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>{t('Or')}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
               <IconButton sx={{ color: '#497ce2' }}>
                 <svg
