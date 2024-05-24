@@ -1,5 +1,6 @@
 // ** React
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import {
@@ -30,18 +31,23 @@ import * as yup from 'yup'
 
 // ** Store
 import { AppDispatch } from 'src/stores'
+import { createUsersAsync, editUsersAsync } from 'src/stores/user/actions'
 
 // ** i18next
 import { getDetailUsers } from 'src/services/users'
 
-// ** Redux
-import { useTranslation } from 'react-i18next'
-import { CustomSelect } from 'src/components/custom-select'
+// ** Components
 import Spinner from 'src/components/spinner'
+import { CustomSelect } from 'src/components/custom-select'
 import WrapperFileUpload from 'src/components/wrapper-file-upload'
+
+// ** Configs
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+
+// **
 import { getAllRoles } from 'src/services/role'
-import { createUsersAsync, editUsersAsync } from 'src/stores/user/actions'
+
+// ** Utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
 
 type TDefaultValue = {
@@ -116,7 +122,6 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
   const handleOnSubmit = (data: TDefaultValue) => {
     const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
-    console.log(data)
 
     if (!idUsers) {
       dispatch(
@@ -146,7 +151,8 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
           phoneNumber: data.phoneNumber,
           address: data.address || '',
           avatar: avatar,
-          city: ''
+          city: '',
+          status: Number(data.status)
         })
       )
     }
@@ -181,7 +187,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
     setAvatar(base64 as string)
   }
 
-  const fetchRole = async () => {
+  const fetchAllRole = async () => {
     setLoading(true)
     try {
       setLoading(false)
@@ -199,7 +205,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   }
 
   useEffect(() => {
-    fetchRole()
+    fetchAllRole()
   }, [])
 
   useEffect(() => {
@@ -287,7 +293,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1, mt: 3 }}
                           >
                             <CustomIcon icon='gravity-ui:camera'></CustomIcon>
-                            <span>{t('upload-image')}</span>
+                            <span>{t('Upload_avatar')}</span>
                           </Button>
                         </WrapperFileUpload>
                       </Box>
@@ -307,8 +313,8 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             onBlur={onBlur}
                             value={value}
                             fullWidth
-                            label={t('email')}
-                            placeholder={t('enter_your_email')}
+                            label={t('Email')}
+                            placeholder={t('Enter_your_email')}
                             inputRef={ref}
                             error={Boolean(errors.email)}
                             helperText={errors.email?.message}
@@ -332,7 +338,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                               onBlur={onBlur}
                               value={value}
                               fullWidth
-                              label={t('password')}
+                              label={t('Password')}
                               inputRef={ref}
                               type={password ? 'text' : 'password'}
                               error={Boolean(errors.password)}
@@ -383,7 +389,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                               options={allRole}
                               onChange={onChange}
                               error={Boolean(errors.role)}
-                              placeholder={t('choose_your_role')}
+                              placeholder={t('Enter_your_role')}
                             />
                             {Boolean(errors.role) && (
                               <FormHelperText
@@ -391,7 +397,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                                   color: `${theme.palette.error.main} !important`
                                 }}
                               >
-                                {t('enter_your_role')}
+                                {t('Enter_your_role')}
                               </FormHelperText>
                             )}
                           </Box>
@@ -402,7 +408,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                   </Grid>
                   {idUsers && (
                     <Grid item md={6} xs={12}>
-                      <Box mt={2}>
+                      <Box mt={2} sx={{ width: '277px' }}>
                         <Controller
                           control={control}
                           name='status'
@@ -452,8 +458,8 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             onBlur={onBlur}
                             value={value}
                             fullWidth
-                            label={t('full_name')}
-                            placeholder={t('enter_your_full_name')}
+                            label={t('Full_name')}
+                            placeholder={t('Enter_your_full_name')}
                             inputRef={ref}
                             error={Boolean(errors.fullName)}
                             helperText={errors.fullName?.message}
@@ -480,8 +486,8 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             onBlur={onBlur}
                             value={value}
                             fullWidth
-                            label={t('phone_number')}
-                            placeholder={t('enter_your_phone_number')}
+                            label={t('Phone_number')}
+                            placeholder={t('Enter_your_phone')}
                             inputRef={ref}
                             error={Boolean(errors.phoneNumber)}
                             helperText={errors.phoneNumber?.message}
@@ -504,8 +510,8 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             onBlur={onBlur}
                             value={value}
                             fullWidth
-                            label={t('address')}
-                            placeholder={t('enter_your_address')}
+                            label={t('Address')}
+                            placeholder={t('Enter_your_address')}
                             inputRef={ref}
                             error={Boolean(errors.address)}
                             helperText={errors.address?.message}
@@ -536,9 +542,9 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             <CustomSelect
                               fullWidth
                               onChange={onChange}
-                              options={[{ value: '1', name: 'No data', id: 0 }]}
+                              options={[{ value: '1', label: 'No data' }]}
                               value={value}
-                              placeholder={t('choose_your_city')}
+                              placeholder={t('Enter_your_city')}
                               inputRef={ref}
                               error={Boolean(errors.city)}
                             />
@@ -548,7 +554,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                                   color: `${theme.palette.error.main} !important`
                                 }}
                               >
-                                {t('enter_your_role')}
+                                {t('Enter_your_city')}
                               </FormHelperText>
                             )}
                           </Box>
@@ -564,7 +570,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-              {t('change')}
+              {idUsers ? t('Update') : t('Create')}
             </Button>
           </Box>
         </form>

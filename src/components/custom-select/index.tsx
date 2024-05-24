@@ -6,8 +6,8 @@ import { useState } from 'react'
 
 type TCustomSelect = SelectProps & {
   value: any
-  options: { name: string; value: string; id: number }[]
-  onChange: (value: any) => void
+  options: { label: string; value: string | number }[]
+  onChange: (data: any) => void
 }
 
 const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
@@ -15,7 +15,7 @@ const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
 
   '& .MuiSelect-select': {
     marginTop: '3px',
-    padding: '8px 10px 8px 10px !important',
+    padding: '8px 10px 10px 10px !important',
     height: '1.2rem'
   },
   '& legend': {
@@ -35,7 +35,7 @@ const CustomPlaceholder = styled(InputLabel)<InputLabelProps>(({ theme }) => ({
 
 export const CustomSelect = ({ value, label, onChange, fullWidth, options, placeholder, ...rest }: TCustomSelect) => {
   const handleChange = (event: any) => {
-    onChange(event.target.value)
+    onChange(event?.target?.value)
   }
 
   return (
@@ -44,8 +44,8 @@ export const CustomSelect = ({ value, label, onChange, fullWidth, options, place
       <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={handleChange} {...rest}>
         {options?.map(item => {
           return (
-            <MenuItem key={item.name} value={item.value}>
-              {item.name || 'No data'}
+            <MenuItem key={item.value} value={item.value}>
+              {item.label}
             </MenuItem>
           )
         })}

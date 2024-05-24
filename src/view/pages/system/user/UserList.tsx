@@ -6,23 +6,29 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Grid, Typography, useTheme } from '@mui/material'
-import { GridColDef, GridRenderCellParams, GridRowClassNameParams, GridRowSelectionModel } from '@mui/x-data-grid'
+import { Box, Chip, Typography, styled, useTheme } from '@mui/material'
+import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
+import { resetInitialState } from 'src/stores/user'
+import { deleteMultipleUsersAsync, deleteUsersAsync, getAllUsersAsync } from 'src/stores/user/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomDataGrid from 'src/components/custom-data-grid'
+import CustomPagination from 'src/components/custom-pagination'
+import { CustomSelect } from 'src/components/custom-select'
 import CustomGridCreate from 'src/components/grid-create'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
+import TableHeader from 'src/components/table-header'
+import { CreateEditUsers } from './components/CreateEditUsers'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -31,22 +37,31 @@ import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 // ** Toast
 import toast from 'react-hot-toast'
 
-// ** Services
-
 // ** utils
-import CustomPagination from 'src/components/custom-pagination'
-import TableHeader from 'src/components/table-header'
-import i18n from 'src/configs/i18n'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
-import { resetInitialState } from 'src/stores/user'
-import { deleteMultipleUsersAsync, deleteUsersAsync, getAllUsersAsync } from 'src/stores/user/actions'
 import { toFullName } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { CreateEditUsers } from './components/CreateEditUsers'
+
+// ** Configs
+import i18n from 'src/configs/i18n'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
+
+// ** Service
+import { getAllRoles } from 'src/services/role'
+import { OBJECT_STATUS_USER } from 'src/configs/user'
 
 type TProps = {}
 
 type TSelectedRow = { id: string; role: { id: string; permissions: string[] } }
+
+const ActiveChip = styled(Chip)(({ theme }) => ({
+  padding: '15px 0px',
+  fontWeight: 400
+}))
+
+const BlockChip = styled(Chip)(({ theme }) => ({
+  padding: '15px 0px',
+  fontWeight: 400
+}))
 
 const UserPage: NextPage<TProps> = () => {
   // ** Theme
@@ -63,25 +78,25 @@ const UserPage: NextPage<TProps> = () => {
 
   const [openDeleteMultipleUser, setOpenDeleteMultipleUser] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [sortBy, setSortBy] = useState('createAt asc')
+  const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
-  const [isDisabled, setIsDisable] = useState(false)
   const [page, setPage] = useState(1)
+  const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [allRole, setAllRole] = useState([])
+  const [roleSelected, setRoleSelected] = useState('')
+  const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idUsers: ''
   })
-  const [rowSelected, setRowSelected] = useState({
-    id: '',
-    name: ''
-  })
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  // ** use selector
+  const OBJECT_STATUS = OBJECT_STATUS_USER()
 
+  // ** use selector
   const {
     users,
     isErrorCreateEdit,
@@ -97,12 +112,22 @@ const UserPage: NextPage<TProps> = () => {
     typeError
   } = useSelector((state: RootState) => state.users)
 
-  const dispatch: AppDispatch = useDispatch()
-
   const getListUsers = () => {
-    dispatch(getAllUsersAsync({ params: { limit: -1, page: -1, search: search, order: sortBy } }))
+    dispatch(
+      getAllUsersAsync({
+        params: {
+          limit: pageSize,
+          page: page,
+          search: search,
+          order: sortBy,
+          roleId: roleSelected,
+          status: statusSelected === '' ? '' : Number(statusSelected)
+        }
+      })
+    )
   }
 
+  console.log(statusSelected)
   const handleCloseModal = () => {
     setOpenCreateEdit({
       open: false,
@@ -112,99 +137,10 @@ const UserPage: NextPage<TProps> = () => {
 
   const handleSort = (sort: any) => {
     const sortOptions = sort[0]
-    setSortBy(`${sortOptions.field} ${sortOptions.sort}`)
-  }
-
-  const columns: GridColDef<[number]>[] = [
-    {
-      field: 'name',
-      headerName: t('name'),
-      flex: 1,
-      minWidth: 275,
-      maxWidth: 275,
-      renderCell: (params: GridRenderCellParams) => {
-        const { row } = params
-        const fullName = toFullName(row.firstName, row.middleName, row.lastName, i18n.language)
-
-        return <Typography>{fullName}</Typography>
-      }
-    },
-    {
-      field: 'email',
-      headerName: t('email'),
-      minWidth: 275,
-      maxWidth: 275,
-      renderCell: (params: GridRenderCellParams) => {
-        const { row } = params
-
-        return <Typography>{row?.email}</Typography>
-      }
-    },
-    {
-      field: 'role',
-      headerName: t('Role'),
-      minWidth: 275,
-      maxWidth: 275,
-      renderCell: (params: GridRenderCellParams) => {
-        const { row } = params
-
-        return <Typography>{row?.role?.name}</Typography>
-      }
-    },
-    {
-      field: 'phone',
-      headerName: t('Phone_number'),
-      minWidth: 275,
-      maxWidth: 275,
-      renderCell: (params: GridRenderCellParams) => {
-        const { row } = params
-
-        return <Typography>{row?.phoneNumber}</Typography>
-      }
-    },
-    {
-      field: 'city',
-      headerName: t('city'),
-      minWidth: 275,
-      maxWidth: 275,
-      renderCell: (params: GridRenderCellParams) => {
-        const { row } = params
-
-        return <Typography>{row?.city}</Typography>
-      }
-    },
-    {
-      field: 'action',
-      headerName: t('action'),
-      minWidth: 200,
-      maxWidth: 200,
-      sortable: false,
-      renderCell: (rows: any) => {
-        const { row } = rows
-
-        return (
-          <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idUsers: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteUser({
-                  open: true,
-                  idUsers: row?._id
-                })
-              }}
-            />
-          </>
-        )
-      }
+    if (sortOptions) {
+      setSortBy(`${sortOptions.field} ${sortOptions.sort}`)
     }
-  ]
+  }
 
   const handleOnCloseDeleteUser = () => {
     setOpenDeleteUser({
@@ -221,7 +157,10 @@ const UserPage: NextPage<TProps> = () => {
     setSearch(value)
   }
 
-  const handleChangePagination = () => {}
+  const handleChangePagination = (page: number, pageSize: number) => {
+    setPage(page)
+    setPageSize(pageSize)
+  }
 
   const ComponentPagination = () => {
     return (
@@ -251,15 +190,15 @@ const UserPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     getListUsers()
-  }, [sortBy, search])
+  }, [sortBy, search, page, pageSize, roleSelected, statusSelected])
 
   useEffect(() => {
     if (isMessageCreateEdit) {
       if (isSuccessCreateEdit) {
         if (!openCreateEdit.idUsers) {
-          toast.success(t('create-users-success'))
+          toast.success(t('Create_user_success'))
         } else {
-          toast.success(t('update-users-success'))
+          toast.success(t('Update_user_success'))
         }
         handleCloseModal()
       } else if (isErrorCreateEdit) {
@@ -268,9 +207,9 @@ const UserPage: NextPage<TProps> = () => {
           toast.error(t(`${errorConfig}`))
         } else {
           if (!openCreateEdit.idUsers) {
-            toast.error(t('create-users-error'))
+            toast.error(t('Create_user_error'))
           } else {
-            toast.error(t('update-users-error'))
+            toast.error(t('pdate_user_error'))
           }
         }
       }
@@ -304,10 +243,132 @@ const UserPage: NextPage<TProps> = () => {
     }
   }, [isErrorMultipleDelete, isSuccessMultipleDelete])
 
+  const columns: GridColDef<[number]>[] = [
+    {
+      field: i18n.language === 'vi' ? 'lastName' : 'firstNAme',
+      headerName: t('Full_name'),
+      flex: 1,
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+        const fullName = toFullName(row.lastName, row.middleName, row.firstName, i18n.language)
+
+        return <Typography>{fullName}</Typography>
+      }
+    },
+    {
+      field: 'email',
+      headerName: t('email'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return <Typography>{row?.email}</Typography>
+      }
+    },
+    {
+      field: 'role',
+      headerName: t('Role'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return <Typography>{row?.role?.name}</Typography>
+      }
+    },
+    {
+      field: 'phoneNumber',
+      headerName: t('Phone_number'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return <Typography>{row?.phoneNumber}</Typography>
+      }
+    },
+    {
+      field: 'city',
+      headerName: t('city'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return <Typography>{row?.city}</Typography>
+      }
+    },
+    {
+      field: 'status',
+      headerName: t('Status'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return row.status === 1 ? <ActiveChip label={t('Active')} /> : <BlockChip label={t('Blocking')} />
+      }
+    },
+    {
+      field: 'action',
+      headerName: t('Actions'),
+      minWidth: 215,
+      maxWidth: 215,
+      sortable: false,
+      renderCell: (rows: any) => {
+        const { row } = rows
+
+        return (
+          <>
+            <CustomGridEdit
+              onClick={() =>
+                setOpenCreateEdit({
+                  open: true,
+                  idUsers: row?._id
+                })
+              }
+            />
+            <CustomGridDelete
+              onClick={() => {
+                setOpenDeleteUser({
+                  open: true,
+                  idUsers: row?._id
+                })
+              }}
+            />
+          </>
+        )
+      }
+    }
+  ]
+
+  const fetchAllRole = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllRoles({ params: { limit: -1, page: -1 } })
+      const roleArr = response?.data?.roles.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllRole(roleArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllRole()
+  }, [])
+
   return (
     <>
-      {isLoading && <Spinner />}
-      {loading && <Spinner />}
+      {(isLoading || loading) && <Spinner />}
 
       <CreateEditUsers open={openCreateEdit.open} onClose={handleCloseModal} idUsers={openCreateEdit.idUsers} />
 
@@ -332,80 +393,98 @@ const UserPage: NextPage<TProps> = () => {
       <Box
         sx={{
           display: 'flex',
-          padding: '20px',
           alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
           backgroundColor: theme.palette.background.paper,
           borderRadius: '15px',
           height: '100%',
           maxHeight: '100%'
         }}
       >
-        <Grid container spacing={1} sx={{ height: '100%', width: '100%' }}>
-          <Grid item md={12} xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3 }}>
-              {!checkboxRow.length && (
-                <>
-                  <Box sx={{ width: '200px' }}>
-                    <InputSearch onChange={handleOnChangeSearch} />
-                  </Box>
-                  <CustomGridCreate
-                    onClick={() =>
-                      setOpenCreateEdit(x => ({
-                        open: true,
-                        idUsers: ''
-                      }))
-                    }
+        <Box sx={{ height: '100%', width: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: 3, gap: 3 }}>
+            {!checkboxRow.length && (
+              <>
+                <Box sx={{ width: '200px', mt: 1 }}>
+                  <CustomSelect
+                    value={roleSelected}
+                    options={allRole}
+                    fullWidth
+                    onChange={(data: any) => {
+                      setRoleSelected(data)
+                    }}
+                    placeholder={t('Selected')}
                   />
-                </>
-              )}
-            </Box>
-            {checkboxRow.length > 0 && (
-              <TableHeader
-                number={checkboxRow.length}
-                onClose={() => setCheckboxRow([])}
-                actions={tableActions}
-                handleActions={handleActions}
-                disabled={memoDisabledDeleteUser}
-              />
+                </Box>
+                <Box sx={{ width: '200px', mt: 1 }}>
+                  <CustomSelect
+                    value={statusSelected}
+                    options={Object.values(OBJECT_STATUS)}
+                    fullWidth
+                    onChange={(data: any) => {
+                      setStatusSelected(data)
+                    }}
+                    placeholder={t('Selected')}
+                  />
+                </Box>
+                <Box sx={{ width: '200px' }}>
+                  <InputSearch onChange={handleOnChangeSearch} />
+                </Box>
+                <CustomGridCreate
+                  onClick={() =>
+                    setOpenCreateEdit(x => ({
+                      open: true,
+                      idUsers: ''
+                    }))
+                  }
+                />
+              </>
             )}
-            <CustomDataGrid
-              rows={users.data || {}}
-              columns={columns}
-              getRowId={row => row._id}
-              sortingMode='server'
-              sortingOrder={['desc', 'asc']}
-              autoHeight
-              disableRowSelectionOnClick
-              disableColumnFilter
-              disableColumnMenu
-              checkboxSelection
-              hideFooterSelectedRowCount
-              rowSelectionModel={checkboxRow.map(item => item.id)}
-              onRowSelectionModelChange={(row: GridRowSelectionModel) => {
-                const formatData = row?.map(item => {
-                  const findRow: any = users?.data.find((itemUser: any) => itemUser._id === item)
-
-                  return { id: findRow._id, role: { id: findRow?.row?._id, permissions: findRow?.role?.permissions } }
-                })
-                setCheckboxRow(formatData)
-              }}
-              onSortModelChange={handleSort}
-              hasPagination={true}
-              slots={{
-                pagination: ComponentPagination
-              }}
-              getRowClassName={(row: GridRowClassNameParams) => {
-                return row.id === rowSelected.id ? 'row-selected' : ''
-              }}
-              sx={{
-                '.row-selected': {
-                  backgroundColor: `${hexToRGBA(theme.palette.secondary.main, 0.08)} !important`,
-                  color: `${theme.palette.primary.main} !important`
-                }
-              }}
+          </Box>
+          {checkboxRow.length > 0 && (
+            <TableHeader
+              number={checkboxRow.length}
+              onClose={() => setCheckboxRow([])}
+              actions={tableActions}
+              handleActions={handleActions}
+              disabled={memoDisabledDeleteUser}
             />
-          </Grid>
-        </Grid>
+          )}
+          <CustomDataGrid
+            rows={users.data || {}}
+            columns={columns}
+            getRowId={row => row._id}
+            sortingMode='server'
+            sortingOrder={['desc', 'asc']}
+            autoHeight
+            disableRowSelectionOnClick
+            disableColumnFilter
+            checkboxSelection
+            hideFooterSelectedRowCount
+            disableColumnMenu
+            rowSelectionModel={checkboxRow.map(item => item.id)}
+            onRowSelectionModelChange={(row: GridRowSelectionModel) => {
+              const formatData = row?.map(item => {
+                const findRow: any = users?.data.find((itemUser: any) => itemUser._id === item)
+
+                return { id: findRow._id, role: { id: findRow?.row?._id, permissions: findRow?.role?.permissions } }
+              })
+              setCheckboxRow(formatData)
+            }}
+            onSortModelChange={handleSort}
+            hasPagination={true}
+            slots={{
+              pagination: ComponentPagination
+            }}
+            sx={{
+              '.row-selected': {
+                backgroundColor: `${hexToRGBA(theme.palette.secondary.main, 0.08)} !important`,
+                color: `${theme.palette.primary.main} !important`
+              }
+            }}
+          />
+        </Box>
       </Box>
     </>
   )

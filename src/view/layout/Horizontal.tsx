@@ -115,7 +115,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             <UserDropDown />
           ) : (
             <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleNavigate}>
-              {t('sign-in')}
+              {t('Login')}
             </Button>
           )}
         </Toolbar>

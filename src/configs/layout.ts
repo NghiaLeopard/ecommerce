@@ -10,24 +10,24 @@ export const VerticalItems = () => {
 
   return [
     {
-      title: t('dashboard'),
+      title: t('Dashboard'),
       icon: 'eos-icons:file-system',
       path: CONFIG_ROUTE.DASHBOARD,
       permissions: CONFIG_PERMISSIONS.DASHBOARD
     },
     {
-      title: t('system'),
+      title: t('System'),
       icon: 'eos-icons:file-system',
       path: '/system',
       children: [
         {
-          title: t('user'),
+          title: t('User'),
           icon: 'solar:users-group-rounded-bold-duotone',
           path: CONFIG_ROUTE.SYSTEM.USER,
           permissions: CONFIG_PERMISSIONS.SYSTEM.USER.VIEW
         },
         {
-          title: t('role'),
+          title: t('Role'),
           icon: 'icon-park-outline:permissions',
           path: CONFIG_ROUTE.SYSTEM.ROLE,
           permissions: CONFIG_PERMISSIONS.SYSTEM.ROLE.VIEW
@@ -35,60 +35,60 @@ export const VerticalItems = () => {
       ]
     },
     {
-      title: t('manage-product'),
+      title: t('Manage_product'),
       icon: 'eos-icons:products-outlined',
       path: '/manage-product',
 
       children: [
         {
-          title: t('list-product'),
+          title: t('List_product'),
           icon: 'fluent-mdl2:product',
           path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_PRODUCT,
           permissions: CONFIG_PERMISSIONS.MANAGE_PRODUCT.PRODUCT.VIEW
         },
         {
-          title: t('category-product'),
+          title: t('Type_product'),
           icon: 'material-symbols:category-outline',
           path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT
         }
       ]
     },
     {
-      title: t('manage-order'),
+      title: t('Manage_order'),
       icon: 'carbon:order-details',
       path: '/manage-order',
 
       children: [
         {
-          title: t('list-order'),
+          title: t('List_order'),
           icon: 'lets-icons:order-fill',
           path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_ORDER,
           permissions: CONFIG_PERMISSIONS.MANAGE_ORDER.ORDER.VIEW
         },
         {
-          title: t('list-review'),
+          title: t('List_review'),
           icon: 'material-symbols:reviews-outline',
           path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_REVIEWS
         }
       ]
     },
     {
-      title: t('setting'),
+      title: t('Setting'),
       icon: 'uil:setting',
       path: '/setting',
       children: [
         {
-          title: t('setting-city'),
+          title: t('Setting_city'),
           icon: 'solar:city-bold',
           path: CONFIG_ROUTE.SETTINGS.CITY
         },
         {
-          title: t('method-delivery'),
+          title: t('Method_delivery'),
           icon: 'carbon:delivery',
           path: CONFIG_ROUTE.SETTINGS.DELIVERY_TYPE
         },
         {
-          title: t('method-payment'),
+          title: t('Method_payment'),
           icon: 'streamline:payment-10',
           path: CONFIG_ROUTE.SETTINGS.PAYMENT_TYPE
         }

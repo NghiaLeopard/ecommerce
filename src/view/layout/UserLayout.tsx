@@ -37,7 +37,8 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
           backgroundColor: theme =>
             theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
           flexGrow: 1,
-          height: '100vh'
+          height: '100vh',
+          width: '100vw'
         }}
       >
         <Toolbar />
@@ -45,7 +46,7 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
           sx={{
             m: 4,
             width: `calc(100% - 32px)`,
-            maxWidth: 'calc(100% - 32px) !important',
+            maxWidth: 'calc(100vw - 32px) !important',
             maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
             minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
             height: '100%',

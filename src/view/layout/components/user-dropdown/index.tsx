@@ -202,28 +202,28 @@ const UserDropDown: NextPage<TProps> = () => {
             <CustomIcon icon='arcticons:nextdns-manager' />
           </Avatar>
 
-          {t('manage-system')}
+          {t('Manage_system')}
         </MenuItem>
         <MenuItem onClick={handleNavigateMyProfile}>
           <Avatar>
             <CustomIcon icon='healthicons:ui-user-profile' />
           </Avatar>
 
-          {t('my-profile')}
+          {t('My_profile')}
         </MenuItem>
 
         <MenuItem onClick={handleNavigateChangePassword}>
           <Avatar>
             <CustomIcon icon='arcticons:password' />
           </Avatar>
-          {t('change-password')}
+          {t('Change_password')}
         </MenuItem>
 
         <MenuItem onClick={logout}>
           <Avatar>
             <CustomIcon icon='tabler:logout' />
           </Avatar>
-          {`${t('log-out')}`}
+          {`${t('Logout')}`}
         </MenuItem>
       </Menu>
     </Fragment>

@@ -37,6 +37,9 @@
   "List_order": "Danh sách đơn hàng",
   "List_review": "Danh sách đánh giá",
   "Setting": "Cài đặt",
+  "Setting_city": "Cài đặt thành phố",
+  "Method_delivery": "Phương thức giao hàng",
+  "Method_payment": "Phương thức thanh toán",
   "Delivery_method": "Phương thức giao hàng",
   "Payment_method": "Phương thức thanh toán",
   "Current_password": "Mật khẩu hiện tại",
@@ -158,7 +161,6 @@
   "Enter_price_delivery_type": "Nhập giá",
   "least_1000_in_price": "Giá phải ít nhất 1000",
   "Type_product": "Loại sản phẩm",
-
   "Create_product_type_success": "Tạo loại sản phẩm thành công",
   "Update_product_type_success": "Cập nhật loại sản phẩm thành công",
   "Create_product_type_error": "Tạo loại sản phẩm thất bại",
