@@ -24,7 +24,7 @@ const CustomDataGrid = forwardRef((props: TCustomDataGrid, ref: Ref<any>) => {
   const { hasPagination } = props
 
   return (
-    <Box sx={{ width: '100%', height: '97%', overflow: 'auto' }}>
+    <Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
       <StyledDataGrid {...props} hasPagination={hasPagination} />
     </Box>
   )
