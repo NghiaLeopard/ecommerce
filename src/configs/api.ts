@@ -5,10 +5,17 @@ export const API_ENDPOINT = {
     INDEX: `${BASE_URL}/auth`,
     AUTH_ME: `${BASE_URL}/auth/me`
   },
-  ROLE: {
-    INDEX: `${BASE_URL}/roles`
+  SYSTEM: {
+    ROLE: {
+      INDEX: `${BASE_URL}/roles`
+    },
+    USERS: {
+      INDEX: `${BASE_URL}/users`
+    }
   },
-  USERS: {
-    INDEX: `${BASE_URL}/users`
+  SETTINGS: {
+    CITY: {
+      INDEX: `${BASE_URL}/city`
+    }
   }
 }

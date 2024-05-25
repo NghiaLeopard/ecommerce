@@ -85,6 +85,7 @@
   "Create_user": "Create User",
   "Active": "Active",
   "Block": "Blocked",
+  "Rows_selected": "Rows selected",
   "Create_user_success": "User created successfully",
   "Create_user_error": "User creation failed",
   "Update_user_error": "User update failed",

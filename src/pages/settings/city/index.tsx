@@ -6,14 +6,14 @@ import { ReactNode } from 'react'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
+import CityPage from 'src/view/pages/settings/city/CityPage'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
 
 type TProps = {}
 
 const City: NextPage<TProps> = () => {
-  return <h1>City</h1>
+  return <CityPage />
 }
 
 export default City
