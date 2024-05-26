@@ -49,6 +49,7 @@ import { getAllRoles } from 'src/services/role'
 
 // ** Utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
+import { getAllCity } from 'src/services/city'
 
 type TDefaultValue = {
   email: string
@@ -77,6 +78,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   const [allRole, setAllRole] = useState([])
+  const [allCity, setAllCity] = useState([])
 
   const handleClickPassword = () => setPassword(show => !show)
 
@@ -100,10 +102,10 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
       ? yup.string().nonNullable()
       : yup
           .string()
-          .required('Please enter email')
-          .matches(PASSWORD_REG, 'the password is contain charact,special character,number'),
-    fullName: yup.string().required('Please enter email'),
-    phoneNumber: yup.string().required('Please enter email').min(8, 'The number phone is min 8 number'),
+          .required('Please enter password')
+          .matches(PASSWORD_REG, 'the password is contain character,special character,number'),
+    fullName: yup.string().required('Please enter full name'),
+    phoneNumber: yup.string().required('Please enter phone number').min(8, 'The number phone is min 8 number'),
     role: yup.string().required('Please enter role'),
     city: yup.string().nonNullable(),
     address: yup.string().nonNullable(),
@@ -133,7 +135,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
           password: data.password || '',
           role: data.role,
           phoneNumber: data.phoneNumber,
-          city: '',
+          city: data.city ? data?.city : '',
           address: data.address || '',
           avatar: avatar
         })
@@ -151,7 +153,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
           phoneNumber: data.phoneNumber,
           address: data.address || '',
           avatar: avatar,
-          city: '',
+          city: data.city ? data?.city : '',
           status: Number(data.status)
         })
       )
@@ -194,7 +196,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
 
       const response = await getAllRoles({ params: { limit: -1, page: -1 } })
       const roleArr = response?.data?.roles.map((item: any) => ({
-        name: item.name,
+        label: item.name,
         value: item._id
       }))
 
@@ -204,8 +206,29 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
     }
   }
 
+  const fetchAllCity = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+      const CityArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCity(CityArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchAllRole()
+  }, [])
+
+  useEffect(() => {
+    fetchAllCity()
   }, [])
 
   useEffect(() => {
@@ -533,8 +556,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                                 mb: '4px',
                                 color: Boolean(errors.role)
                                   ? theme.palette.error.main
-                                  : // loi
-                                    theme.palette.customColors.bodyBg
+                                  : theme.palette.customColors.bodyBg
                               }}
                             >
                               {t('city')}
@@ -542,7 +564,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                             <CustomSelect
                               fullWidth
                               onChange={onChange}
-                              options={[{ value: '1', label: 'No data' }]}
+                              options={allCity}
                               value={value}
                               placeholder={t('Enter_your_city')}
                               inputRef={ref}

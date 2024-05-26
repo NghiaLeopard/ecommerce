@@ -8,8 +8,10 @@ import { TParamsCreateUsers, TParamsDeleteMany, TParamsEditUsers, TParamsGetUser
 // ** Type
 
 export const getAllUsers = async (data: { params: TParamsGetUsers }) => {
+  console.log(data)
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SYSTEM.USERS.INDEX}`, data)
+    console.log(res.data)
 
     return res.data
   } catch (error) {

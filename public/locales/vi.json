@@ -88,6 +88,8 @@
   "Active": "Đang hoạt động",
   "Block": "Tạm khóa",
   "Create_user_success": "Tạo người dùng thành công",
+  "Update_user_success": "Cập nhật người dùng thành công",
+
   "Create_user_error": "Tạo người dùng thất bại",
   "Update_user_error": "Cập nhật người dùng thành công",
   "Delete_user_success": "Xóa người dùng thành công",
