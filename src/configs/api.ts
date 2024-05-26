@@ -16,6 +16,12 @@ export const API_ENDPOINT = {
   SETTINGS: {
     CITY: {
       INDEX: `${BASE_URL}/city`
+    },
+    DELIVERY_TYPE: {
+      INDEX: `${BASE_URL}/delivery-type`
+    },
+    PAYMENT_TYPE: {
+      INDEX: `${BASE_URL}/payment-type`
     }
   }
 }

@@ -37,11 +37,6 @@ const AclGuard = (props: AclGuardProps) => {
   const router = useRouter()
 
   // check BASIC , because BASIC just have permissions VIEW DASHBOARD
-  // const permissionUser = auth.user?.role?.permissions
-  //   ? auth.user?.role?.permissions.includes(CONFIG_PERMISSIONS.BASIC)
-  //     ? [CONFIG_PERMISSIONS.BASIC]
-  //     : auth.user?.role?.permissions
-  //   : []
 
   const permissionUser = auth?.user?.role?.permissions
 

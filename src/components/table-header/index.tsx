@@ -21,7 +21,7 @@ type TTableHeader = {
   onClose: () => void
   actions: { label: string; value: string }[]
   handleActions: (action: string) => void
-  disabled: boolean
+  disabled?: boolean
 }
 
 const TableHeader = (props: TTableHeader) => {
