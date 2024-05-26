@@ -76,3 +76,5 @@ export const formatDate = (
 
   return Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
 }
+
+export const formatCityId = (arr: string[]) => {}

@@ -31,6 +31,7 @@ import WrapperFileUpload from 'src/components/wrapper-file-upload'
 // ** Service
 import { getAuthMe } from 'src/services/auth'
 import { getAllRoles } from 'src/services/role'
+import { getAllCity } from 'src/services/city'
 
 // ** Utils
 import toast from 'react-hot-toast'
@@ -74,6 +75,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   const [allRole, setAllRole] = useState([])
+  const [allCity, setAllCity] = useState([])
   const dispatch: AppDispatch = useDispatch()
 
   const { isErrorUpdateMe, isSuccessUpdateMe, isLoading, messageUpdateMe } = useSelector(
@@ -141,6 +143,27 @@ const MyProfilePage: NextPage<TProps> = () => {
 
   useEffect(() => {
     fetchRole()
+  }, [])
+
+  const fetchAllCity = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+      const CityArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCity(CityArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllCity()
   }, [])
 
   const handleOnSubmit = (data: any) => {
@@ -435,7 +458,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           <CustomSelect
                             fullWidth
                             onChange={onChange}
-                            options={[{ value: '1', label: 'No data' }]}
+                            options={allCity}
                             value={value}
                             placeholder={t('Enter_your_city')}
                             inputRef={ref}

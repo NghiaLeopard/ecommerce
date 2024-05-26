@@ -40,7 +40,7 @@ export const CustomSelect = ({ value, label, onChange, fullWidth, options, place
 
   return (
     <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
-      {!value && <CustomPlaceholder>{placeholder}</CustomPlaceholder>}
+      {(!value || value.length <= 0) && <CustomPlaceholder>{placeholder}</CustomPlaceholder>}
       <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={handleChange} {...rest}>
         {options?.map(item => {
           return (

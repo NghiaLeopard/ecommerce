@@ -48,6 +48,7 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
 // ** Service
 import { getAllRoles } from 'src/services/role'
 import { OBJECT_STATUS_USER } from 'src/configs/user'
+import { getAllCity } from 'src/services/city'
 
 type TProps = {}
 
@@ -84,7 +85,9 @@ const UserPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [allRole, setAllRole] = useState([])
+  const [allCity, setAllCity] = useState([])
   const [roleSelected, setRoleSelected] = useState('')
+  const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [openCreateEdit, setOpenCreateEdit] = useState({
@@ -121,13 +124,13 @@ const UserPage: NextPage<TProps> = () => {
           search: search,
           order: sortBy,
           roleId: roleSelected,
+          cityId: citySelected.join('|'),
           status: statusSelected === '' ? '' : Number(statusSelected)
         }
       })
     )
   }
 
-  console.log(statusSelected)
   const handleCloseModal = () => {
     setOpenCreateEdit({
       open: false,
@@ -190,7 +193,7 @@ const UserPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     getListUsers()
-  }, [sortBy, search, page, pageSize, roleSelected, statusSelected])
+  }, [sortBy, search, page, pageSize, roleSelected, citySelected, statusSelected])
 
   useEffect(() => {
     if (isMessageCreateEdit) {
@@ -209,7 +212,7 @@ const UserPage: NextPage<TProps> = () => {
           if (!openCreateEdit.idUsers) {
             toast.error(t('Create_user_error'))
           } else {
-            toast.error(t('pdate_user_error'))
+            toast.error(t('Update_user_error'))
           }
         }
       }
@@ -297,8 +300,9 @@ const UserPage: NextPage<TProps> = () => {
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+        console.log(row)
 
-        return <Typography>{row?.city}</Typography>
+        return <Typography>{row?.city?.name}</Typography>
       }
     },
     {
@@ -362,6 +366,27 @@ const UserPage: NextPage<TProps> = () => {
     }
   }
 
+  const fetchAllCity = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+      const CityArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCity(CityArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllCity()
+  }, [])
+
   useEffect(() => {
     fetchAllRole()
   }, [])
@@ -418,7 +443,20 @@ const UserPage: NextPage<TProps> = () => {
                     onChange={(data: any) => {
                       setRoleSelected(data)
                     }}
-                    placeholder={t('Selected')}
+                    placeholder={t('Role')}
+                  />
+                </Box>
+                <Box sx={{ width: '200px', mt: 1 }}>
+                  <CustomSelect
+                    value={citySelected}
+                    options={allCity}
+                    fullWidth
+                    multiple
+                    onChange={(data: any) => {
+                      console.log(data)
+                      setCitySelected(data)
+                    }}
+                    placeholder={t('City')}
                   />
                 </Box>
                 <Box sx={{ width: '200px', mt: 1 }}>
@@ -429,7 +467,7 @@ const UserPage: NextPage<TProps> = () => {
                     onChange={(data: any) => {
                       setStatusSelected(data)
                     }}
-                    placeholder={t('Selected')}
+                    placeholder={t('Status')}
                   />
                 </Box>
                 <Box sx={{ width: '200px' }}>
