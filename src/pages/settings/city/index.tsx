@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 
 // ** React
 import { ReactNode } from 'react'
+import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'

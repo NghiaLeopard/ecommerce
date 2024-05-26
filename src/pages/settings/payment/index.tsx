@@ -8,12 +8,12 @@ import { ReactNode } from 'react'
 import UserLayout from 'src/view/layout/UserLayout'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
+import PaymentPage from 'src/view/pages/settings/payment/PaymentPage'
 
 type TProps = {}
 
 const Payment: NextPage<TProps> = () => {
-  return <h1>Payment</h1>
+  return <PaymentPage />
 }
 
 export default Payment
