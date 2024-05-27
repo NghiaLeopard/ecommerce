@@ -110,7 +110,7 @@ const RoleListPage: NextPage<TProps> = () => {
   const columns: GridColDef<[number]>[] = [
     {
       field: 'name',
-      headerName: t('name'),
+      headerName: t('Name'),
       flex: 1
     },
     {

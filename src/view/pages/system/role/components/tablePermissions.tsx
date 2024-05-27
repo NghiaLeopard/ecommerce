@@ -83,9 +83,9 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
   const columns: GridColDef[] = [
     {
       field: 'all',
-      headerName: t('all'),
-      minWidth: 80,
-      maxWidth: 80,
+      headerName: t('All'),
+      minWidth: 90,
+      maxWidth: 90,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
@@ -111,7 +111,7 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
     },
     {
       field: 'name',
-      headerName: t('name'),
+      headerName: t('Name'),
       flex: 1,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
@@ -133,7 +133,7 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
 
     {
       field: 'view',
-      headerName: t('view'),
+      headerName: t('View'),
       minWidth: 100,
       maxWidth: 100,
       sortable: false,
@@ -156,7 +156,7 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
     },
     {
       field: 'create',
-      headerName: t('create'),
+      headerName: t('Create'),
       minWidth: 100,
       maxWidth: 100,
       sortable: false,
@@ -180,7 +180,7 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
     },
     {
       field: 'update',
-      headerName: t('update'),
+      headerName: t('Update'),
       minWidth: 120,
       maxWidth: 120,
       sortable: false,
@@ -203,7 +203,7 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
     },
     {
       field: 'delete',
-      headerName: t('delete'),
+      headerName: t('Delete'),
       minWidth: 100,
       maxWidth: 100,
       sortable: false,

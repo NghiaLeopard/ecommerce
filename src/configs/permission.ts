@@ -140,54 +140,53 @@ export const LIST_DATA_PERMISSIONS: any = [
   },
   {
     id: 1,
-    name: 'manage-product',
+    name: 'Manage_product',
     isParent: true,
     value: 'MANAGE_PRODUCT'
   },
   {
     id: 2,
-    name: 'product',
+    name: 'Product',
     isParent: false,
     value: 'PRODUCT',
     parentValue: 'MANAGE_PRODUCT'
   },
   {
     id: 3,
-    name: 'product-type',
+    name: 'Product_type',
     isParent: false,
     value: 'PRODUCT_TYPE',
-    parentValue: 'MANAGE_PRODUCT',
-    isHideView: true
+    parentValue: 'MANAGE_PRODUCT'
   },
   {
     id: 4,
-    name: 'system',
+    name: 'System',
     isParent: true,
     value: 'SYSTEM'
   },
   {
     id: 5,
-    name: 'user',
+    name: 'User',
     isParent: false,
     value: 'USER',
     parentValue: 'SYSTEM'
   },
   {
     id: 6,
-    name: 'role',
+    name: 'Role',
     isParent: false,
     value: 'ROLE',
     parentValue: 'SYSTEM'
   },
   {
     id: 7,
-    name: 'manage-order',
+    name: 'Manage_order',
     isParent: true,
     value: 'MANAGE_ORDER'
   },
   {
     id: 8,
-    name: 'review',
+    name: 'Review',
     isParent: false,
     isHideView: true,
     isHideCreate: true,
@@ -196,7 +195,7 @@ export const LIST_DATA_PERMISSIONS: any = [
   },
   {
     id: 9,
-    name: 'order',
+    name: 'Order',
     isParent: false,
     value: 'ORDER',
     parentValue: 'MANAGE_ORDER',
@@ -204,13 +203,13 @@ export const LIST_DATA_PERMISSIONS: any = [
   },
   {
     id: 10,
-    name: 'setting',
+    name: 'Setting',
     isParent: true,
     value: 'SETTING'
   },
   {
     id: 11,
-    name: 'payment-type',
+    name: 'Payment_type',
     isParent: false,
     isHideView: true,
     value: 'PAYMENT_TYPE',
@@ -218,7 +217,7 @@ export const LIST_DATA_PERMISSIONS: any = [
   },
   {
     id: 12,
-    name: 'delivery-type',
+    name: 'Delivery_type',
     isParent: false,
     isHideView: true,
     value: 'DELIVERY_TYPE',
@@ -226,7 +225,7 @@ export const LIST_DATA_PERMISSIONS: any = [
   },
   {
     id: 13,
-    name: 'city',
+    name: 'City',
     isParent: false,
     isHideView: true,
     value: 'CITY',

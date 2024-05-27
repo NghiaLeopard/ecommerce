@@ -54,7 +54,6 @@ export const createPaymentTypeAsync = createAsyncThunk(
       return response
     }
 
-    console.log(response)
 
     return {
       data: {
@@ -86,7 +85,6 @@ export const deleteMultiplePaymentTypeAsync = createAsyncThunk(
   `${serviceName}/delete-many`,
   async (data: TParamsDeleteManyPaymentType) => {
     const response = await deleteMultiplePaymentType(data)
-    console.log(response)
 
     if (response?.message) {
       return response

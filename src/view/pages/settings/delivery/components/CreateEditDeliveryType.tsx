@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Button, Grid, IconButton, useTheme } from '@mui/material'
+import { Box, Button, Grid, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
@@ -133,76 +133,80 @@ export const CreateEditDeliveryType = ({ open, onClose, idDeliveryType }: TCreat
       <>
         {loading && <Spinner />}
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton onClick={onClose}>
-            <CustomIcon icon='typcn:delete' />
-          </IconButton>
+        <Box
+          sx={{
+            backgroundColor: `${theme.palette.background.paper} !important`,
+            borderRadius: '15px',
+            padding: '30px'
+          }}
+          minWidth={{ md: '400px', xs: '80vw' }}
+          maxWidth={{ md: '50vw', xs: '80vw' }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, gap: 3 }}>
+            <Typography variant='h3'>{idDeliveryType ? t('Edit_delivery_type') : t('Create_delivery_type')}</Typography>
+            <IconButton onClick={onClose}>
+              <CustomIcon icon='typcn:delete' />
+            </IconButton>
+          </Box>
+
+          <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
+            <Box>
+              <Box sx={{ width: '100%' }}>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <CustomTextField
+                      onChange={e => {
+                        onChange(e.target.value)
+                      }}
+                      onBlur={onBlur}
+                      value={value}
+                      fullWidth
+                      label={t('Name_delivery_type')}
+                      placeholder={t('  ')}
+                      inputRef={ref}
+                      error={Boolean(errors.name)}
+                      helperText={errors.name?.message}
+                    />
+                  )}
+                  name='name'
+                />
+              </Box>
+              <Box mt={2} width='100%'>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <CustomTextField
+                      onChange={e => {
+                        const numValue = e.target.value.replace(/\D/g, '')
+                        onChange(numValue)
+                      }}
+                      inputProps={{
+                        pattern: '[0-9]*',
+                        inputMode: 'numeric'
+                      }}
+                      onBlur={onBlur}
+                      value={value}
+                      fullWidth
+                      label={t('Price')}
+                      placeholder={t('Enter_price_delivery_type')}
+                      inputRef={ref}
+                      error={Boolean(errors.price)}
+                      helperText={errors.price?.message}
+                    />
+                  )}
+                  name='price'
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
+                {idDeliveryType ? t('Update') : t('Create')}
+              </Button>
+            </Box>
+          </form>
         </Box>
-
-        <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-          <Box
-            sx={{
-              borderRadius: '15px',
-              px: 4,
-              py: 20,
-              background: theme.palette.background.paper
-            }}
-          >
-            <Box sx={{ width: '350px' }}>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <CustomTextField
-                    onChange={e => {
-                      onChange(e.target.value)
-                    }}
-                    onBlur={onBlur}
-                    value={value}
-                    fullWidth
-                    label={t('Name_delivery_type')}
-                    placeholder={t('  ')}
-                    inputRef={ref}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name?.message}
-                  />
-                )}
-                name='name'
-              />
-            </Box>
-            <Box mt={2} width='350px'>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <CustomTextField
-                    onChange={e => {
-                      const numValue = e.target.value.replace(/\D/g, '')
-                      onChange(numValue)
-                    }}
-                    inputProps={{
-                      pattern: '[0-9]*',
-                      inputMode: 'numeric'
-                    }}
-                    onBlur={onBlur}
-                    value={value}
-                    fullWidth
-                    label={t('Price')}
-                    placeholder={t('Enter_price_delivery_type')}
-                    inputRef={ref}
-                    error={Boolean(errors.price)}
-                    helperText={errors.price?.message}
-                  />
-                )}
-                name='price'
-              />
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-              {idDeliveryType ? t('Update') : t('Create')}
-            </Button>
-          </Box>
-        </form>
       </>
     </CustomModal>
   )

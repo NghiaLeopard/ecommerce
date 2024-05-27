@@ -77,7 +77,6 @@ export const authSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(updateAuthMeSync.fulfilled, (state, actions) => {
-        console.log(actions)
         state.isLoading = false
         state.isSuccess = !!actions.payload?.data?.email
         state.isError = !actions.payload?.data?.email

@@ -74,7 +74,6 @@ const InputSearch = ({ onChange }: TInputSearch) => {
         placeholder=' Search…'
         inputProps={{ 'aria-label': 'search' }}
         onChange={e => {
-          console.log(e.target.value)
           handleChange(e.target.value)
         }}
       />

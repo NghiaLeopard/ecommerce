@@ -238,7 +238,6 @@ const DeliveryPage: NextPage<TProps> = () => {
       minWidth: 0,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-        console.log(params)
 
         return <Typography>{row?.name}</Typography>
       }

@@ -38,7 +38,6 @@ export const createCityAsync = createAsyncThunk(`${serviceName}/create`, async (
     return response
   }
 
-  console.log(response)
 
   return {
     data: {
@@ -69,7 +68,6 @@ export const deleteMultipleCityAsync = createAsyncThunk(
   `${serviceName}/delete-many`,
   async (data: TParamsDeleteManyCity) => {
     const response = await deleteMultipleCity(data)
-    console.log(response)
 
     if (response?.message) {
       return response

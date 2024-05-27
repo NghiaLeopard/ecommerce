@@ -41,6 +41,8 @@ import toast from 'react-hot-toast'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
+
+// ** i18n
 import { t } from 'i18next'
 
 type TProps = {}
@@ -160,6 +162,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     value={value}
                     fullWidth
                     label='Email'
+                    placeholder={t('Enter_your_email')}
                     inputRef={ref}
                     error={Boolean(errors.email)}
                     helperText={errors.email?.message}
@@ -172,9 +175,6 @@ const RegisterPage: NextPage<TProps> = () => {
             <Box mt={2} width='300px'>
               <Controller
                 control={control}
-                rules={{
-                  required: true
-                }}
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                   <CustomTextField
                     onChange={onChange}
@@ -184,6 +184,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     label={t('Password')}
                     inputRef={ref}
                     type={showPassword ? 'text' : 'password'}
+                    placeholder={t('Enter_password')}
                     error={Boolean(errors.password)}
                     helperText={errors.password?.message}
                     InputProps={{
@@ -223,6 +224,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     inputRef={ref}
                     type={showConfirmPassword ? 'text' : 'password'}
                     error={Boolean(errors.confirmPassword)}
+                    placeholder={t('Confirm_password')}
                     helperText={errors.confirmPassword?.message}
                     InputProps={{
                       endAdornment: (

@@ -7,12 +7,21 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 // ** MUI
-import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, IconButton, Typography } from '@mui/material'
-import { useTheme } from '@mui/material'
+import {
+  Box,
+  Button,
+  Checkbox,
+  CssBaseline,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Typography,
+  useTheme
+} from '@mui/material'
 
 // ** Components
-import CustomTextField from 'src/components/text-field'
 import CustomIcon from 'src/components/Icon'
+import CustomTextField from 'src/components/text-field'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -36,8 +45,9 @@ import { LoginParams } from 'src/contexts/types'
 
 // ** Hook
 import toast from 'react-hot-toast'
+
+// ** i18n
 import { useTranslation } from 'react-i18next'
-import { Switch } from '@mui/material'
 
 type TProps = {}
 
@@ -142,6 +152,7 @@ const LoginPage: NextPage<TProps> = () => {
                     value={value}
                     fullWidth
                     label='Email'
+                    placeholder={t('Enter_your_email')}
                     inputRef={ref}
                     error={Boolean(errors.email)}
                     helperText={errors.email?.message}
@@ -166,6 +177,7 @@ const LoginPage: NextPage<TProps> = () => {
                     label={t('Password')}
                     inputRef={ref}
                     type={showPassword ? 'text' : 'password'}
+                    placeholder={t('Enter_password')}
                     error={Boolean(errors.password)}
                     helperText={errors.password?.message}
                     InputProps={{

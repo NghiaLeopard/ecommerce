@@ -107,6 +107,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
                   fullWidth
                   label={t('Name_role')}
                   inputRef={ref}
+                  placeholder={t('Enter_your_role')}
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}
                 />

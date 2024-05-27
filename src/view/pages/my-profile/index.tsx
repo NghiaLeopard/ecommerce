@@ -61,8 +61,8 @@ type TDefaultValue = {
 
 const schema = yup.object({
   email: yup.string().required('Please enter email').matches(EMAIL_REG, 'The field is must email type'),
-  fullName: yup.string().required('Please enter email'),
-  phoneNumber: yup.string().required('Please enter email').min(8, 'The number phone is min 8 number'),
+  fullName: yup.string().required('Please enter full name'),
+  phoneNumber: yup.string().required('Please enter phone number').min(8, 'The number phone is min 8 number'),
   role: yup.string().required('Please enter role'),
   city: yup.string().required('Please enter city'),
   address: yup.string().required('Please enter address')
@@ -107,6 +107,7 @@ const MyProfilePage: NextPage<TProps> = () => {
       .then(res => {
         setLoading(false)
         const data = res?.data
+
         if (data) {
           setAvatar(data?.avatar)
           reset({
@@ -404,7 +405,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           value={value}
                           fullWidth
                           label={t('Phone_number')}
-                          placeholder={t('Enter_your_phone_number')}
+                          placeholder={t('Enter_your_phone')}
                           inputRef={ref}
                           error={Boolean(errors.phoneNumber)}
                           helperText={errors.phoneNumber?.message}

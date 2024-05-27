@@ -79,7 +79,6 @@ export const usersSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(editUsersAsync.fulfilled, (state, actions) => {
-        console.log(actions)
         state.isLoading = false
         state.isSuccessCreateEdit = !!actions.payload?.data?._id
         state.isErrorCreateEdit = !actions.payload?.data?._id
@@ -104,7 +103,6 @@ export const usersSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(deleteMultipleUsersAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.isSuccessMultipleDelete = !actions.payload?.typeError
         state.isErrorMultipleDelete = !!actions.payload?.typeError
