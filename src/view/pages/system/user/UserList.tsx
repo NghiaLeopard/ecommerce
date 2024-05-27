@@ -295,12 +295,11 @@ const UserPage: NextPage<TProps> = () => {
     },
     {
       field: 'city',
-      headerName: t('city'),
+      headerName: t('City'),
       minWidth: 215,
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-        console.log(row)
 
         return <Typography>{row?.city?.name}</Typography>
       }
@@ -453,7 +452,6 @@ const UserPage: NextPage<TProps> = () => {
                     fullWidth
                     multiple
                     onChange={(data: any) => {
-                      console.log(data)
                       setCitySelected(data)
                     }}
                     placeholder={t('City')}

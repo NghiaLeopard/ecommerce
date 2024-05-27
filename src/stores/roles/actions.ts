@@ -36,7 +36,6 @@ export const createRolesAsync = createAsyncThunk('role/create', async (data: TPa
     return response
   }
 
-  console.log(response)
 
   return {
     data: {

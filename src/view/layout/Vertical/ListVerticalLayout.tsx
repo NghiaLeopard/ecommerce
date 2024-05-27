@@ -11,6 +11,7 @@ import { VerticalItems } from 'src/configs/layout'
 import { useRouter } from 'next/router'
 import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 import { ItemVerticalLayout } from './ItemVerticalLayout'
+import { useAuth } from 'src/hooks/useAuth'
 
 interface TProps {
   openVertical: boolean
@@ -20,7 +21,8 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
   const level = 0
   const router = useRouter()
   const vertical = VerticalItems()
-  const permissionsUser: any = ['SYSTEM.ROLE.VIEW', 'SYSTEM.USER.VIEW']
+  const { user } = useAuth()
+  const permissionsUser: any = user?.role?.permissions
 
   const isParentHaveChildActive = (item: any) => {
     if (!item.children) {
@@ -31,7 +33,7 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
   }
 
   const hasPermissions = (permission: string, permissionsUser: string[]) => {
-    return permissionsUser.includes(permission) || !permission
+    return permissionsUser?.includes(permission) || !permission
   }
 
   const handleFormatToPermissions = (menu: any, permissionsUser: string[]) => {
@@ -54,7 +56,7 @@ export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
     return []
   }
 
-  const formatted = !permissionsUser.includes(CONFIG_PERMISSIONS.ADMIN)
+  const formatted = !permissionsUser?.includes(CONFIG_PERMISSIONS.ADMIN)
     ? handleFormatToPermissions(vertical, permissionsUser)
     : vertical
 

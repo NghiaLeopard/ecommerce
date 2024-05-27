@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Button, Grid, IconButton, useTheme } from '@mui/material'
+import { Box, Button, Grid, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
@@ -60,7 +60,7 @@ export const CreateEditCity = ({ open, onClose, idCity }: TCreateEditCity) => {
   }
 
   const schema = yup.object({
-    name: yup.string().required(t('Please_enter_name'))
+    name: yup.string().required(t('Enter_name_city'))
   })
 
   const {
@@ -121,43 +121,53 @@ export const CreateEditCity = ({ open, onClose, idCity }: TCreateEditCity) => {
       <>
         {loading && <Spinner />}
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton onClick={onClose}>
-            <CustomIcon icon='typcn:delete' />
-          </IconButton>
-        </Box>
+        <Box
+          sx={{
+            backgroundColor: `${theme.palette.background.paper} !important`,
+            borderRadius: '15px',
+            padding: '30px'
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+            <Typography variant='h3'>{idCity ? t('Edit_city') : t('Create_city')}</Typography>
 
-        <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-          <Grid container sx={{ background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 20 }}>
-            <Box sx={{ width: '350px' }}>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <CustomTextField
-                    onChange={e => {
-                      onChange(e.target.value)
-                    }}
-                    onBlur={onBlur}
-                    value={value}
-                    fullWidth
-                    label={t('Name_city')}
-                    placeholder={t('Enter_your_city')}
-                    inputRef={ref}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name?.message}
-                  />
-                )}
-                name='name'
-              />
-            </Box>
-          </Grid>
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-              {idCity ? t('Update') : t('Create')}
-            </Button>
+            <IconButton onClick={onClose}>
+              <CustomIcon icon='typcn:delete' />
+            </IconButton>
           </Box>
-        </form>
+
+          <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
+            <Grid container>
+              <Box sx={{ width: '350px' }}>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <CustomTextField
+                      onChange={e => {
+                        onChange(e.target.value)
+                      }}
+                      onBlur={onBlur}
+                      value={value}
+                      fullWidth
+                      label={t('Name_city')}
+                      placeholder={t('Enter_your_city')}
+                      inputRef={ref}
+                      error={Boolean(errors.name)}
+                      helperText={errors.name?.message}
+                    />
+                  )}
+                  name='name'
+                />
+              </Box>
+            </Grid>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
+                {idCity ? t('Update') : t('Create')}
+              </Button>
+            </Box>
+          </form>
+        </Box>
       </>
     </CustomModal>
   )

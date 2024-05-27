@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Button, FormHelperText, Grid, IconButton, InputLabel, useTheme } from '@mui/material'
+import { Box, Button, FormHelperText, Grid, IconButton, InputLabel, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
@@ -62,7 +62,7 @@ export const CreateEditPaymentType = ({ open, onClose, idPaymentType }: TCreateE
   }
 
   const schema = yup.object({
-    name: yup.string().required(t('Enter_name_Payment_type')),
+    name: yup.string().required(t('Enter_name_payment_type')),
     type: yup.string().required(t('Enter_price_Payment_type'))
   })
 
@@ -94,8 +94,6 @@ export const CreateEditPaymentType = ({ open, onClose, idPaymentType }: TCreateE
       )
     }
   }
-
-  console.log(Object.values(paymentType))
 
   const fetchDetailPaymentType = async (idPaymentType: string) => {
     setLoading(true)
@@ -130,87 +128,90 @@ export const CreateEditPaymentType = ({ open, onClose, idPaymentType }: TCreateE
       <>
         {loading && <Spinner />}
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton onClick={onClose}>
-            <CustomIcon icon='typcn:delete' />
-          </IconButton>
-        </Box>
+        <Box
+          sx={{
+            backgroundColor: `${theme.palette.background.paper} !important`,
+            borderRadius: '15px',
+            padding: '30px'
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 3 }}>
+            <Typography variant='h3'>{idPaymentType ? t('Edit_payment_type') : t('Create_payment_type')}</Typography>
 
-        <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-          <Box
-            sx={{
-              borderRadius: '15px',
-              px: 4,
-              py: 20,
-              background: theme.palette.background.paper
-            }}
-          >
-            <Box sx={{ width: '350px' }}>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <CustomTextField
-                    onChange={e => {
-                      onChange(e.target.value)
-                    }}
-                    onBlur={onBlur}
-                    value={value}
-                    fullWidth
-                    label={t('Name_payment_type')}
-                    placeholder={t('Enter_name_payment_type')}
-                    inputRef={ref}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name?.message}
-                  />
-                )}
-                name='name'
-              />
-            </Box>
-            <Box mt={2} width='350px'>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <Box>
-                    <InputLabel
-                      sx={{
-                        fontSize: '13px',
-                        mb: '0.25rem',
-                        color: Boolean(errors.type) ? theme.palette.error.main : theme.palette.customColors.bodyBg
+            <IconButton onClick={onClose}>
+              <CustomIcon icon='typcn:delete' />
+            </IconButton>
+          </Box>
+
+          <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
+            <Box>
+              <Box sx={{ width: '100%' }}>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <CustomTextField
+                      onChange={e => {
+                        onChange(e.target.value)
                       }}
-                    >
-                      {t('type')}
-                    </InputLabel>
-                    <CustomSelect
-                      fullWidth
+                      onBlur={onBlur}
                       value={value}
+                      fullWidth
+                      label={t('Name_payment_type')}
+                      placeholder={t('Enter_name_payment_type')}
                       inputRef={ref}
-                      options={Object.values(paymentType)}
-                      onChange={onChange}
-                      error={Boolean(errors.type)}
-                      placeholder={t('Select_payment_type')}
+                      error={Boolean(errors.name)}
+                      helperText={errors.name?.message}
                     />
-                    {Boolean(errors.type) && (
-                      <FormHelperText
+                  )}
+                  name='name'
+                />
+              </Box>
+              <Box mt={2} width='100%'>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <Box>
+                      <InputLabel
                         sx={{
-                          color: `${theme.palette.error.main} !important`
+                          fontSize: '13px',
+                          mb: '0.25rem',
+                          color: Boolean(errors.type) ? theme.palette.error.main : ''
                         }}
                       >
-                        {t('Select_payment_type')}
-                      </FormHelperText>
-                    )}
-                  </Box>
-                )}
-                name='type'
-              />
+                        {t('Type')}
+                      </InputLabel>
+                      <CustomSelect
+                        fullWidth
+                        value={value}
+                        inputRef={ref}
+                        options={Object.values(paymentType)}
+                        onChange={onChange}
+                        error={Boolean(errors.type)}
+                        placeholder={t('Select_payment_type')}
+                      />
+                      {Boolean(errors.type) && (
+                        <FormHelperText
+                          sx={{
+                            color: `${theme.palette.error.main} !important`
+                          }}
+                        >
+                          {t('Select_payment_type')}
+                        </FormHelperText>
+                      )}
+                    </Box>
+                  )}
+                  name='type'
+                />
+              </Box>
             </Box>
-          </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-              {idPaymentType ? t('Update') : t('Create')}
-            </Button>
-          </Box>
-        </form>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
+                {idPaymentType ? t('Update') : t('Create')}
+              </Button>
+            </Box>
+          </form>
+        </Box>
       </>
     </CustomModal>
   )

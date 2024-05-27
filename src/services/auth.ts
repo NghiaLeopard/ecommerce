@@ -21,8 +21,7 @@ export const logoutAuth = async () => {
     const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/logout`)
 
     return res.data
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 export const registerAuth = async (data: RegisterParams) => {

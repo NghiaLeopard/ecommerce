@@ -10,7 +10,7 @@ export const CONFIG_ROUTE = {
     MANAGE_PRODUCT: '/manage-product/product',
     MANAGE_ORDER: '/manage-product/order',
     MANAGE_REVIEWS: '/manage-product/reviews',
-    MANAGE_TYPE_PRODUCT: '/manage-product/type-product'
+    MANAGE_TYPE_PRODUCT: '/manage-product/product-types'
   },
   SETTINGS: {
     CITY: '/settings/city',

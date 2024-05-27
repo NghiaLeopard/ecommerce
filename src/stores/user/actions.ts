@@ -41,7 +41,6 @@ export const createUsersAsync = createAsyncThunk(`${serviceName}/create`, async 
     return response
   }
 
-  console.log(response)
 
   return {
     data: {
@@ -72,7 +71,6 @@ export const deleteMultipleUsersAsync = createAsyncThunk(
   `${serviceName}/delete-many`,
   async (data: TParamsDeleteMany) => {
     const response = await deleteMultipleUsers(data)
-    console.log(response)
 
     if (response?.message) {
       return response

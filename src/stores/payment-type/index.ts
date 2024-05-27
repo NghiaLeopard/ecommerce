@@ -56,7 +56,6 @@ export const PaymentTypeSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(getAllPaymentTypeAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.paymentType.data = actions?.payload?.data?.paymentTypes
         state.paymentType.total = actions?.payload?.data?.totalCount
@@ -80,7 +79,6 @@ export const PaymentTypeSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(editPaymentTypeAsync.fulfilled, (state, actions) => {
-        console.log(actions)
         state.isLoading = false
         state.isSuccessCreateEdit = !!actions.payload?.data?._id
         state.isErrorCreateEdit = !actions.payload?.data?._id
@@ -105,7 +103,6 @@ export const PaymentTypeSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(deleteMultiplePaymentTypeAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.isSuccessMultipleDelete = !actions.payload?.typeError
         state.isErrorMultipleDelete = !!actions.payload?.typeError

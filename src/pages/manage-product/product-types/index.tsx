@@ -6,14 +6,14 @@ import { ReactNode } from 'react'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
+import ProductTypesPage from 'src/view/pages/manage-product/product-types/ProductTypesPage'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
 
 type TProps = {}
 
 const TypeProduct: NextPage<TProps> = () => {
-  return <MyProfilePage />
+  return <ProductTypesPage />
 }
 
 export default TypeProduct

@@ -6,8 +6,8 @@ import Image from 'next/image'
 import { Box, Button, CssBaseline, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
-import CustomTextField from 'src/components/text-field'
 import CustomIcon from 'src/components/Icon'
+import CustomTextField from 'src/components/text-field'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -38,6 +38,8 @@ import toast from 'react-hot-toast'
 
 // ** Hook
 import { useAuth } from 'src/hooks/useAuth'
+
+// ** yup
 import { yupResolver } from '@hookform/resolvers/yup'
 
 type TProps = {}
@@ -151,7 +153,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
             {t('Change_password')}
           </Typography>
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-            <Box mt={2} width='300px'>
+            <Box mt={2} width='300px' sx={{ mb: '15px' }}>
               <Controller
                 control={control}
                 rules={{
@@ -167,6 +169,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     inputRef={ref}
                     type={showCurrentPassword ? 'text' : 'password'}
                     error={Boolean(errors.currentPassword)}
+                    placeholder={t('Enter_current_password')}
                     helperText={errors.currentPassword?.message}
                     InputProps={{
                       endAdornment: (
@@ -189,7 +192,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
               />
             </Box>
 
-            <Box mt={2} width='300px'>
+            <Box mt={2} width='300px' sx={{ mb: '15px' }}>
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value, ref } }) => (
@@ -202,6 +205,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     inputRef={ref}
                     type={showNewPassword ? 'text' : 'password'}
                     error={Boolean(errors.newPassword)}
+                    placeholder={t('Enter_new_password')}
                     helperText={errors.newPassword?.message}
                     InputProps={{
                       endAdornment: (
@@ -236,6 +240,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                     label={t('Confirm_new_password')}
                     inputRef={ref}
                     type={showConfirmNewPassword ? 'text' : 'password'}
+                    placeholder={t('Confirm_new_password')}
                     error={Boolean(errors.confirmNewPassword)}
                     helperText={errors.confirmNewPassword?.message}
                     InputProps={{

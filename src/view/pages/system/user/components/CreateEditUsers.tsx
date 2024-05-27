@@ -364,6 +364,7 @@ export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) =>
                               label={t('Password')}
                               inputRef={ref}
                               type={password ? 'text' : 'password'}
+                              placeholder={t('Enter_password')}
                               error={Boolean(errors.password)}
                               helperText={errors.password?.message}
                               InputProps={{
