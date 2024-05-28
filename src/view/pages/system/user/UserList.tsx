@@ -43,7 +43,7 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Configs
 import i18n from 'src/configs/i18n'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Service
 import { getAllRoles } from 'src/services/role'
@@ -224,24 +224,24 @@ const UserPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageDelete) {
       if (isSuccessDelete) {
-        toast.success(isMessageDelete)
+        toast.success(t('Delete_user_success'))
+        getListUsers()
       } else if (isErrorDelete) {
-        toast.error(isMessageDelete)
+        toast.error(t('Delete_user_success'))
       }
-      getListUsers()
       dispatch(resetInitialState())
     }
-  }, [isErrorDelete, isSuccessDelete])
+  }, [isSuccessDelete, isErrorDelete])
 
   useEffect(() => {
     if (isMessageMultipleDelete) {
       if (isSuccessMultipleDelete) {
-        toast.success(isMessageMultipleDelete)
+        toast.success(t('Delete_multiple_user_success'))
         getListUsers()
         setCheckboxRow([])
         dispatch(resetInitialState())
       } else if (isErrorMultipleDelete) {
-        toast.error(isMessageMultipleDelete)
+        toast.error(t('Delete_multiple_user_error'))
       }
     }
   }, [isErrorMultipleDelete, isSuccessMultipleDelete])

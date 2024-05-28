@@ -45,7 +45,7 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { formatDate } from 'src/utils'
 
 // ** Configs
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
@@ -205,10 +205,10 @@ const PaymentPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageDelete) {
       if (isSuccessDelete) {
-        toast.success(isMessageDelete)
+        toast.success(t('Delete_payment_success'))
         getListPaymentType()
       } else if (isErrorDelete) {
-        toast.error(isMessageDelete)
+        toast.error(t('Delete_payment_success'))
       }
       dispatch(resetInitialState())
     }
@@ -217,12 +217,12 @@ const PaymentPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageMultipleDelete) {
       if (isSuccessMultipleDelete) {
-        toast.success(isMessageMultipleDelete)
+        toast.success(t('Delete_multiple_payment_success'))
         getListPaymentType()
         setCheckboxRow([])
         dispatch(resetInitialState())
       } else if (isErrorMultipleDelete) {
-        toast.error(isMessageMultipleDelete)
+        toast.error(t('Delete_multiple_payment_error'))
       }
     }
   }, [isErrorMultipleDelete, isSuccessMultipleDelete])

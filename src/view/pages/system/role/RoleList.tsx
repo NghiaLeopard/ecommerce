@@ -29,7 +29,7 @@ import { TablePermissions } from './components/tablePermissions'
 
 // ** Config
 import { CONFIG_PERMISSIONS } from 'src/configs/permission'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { resetInitialState } from 'src/stores/roles'
 
 // ** Toast
@@ -234,9 +234,9 @@ const RoleListPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageDelete) {
       if (isSuccessDelete) {
-        toast.success(isMessageDelete)
+        toast.success(t('Delete_role_success'))
       } else if (isErrorDelete) {
-        toast.error(isMessageDelete)
+        toast.error(t('Delete_role_success'))
       }
       getListRole()
       dispatch(resetInitialState())

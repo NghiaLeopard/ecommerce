@@ -40,7 +40,7 @@ import toast from 'react-hot-toast'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Configs
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}
@@ -200,10 +200,10 @@ const CityPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageDelete) {
       if (isSuccessDelete) {
-        toast.success(isMessageDelete)
+        toast.success(t('Delete_city_success'))
         getListCity()
       } else if (isErrorDelete) {
-        toast.error(isMessageDelete)
+        toast.error(t('Delete_city_success'))
       }
       dispatch(resetInitialState())
     }
@@ -212,12 +212,12 @@ const CityPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageMultipleDelete) {
       if (isSuccessMultipleDelete) {
-        toast.success(isMessageMultipleDelete)
+        toast.success(t('Delete_multiple_city_success'))
         getListCity()
         setCheckboxRow([])
         dispatch(resetInitialState())
       } else if (isErrorMultipleDelete) {
-        toast.error(isMessageMultipleDelete)
+        toast.error(t('Delete_multiple_city_error'))
       }
     }
   }, [isErrorMultipleDelete, isSuccessMultipleDelete])
