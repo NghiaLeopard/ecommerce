@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Button, IconButton, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
@@ -128,75 +128,77 @@ export const CreateEditProductTypes = ({ open, onClose, idProductTypes }: TCreat
       <>
         {loading && <Spinner />}
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton onClick={onClose}>
-            <CustomIcon icon='typcn:delete' />
-          </IconButton>
+        <Box
+          sx={{
+            backgroundColor: `${theme.palette.background.paper} !important`,
+            borderRadius: '15px',
+            padding: '30px'
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between',mb: 3 }}>
+            <Typography variant='h3'>{idProductTypes ? t('Edit_product_type') : t('Create_product_type')}</Typography>
+            <IconButton onClick={onClose}>
+              <CustomIcon icon='typcn:delete' />
+            </IconButton>
+          </Box>
+
+          <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
+            <Box>
+              <Box sx={{ width: '350px' }}>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <CustomTextField
+                      onChange={e => {
+                        const value = e.target.value
+                        const replaced = stringToSlug(value)
+                        onChange(value)
+                        reset({ ...getValues(), slug: replaced })
+                      }}
+                      onBlur={onBlur}
+                      value={value}
+                      fullWidth
+                      label={t('Name_product_type')}
+                      placeholder={t('Enter_name_product_type')}
+                      inputRef={ref}
+                      error={Boolean(errors.name)}
+                      helperText={errors.name?.message}
+                    />
+                  )}
+                  name='name'
+                />
+              </Box>
+              <Box mt={2} width='350px'>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <CustomTextField
+                      disabled
+                      onBlur={onBlur}
+                      value={value}
+                      fullWidth
+                      label={t('Slug')}
+                      placeholder={t('Enter_slug')}
+                      inputRef={ref}
+                      error={Boolean(errors.slug)}
+                      helperText={errors.slug?.message}
+                      onChange={e => {
+                        onChange(e.target.value)
+                      }}
+                    />
+                  )}
+                  name='slug'
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
+                {idProductTypes ? t('Update') : t('Create')}
+              </Button>
+            </Box>
+          </form>
         </Box>
-
-        <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
-          <Box
-            sx={{
-              borderRadius: '15px',
-              px: 4,
-              py: 20,
-              background: theme.palette.background.paper
-            }}
-          >
-            <Box sx={{ width: '350px' }}>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <CustomTextField
-                    onChange={e => {
-                      const value = e.target.value
-                      const replaced = stringToSlug(value)
-                      onChange(value)
-                      reset({ ...getValues(), slug: replaced })
-                    }}
-                    onBlur={onBlur}
-                    value={value}
-                    fullWidth
-                    label={t('Name_product_type')}
-                    placeholder={t('Enter_name_product_type')}
-                    inputRef={ref}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name?.message}
-                  />
-                )}
-                name='name'
-              />
-            </Box>
-            <Box mt={2} width='350px'>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <CustomTextField
-                    disabled
-                    onBlur={onBlur}
-                    value={value}
-                    fullWidth
-                    label={t('Slug')}
-                    placeholder={t('Enter_slug')}
-                    inputRef={ref}
-                    error={Boolean(errors.slug)}
-                    helperText={errors.slug?.message}
-                    onChange={e => {
-                      onChange(e.target.value)
-                    }}
-                  />
-                )}
-                name='slug'
-              />
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-              {idProductTypes ? t('Update') : t('Create')}
-            </Button>
-          </Box>
-        </form>
       </>
     </CustomModal>
   )
