@@ -39,21 +39,22 @@ import { createProductsAsync, editProductsAsync } from 'src/stores/products/acti
 import { getDetailProducts } from 'src/services/products'
 
 // ** Components
-import Spinner from 'src/components/spinner'
 import { CustomSelect } from 'src/components/custom-select'
+import Spinner from 'src/components/spinner'
+import { CustomDatePicker } from 'src/components/custom-date-picker'
+import { CustomDraftWysiwyg } from 'src/components/custom-draft-wysiwyg'
 import WrapperFileUpload from 'src/components/wrapper-file-upload'
 
-// ** Configs
-import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
-
-// **
+// ** Service
 import { getAllRoles } from 'src/services/role'
+import { getAllCity } from 'src/services/city'
 
 // ** Utils
-import { convertBase64, separationFullName, stringToSlug, toFullName } from 'src/utils'
-import { getAllCity } from 'src/services/city'
-import { CustomDatePicker } from 'src/components/custom-date-picker'
-import { on } from 'events'
+import { convertBase64, stringToSlug } from 'src/utils'
+
+// ** Draft-js
+import { EditorState } from 'draft-js'
+import { getAllProductTypes } from 'src/services/product-types'
 
 type TDefaultValue = {
   name: string
@@ -61,11 +62,11 @@ type TDefaultValue = {
   status?: number
   image?: string
   type?: string
-  countInStock: number
-  price: number
+  countInStock: string
+  price: string
   rating?: string
-  description: string
-  discount: number
+  description: EditorState
+  discount: string
   slug: string
   discountStartDate: Date | null
   discountEndDate: Date | null
@@ -88,6 +89,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
   const [avatar, setAvatar] = useState('')
   const [allRole, setAllRole] = useState([])
   const [allCity, setAllCity] = useState([])
+  const [allProductTypes, setAllProductTypes] = useState([])
 
   const handleClickPassword = () => setPassword(show => !show)
 
@@ -100,11 +102,11 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
     status: 0,
     image: '',
     type: '',
-    countInStock: 0,
-    price: 0,
+    countInStock: '',
+    price: '',
     rating: '',
-    description: '',
-    discount: 0,
+    description: EditorState.createEmpty(),
+    discount: '',
     slug: '',
     discountStartDate: null,
     discountEndDate: null
@@ -113,14 +115,77 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
   const schema = yup.object({
     name: yup.string().required(t('Required_field')),
     slug: yup.string().required(t('Required_field')),
-    price: yup.number().required(t('Required_field')),
-    countInStock: yup.number().required(t('Required_field')),
-    discount: yup.number().required(t('Required_field')),
-    discountStartDate: yup.date().notRequired(),
-    discountEndDate: yup.date().notRequired(),
+    price: yup
+      .string()
+      .required(t('Required_field'))
+      .test('Price', t('least_1000_in_price'), value => {
+        return Number(value) >= 1000
+      }),
+    countInStock: yup
+      .string()
+      .required(t('Required_field'))
+      .test('Count in stock', t('least_1_in_count'), value => {
+        return Number(value) >= 1
+      }),
+    discount: yup
+      .string()
+      .notRequired()
+      .test('Discount', t('least_1_in_discount'), (value, context) => {
+        if (value) {
+          const discountStartDate = context?.parent.discountStartDate
+          const discountEndDate = context?.parent.discountEndDate
+          if (!discountStartDate) {
+            setError('discountStartDate', { type: 'required_start_discount', message: t('required_start_discount') })
+          }
+          if (!discountEndDate) {
+            setError('discountEndDate', {
+              type: 'required_end_discount',
+              message: t('required_end_discount')
+            })
+          }
+        } else {
+          clearErrors('discountStartDate')
+          clearErrors('discountEndDate')
+        }
+
+        return !value || Number(value) >= 1
+      }),
+    discountStartDate: yup
+      .date()
+      .notRequired()
+      .test('required_start_discount', t('required_start_discount'), (value, context) => {
+        const discount = context?.parent.discount
+
+        return !discount || (discount && value)
+      })
+      .test('required_less_start_discount', t('required_than_start_discount'), (value, context) => {
+        const discountEndDate = context?.parent.discountEndDate
+        if (discountEndDate && value && discountEndDate.getTime() > value.getTime()) {
+          clearErrors('discountStartDate')
+        }
+
+        return !discountEndDate || (discountEndDate && value && discountEndDate.getTime() > value.getTime())
+      }),
+    discountEndDate: yup
+      .date()
+      .notRequired()
+      .test('required_end_discount', t('required_end_discount'), (value, context) => {
+        const discountStartDate = context?.parent.discountStartDate
+
+        return !discountStartDate || (discountStartDate && value)
+      })
+      .test('required_less_end_discount', t('required_less_end_discount'), (value, context) => {
+        const discountStartDate = context?.parent.discountStartDate
+
+        if (discountStartDate && value && discountStartDate.getTime() < value.getTime()) {
+          clearErrors('discountEndDate')
+        }
+
+        return !discountStartDate || (discountStartDate && value && discountStartDate.getTime() < value.getTime())
+      }),
     city: yup.string().nonNullable(),
     image: yup.string().nonNullable(),
-    description: yup.string().nonNullable(),
+    description: yup.object().nonNullable(),
     status: yup.number().nonNullable(),
     type: yup.string().nonNullable(),
     rating: yup.string().nonNullable()
@@ -131,7 +196,9 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
     handleSubmit,
     reset,
     getValues,
-    formState: { errors }
+    formState: { errors },
+    setError,
+    clearErrors
   } = useForm({
     defaultValues,
     resolver: yupResolver(schema)
@@ -229,18 +296,18 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
     }
   }
 
-  const fetchAllCity = async () => {
+  const fetchAllProductTypes = async () => {
     setLoading(true)
     try {
       setLoading(false)
 
-      const response = await getAllCity({ params: { limit: -1, page: -1 } })
-      const CityArr = response?.data?.cities.map((item: any) => ({
+      const response = await getAllProductTypes({ params: { limit: -1, page: -1 } })
+      const productTypesArr = response?.data?.productTypes.map((item: any) => ({
         label: item.name,
         value: item._id
       }))
 
-      setAllCity(CityArr)
+      setAllProductTypes(productTypesArr)
     } catch (error) {
       setLoading(false)
     }
@@ -251,7 +318,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
   }, [])
 
   useEffect(() => {
-    fetchAllCity()
+    fetchAllProductTypes()
   }, [])
 
   useEffect(() => {
@@ -263,11 +330,11 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
         status: 0,
         image: '',
         type: '',
-        countInStock: 0,
-        price: 0,
+        countInStock: '',
+        price: '',
         rating: '',
         description: '',
-        discount: 0,
+        discount: '',
         slug: '',
         discountStartDate: null,
         discountEndDate: null
@@ -521,30 +588,6 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                       <Box mt={2}>
                         <Controller
                           control={control}
-                          rules={{
-                            required: true
-                          }}
-                          render={({ field: { onChange, onBlur, value, ref } }) => (
-                            <CustomTextField
-                              onChange={onChange}
-                              onBlur={onBlur}
-                              value={value}
-                              fullWidth
-                              label={t('Description')}
-                              placeholder={t('Enter_your_description')}
-                              inputRef={ref}
-                              error={Boolean(errors.description)}
-                              helperText={errors.description?.message}
-                            />
-                          )}
-                          name='description'
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                      <Box mt={2}>
-                        <Controller
-                          control={control}
                           render={({ field: { onChange, onBlur, value, ref } }) => (
                             <Box>
                               <InputLabel
@@ -553,32 +596,61 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                                   mb: '4px'
                                 }}
                               >
-                                {t('City')}
+                                {t('Type_product')}
                               </InputLabel>
                               <CustomSelect
                                 fullWidth
                                 onChange={onChange}
-                                options={allCity}
+                                options={allProductTypes}
                                 value={value}
-                                placeholder={t('Enter_your_city')}
+                                placeholder={t('Select')}
                                 inputRef={ref}
-                                error={Boolean(errors.city)}
+                                error={Boolean(errors.type)}
                               />
-                              {Boolean(errors.city) && (
+                              {Boolean(errors.type) && (
                                 <FormHelperText
                                   sx={{
                                     color: `${theme.palette.error.main} !important`
                                   }}
                                 >
-                                  {t('Enter_your_city')}
+                                  {t('Enter_your_type')}
                                 </FormHelperText>
                               )}
                             </Box>
                           )}
-                          name='city'
+                          name='type'
                         />
                       </Box>
                     </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Box mt={2}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                            <CustomTextField
+                              onChange={e => {
+                                const numValue = e.target.value.replace(/\D/g, '')
+                                onChange(numValue)
+                              }}
+                              inputProps={{
+                                pattern: '[0-9]*',
+                                inputMode: 'numeric'
+                              }}
+                              onBlur={onBlur}
+                              value={value}
+                              fullWidth
+                              label={t('Discount(percent)')}
+                              placeholder={t('Enter_discount')}
+                              inputRef={ref}
+                              error={Boolean(errors.discount)}
+                              helperText={errors.discount?.message}
+                            />
+                          )}
+                          name='discount'
+                        />
+                      </Box>
+                    </Grid>
+
                     <Grid item md={6} xs={12}>
                       <Box mt={2}>
                         <Controller
@@ -591,6 +663,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                               onChange={(date: Date | null) => {
                                 onChange(date)
                               }}
+                              minDate={new Date()}
                               onBlur={onBlur}
                               selectedDate={value}
                               error={Boolean(errors.discountStartDate)}
@@ -620,6 +693,28 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                             />
                           )}
                           name='discountEndDate'
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                      <Box mt={2}>
+                        <Controller
+                          control={control}
+                          rules={{
+                            required: true
+                          }}
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                            <CustomDraftWysiwyg
+                              onEditorStateChange={onChange}
+                              onBlur={onBlur}
+                              editorState={value as EditorState}
+                              error={Boolean(errors.description)}
+                              label={t('Description')}
+                              placeholder={t('Enter_your_description')}
+                              helperText={t('Enter_your_description')}
+                            />
+                          )}
+                          name='description'
                         />
                       </Box>
                     </Grid>
