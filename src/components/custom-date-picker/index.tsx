@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import CustomIcon from '../Icon'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import zIndex from '@mui/material/styles/zIndex'
 
 interface TCustomDatePicker extends ReactDatePickerProps {
   selectedDate?: Date | null
@@ -64,6 +65,10 @@ const StyledBox = styled(Box)<TBox>(({ theme, error }) => ({
       backgroundColor: theme.palette.primary.main,
       color: `${theme.palette.customColors.lightPaperBg} !important`
     },
+    '.react-datepicker__day--disabled': {
+      backgroundColor: `${theme.palette.action.selected} !important`,
+      borderRadius: '0.3rem'
+    },
     '.react-datepicker__day': {
       color: `rgba(${theme.palette.customColors.main},0.42)`,
       '&:hover': {
@@ -81,7 +86,6 @@ export const CustomDatePicker = (props: TCustomDatePicker) => {
   const { t } = useTranslation()
 
   const handleClickCalender = () => {
-    console.log(inputEl.current)
     if (inputEl.current) {
       inputEl.current.setFocus()
     }
