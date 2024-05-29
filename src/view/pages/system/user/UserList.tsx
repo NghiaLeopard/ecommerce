@@ -56,11 +56,15 @@ type TSelectedRow = { id: string; role: { id: string; permissions: string[] } }
 
 const ActiveChip = styled(Chip)(({ theme }) => ({
   padding: '15px 0px',
+  backgroundColor: '#28c76f29',
+  color: '#3a843f',
   fontWeight: 400
 }))
 
 const BlockChip = styled(Chip)(({ theme }) => ({
   padding: '15px 0px',
+  backgroundColor: '#da251d29',
+  color: '#da251d',
   fontWeight: 400
 }))
 

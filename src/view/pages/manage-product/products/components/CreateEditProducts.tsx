@@ -39,32 +39,30 @@ import { createProductsAsync, editProductsAsync } from 'src/stores/products/acti
 import { getDetailProducts } from 'src/services/products'
 
 // ** Components
-import { CustomSelect } from 'src/components/custom-select'
-import Spinner from 'src/components/spinner'
 import { CustomDatePicker } from 'src/components/custom-date-picker'
 import { CustomDraftWysiwyg } from 'src/components/custom-draft-wysiwyg'
+import { CustomSelect } from 'src/components/custom-select'
+import Spinner from 'src/components/spinner'
 import WrapperFileUpload from 'src/components/wrapper-file-upload'
 
 // ** Service
 import { getAllRoles } from 'src/services/role'
-import { getAllCity } from 'src/services/city'
+import { getAllProductTypes } from 'src/services/product-types'
 
 // ** Utils
-import { convertBase64, stringToSlug } from 'src/utils'
+import { convertBase64, convertHtmlToDraft, stringToSlug } from 'src/utils'
 
 // ** Draft-js
-import { EditorState } from 'draft-js'
-import { getAllProductTypes } from 'src/services/product-types'
+import { EditorState, convertToRaw } from 'draft-js'
+import draftToHtml from 'draftjs-to-html'
 
 type TDefaultValue = {
   name: string
-  city?: string
-  status?: number
+  status: number
   image?: string
-  type?: string
+  type: string
   countInStock: string
   price: string
-  rating?: string
   description: EditorState
   discount: string
   slug: string
@@ -84,27 +82,20 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
 
   const { t, i18n } = useTranslation()
 
-  const [password, setPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
-  const [allRole, setAllRole] = useState([])
-  const [allCity, setAllCity] = useState([])
   const [allProductTypes, setAllProductTypes] = useState([])
-
-  const handleClickPassword = () => setPassword(show => !show)
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
 
   const defaultValues: TDefaultValue = {
     name: '',
-    city: '',
     status: 0,
     image: '',
     type: '',
     countInStock: '',
     price: '',
-    rating: '',
     description: EditorState.createEmpty(),
     discount: '',
     slug: '',
@@ -183,12 +174,10 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
 
         return !discountStartDate || (discountStartDate && value && discountStartDate.getTime() < value.getTime())
       }),
-    city: yup.string().nonNullable(),
+    type: yup.string().required(t('Required_field')),
     image: yup.string().nonNullable(),
-    description: yup.object().nonNullable(),
-    status: yup.number().nonNullable(),
-    type: yup.string().nonNullable(),
-    rating: yup.string().nonNullable()
+    description: yup.object().required(),
+    status: yup.number().required(t('Required_field'))
   })
 
   const {
@@ -209,14 +198,12 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       dispatch(
         createProductsAsync({
           name: data.name,
-          city: data.city,
           status: data.status,
           image: avatar,
-          type: data.type || '',
+          type: data.type,
           countInStock: data.countInStock,
           price: data.price,
-          rating: data.rating || '',
-          description: data.description,
+          description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
           discount: data.discount,
           slug: data.slug,
           discountStartDate: data.discountStartDate,
@@ -228,14 +215,12 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
         editProductsAsync({
           idProducts: idProducts,
           name: data.name,
-          city: data.city,
           status: data.status,
           image: avatar,
-          type: data.type || '',
+          type: data.type,
           countInStock: data.countInStock,
           price: data.price,
-          rating: data.rating || '',
-          description: data.description,
+          description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
           discount: data.discount,
           slug: data.slug,
           discountStartDate: data.discountStartDate,
@@ -250,24 +235,23 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
     try {
       const res = await getDetailProducts(idProducts)
       const data = res.data
+
       setLoading(false)
+      console.log(data)
       if (data) {
         reset({
           name: data.name,
-          city: data.city,
           status: data.status,
-          image: avatar ? avatar : '',
-          type: data.type,
+            type: data.type,
           countInStock: data.countInStock,
           price: data.price,
-          rating: data.rating,
-          description: data.description,
+          description: convertHtmlToDraft(data.description),
           discount: data.discount,
           slug: data.slug,
           discountStartDate: data.discountStartDate,
           discountEndDate: data.discountEndDate
         })
-        setAvatar(data.avatar)
+        setAvatar(data.image)
       }
     } catch (error) {
       setLoading(false)
@@ -277,23 +261,6 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
   const handleUploadAvatar = async (file: File) => {
     const base64 = await convertBase64(file)
     setAvatar(base64 as string)
-  }
-
-  const fetchAllRole = async () => {
-    setLoading(true)
-    try {
-      setLoading(false)
-
-      const response = await getAllRoles({ params: { limit: -1, page: -1 } })
-      const roleArr = response?.data?.roles.map((item: any) => ({
-        label: item.name,
-        value: item._id
-      }))
-
-      setAllRole(roleArr)
-    } catch (error) {
-      setLoading(false)
-    }
   }
 
   const fetchAllProductTypes = async () => {
@@ -314,10 +281,6 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
   }
 
   useEffect(() => {
-    fetchAllRole()
-  }, [])
-
-  useEffect(() => {
     fetchAllProductTypes()
   }, [])
 
@@ -326,13 +289,11 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       setAvatar('')
       reset({
         name: '',
-        city: '',
         status: 0,
         image: '',
         type: '',
         countInStock: '',
         price: '',
-        rating: '',
         description: '',
         discount: '',
         slug: '',
@@ -613,7 +574,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                                     color: `${theme.palette.error.main} !important`
                                   }}
                                 >
-                                  {t('Enter_your_type')}
+                                  {t('Select')}
                                 </FormHelperText>
                               )}
                             </Box>

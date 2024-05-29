@@ -57,7 +57,7 @@ export const productsSlice = createSlice({
     }),
       builder.addCase(getAllProductsAsync.fulfilled, (state, actions) => {
         state.isLoading = false
-        state.products.data = actions?.payload?.data?.Products
+        state.products.data = actions?.payload?.data?.products
         state.products.total = actions?.payload?.data?.totalCount
       }),
       // eslint-disable-next-line lines-around-comment

@@ -77,7 +77,7 @@ const LoginPage: NextPage<TProps> = () => {
   } = useForm({
     defaultValues: {
       email: 'admin@gmail.com',
-      password: 'NguyenDaiNghia1@'
+      password: '123456789Kha@'
     },
     resolver: yupResolver(schema)
   })
