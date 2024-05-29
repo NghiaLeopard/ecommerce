@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Chip, Grid, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/product-types'
+import { resetInitialState } from 'src/stores/products'
 import { deleteProductsAsync, deleteMultipleProductsAsync, getAllProductsAsync } from 'src/stores/products/actions'
 
 // ** Component
@@ -44,10 +44,27 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
 import { formatDate } from 'src/utils'
+import { CustomSelect } from 'src/components/custom-select'
+import { getAllProductTypes } from 'src/services/product-types'
+import { OBJECT_STATUS_PRODUCTS } from 'src/configs/products'
 
 type TProps = {}
 
 type TSelectedRow = { id: string; role: { id: string; permissions: string[] } }
+
+const ActiveChip = styled(Chip)(({ theme }) => ({
+  padding: '15px 0px',
+  backgroundColor: '#28c76f29',
+  color: '#3a843f',
+  fontWeight: 400
+}))
+
+const BlockChip = styled(Chip)(({ theme }) => ({
+  padding: '15px 0px',
+  backgroundColor: '#da251d29',
+  color: '#da251d',
+  fontWeight: 400
+}))
 
 const ProductsPage: NextPage<TProps> = () => {
   // ** Theme
@@ -67,7 +84,11 @@ const ProductsPage: NextPage<TProps> = () => {
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
+  const [typeSelected, setTypeSelected] = useState()
+  const [statusSelected, setStatusSelected] = useState()
   const dispatch: AppDispatch = useDispatch()
+  const [allProductTypes, setAllProductTypes] = useState([])
+
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [openCreateEdit, setOpenCreateEdit] = useState({
@@ -78,6 +99,8 @@ const ProductsPage: NextPage<TProps> = () => {
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.Products', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
+  const OBJECT_STATUS_PRODUCTS_PAGE = OBJECT_STATUS_PRODUCTS()
 
   // ** use selector
   const {
@@ -102,7 +125,9 @@ const ProductsPage: NextPage<TProps> = () => {
           limit: pageSize,
           page: page,
           search: search,
-          order: sortBy
+          order: sortBy,
+          status: statusSelected,
+          productType: typeSelected
         }
       })
     )
@@ -163,10 +188,30 @@ const ProductsPage: NextPage<TProps> = () => {
       }
     }
   }
+  const fetchAllProductTypes = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllProductTypes({ params: { limit: -1, page: -1 } })
+      const productTypesArr = response?.data?.productTypes.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllProductTypes(productTypesArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllProductTypes()
+  }, [])
 
   useEffect(() => {
     getListProducts()
-  }, [sortBy, search, page, pageSize])
+  }, [sortBy, search, page, pageSize, statusSelected, typeSelected])
 
   useEffect(() => {
     if (isMessageCreateEdit) {
@@ -233,14 +278,37 @@ const ProductsPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'slug',
-      headerName: t('Slug'),
+      field: 'type',
+      headerName: t('Type'),
+      minWidth: 200,
+      maxWidth: 200,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+        console.log(row)
+
+        return <Typography>{row?.type?.name}</Typography>
+      }
+    },
+    {
+      field: 'price',
+      headerName: t('Price'),
       minWidth: 200,
       maxWidth: 200,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.slug}</Typography>
+        return <Typography>{row?.price}</Typography>
+      }
+    },
+    {
+      field: 'countInStock',
+      headerName: t('countInStock'),
+      minWidth: 200,
+      maxWidth: 200,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return <Typography>{row?.countInStock}</Typography>
       }
     },
     {
@@ -252,6 +320,18 @@ const ProductsPage: NextPage<TProps> = () => {
         const { row } = params
 
         return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+      }
+    },
+
+    {
+      field: 'status',
+      headerName: t('Status'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return row.status === 1 ? <ActiveChip label={t('Active')} /> : <BlockChip label={t('Blocking')} />
       }
     },
 
@@ -344,6 +424,28 @@ const ProductsPage: NextPage<TProps> = () => {
                 gap: 3
               }}
             >
+              <Box sx={{ width: '200px', mt: 1 }}>
+                <CustomSelect
+                  value={typeSelected}
+                  options={allProductTypes}
+                  fullWidth
+                  onChange={(data: any) => {
+                    setTypeSelected(data)
+                  }}
+                  placeholder={t('Type')}
+                />
+              </Box>
+              <Box sx={{ width: '200px', mt: 1 }}>
+                <CustomSelect
+                  value={statusSelected}
+                  options={Object.values(OBJECT_STATUS_PRODUCTS_PAGE)}
+                  fullWidth
+                  onChange={(data: any) => {
+                    setStatusSelected(data)
+                  }}
+                  placeholder={t('Status')}
+                />
+              </Box>
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>

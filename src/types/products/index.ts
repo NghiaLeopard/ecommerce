@@ -3,18 +3,18 @@ export type TParamsGetProducts = {
   page?: number
   search?: string
   order?: string
+  status?: string
+  productType?: string
 }
 
 export type TParamsEditProducts = {
   idProducts?: string
   name: string
-  city?: string
   status?: number
   image: string
   type: string
   countInStock: number
   price: number
-  rating: string
   description: string
   discount: number
   slug: string
@@ -24,13 +24,11 @@ export type TParamsEditProducts = {
 
 export type TParamsCreateProducts = {
   name: string
-  city?: string
   status?: number
   image: string
   type: string
   countInStock: number
   price: number
-  rating: string
   description: string
   discount: number
   slug: string
