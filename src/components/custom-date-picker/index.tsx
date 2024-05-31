@@ -19,7 +19,7 @@ interface TBox extends BoxProps {
 }
 
 const StyledBox = styled(Box)<TBox>(({ theme, error }) => ({
-  width: '378px',
+  width: '340px',
   borderRadius: 8,
   backgroundColor: 'transparent !important',
   border: error ? `1px solid ${theme.palette.error.main}` : `1px solid rgba(${theme.palette.customColors.main},0.2)`,
@@ -28,6 +28,9 @@ const StyledBox = styled(Box)<TBox>(({ theme, error }) => ({
 
   '.react-datepicker-wrapper': {
     width: '100%'
+  },
+  '.react-datepicker-popper': {
+    zIndex: 2
   },
 
   '.react-datepicker__header': {

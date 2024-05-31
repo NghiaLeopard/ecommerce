@@ -9,6 +9,7 @@ import {
   TParamsEditProducts,
   TParamsGetProducts
 } from 'src/types/products'
+import axios from 'axios'
 
 // ** Type
 
@@ -22,9 +23,29 @@ export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   }
 }
 
+export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
 export const getDetailProducts = async (idProducts: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/${idProducts}`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getDetailProductsPublic = async (slug: string) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public/slug/${slug}`)
 
     return res.data
   } catch (error) {

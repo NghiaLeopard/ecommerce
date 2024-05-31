@@ -43,7 +43,7 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
-import { formatDate } from 'src/utils'
+import { formatDate, formatPriceToLocal } from 'src/utils'
 import { CustomSelect } from 'src/components/custom-select'
 import { getAllProductTypes } from 'src/services/product-types'
 import { OBJECT_STATUS_PRODUCTS } from 'src/configs/products'
@@ -284,7 +284,6 @@ const ProductsPage: NextPage<TProps> = () => {
       maxWidth: 200,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-        console.log(row)
 
         return <Typography>{row?.type?.name}</Typography>
       }
@@ -297,7 +296,7 @@ const ProductsPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.price}</Typography>
+        return <Typography>{`${formatPriceToLocal(row?.price)} VNĐ`}</Typography>
       }
     },
     {

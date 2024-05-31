@@ -242,14 +242,14 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
         reset({
           name: data.name,
           status: data.status,
-            type: data.type,
+          type: data.type,
           countInStock: data.countInStock,
           price: data.price,
           description: convertHtmlToDraft(data.description),
           discount: data.discount,
           slug: data.slug,
-          discountStartDate: data.discountStartDate,
-          discountEndDate: data.discountEndDate
+          discountStartDate: new Date(data.discountStartDate),
+          discountEndDate: new Date(data.discountEndDate)
         })
         setAvatar(data.image)
       }
@@ -331,7 +331,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                 background: theme.palette.background.paper,
                 borderRadius: '15px',
                 px: 4,
-                py: 20
+                py: 3
               }}
             >
               <Grid container item md={6} xs={12}>
