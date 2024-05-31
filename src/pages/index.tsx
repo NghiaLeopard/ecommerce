@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import { getTemporaryToken } from 'src/helpers/storage'
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
+import HomePage from 'src/view/pages/home'
 
 export default function Home() {
   const temporaryToken = getTemporaryToken()
@@ -16,6 +17,8 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
+
+      <HomePage />
     </>
   )
 }
