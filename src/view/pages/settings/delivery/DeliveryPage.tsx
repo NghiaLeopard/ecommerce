@@ -42,13 +42,13 @@ import toast from 'react-hot-toast'
 
 // ** utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { formatDate, formatPriceToLocal } from 'src/utils'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
-import { formatDate } from 'src/utils'
 
 type TProps = {}
 
@@ -250,7 +250,7 @@ const DeliveryPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.price}</Typography>
+        return <Typography>{`${formatPriceToLocal(row?.price)} VNĐ`}</Typography>
       }
     },
     {

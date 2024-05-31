@@ -106,3 +106,15 @@ export const convertHtmlToDraft = (html: string) => {
 
   return editorState
 }
+
+export const formatPriceToLocal = (price: number) => {
+  console.log(price)
+  try {
+    return Number(price).toLocaleString('vi-VN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    })
+  } catch (error) {
+    return price
+  }
+}

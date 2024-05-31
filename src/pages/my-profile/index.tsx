@@ -5,7 +5,6 @@ import { NextPage } from 'next'
 import { ReactNode } from 'react'
 
 // **Layout
-import BlankLayout from 'src/view/layout/BlankLayout'
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
 
 // ** Page
