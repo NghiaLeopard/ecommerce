@@ -1,20 +1,32 @@
 // ** Next
+import { NextPage } from 'next'
+
+// ** React
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+// ** Mui
 import { Box, Grid, useTheme } from '@mui/material'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-import { NextPage } from 'next'
-import { SyntheticEvent, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+
+// ** Component
 import CustomPagination from 'src/components/custom-pagination'
+import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import { getAllProductTypes } from 'src/services/product-types'
-import { getAllProductsPublic } from 'src/services/products'
-import { TProductType } from 'src/types/product-types'
-import { TProduct } from 'src/types/products'
 import CardProduct from './components/CardProduct'
 import FilterProduct from './components/FilterProduct'
-import InputSearch from 'src/components/input-search'
+
+// ** Configs
+import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+
+// ** Service
+import { getAllProductTypes } from 'src/services/product-types'
+import { getAllProductsPublic } from 'src/services/products'
+
+// ** Type
+import { TProductType } from 'src/types/product-types'
+import { TProduct } from 'src/types/products'
 
 interface TProps {}
 
@@ -97,7 +109,6 @@ const HomePage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (firstRender.current) {
-      console.log('hahah')
       getListProductsPublic()
     }
   }, [radioSelected, search, tabSelected])

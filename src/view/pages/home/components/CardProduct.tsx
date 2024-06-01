@@ -62,17 +62,23 @@ export default function CardProduct({ item }: TCardProduct) {
       price: item.price,
       product: item._id,
       image: item.image,
-      discount: item.discount
+      discount: item.discount,
+      slug: item.slug
     })
 
-    dispatch(
-      addToCart({
-        orderItem: arrOrderList
-      })
-    )
+    if (user?._id) {
+      dispatch(
+        addToCart({
+          orderItem: arrOrderList
+        })
+      )
 
-    if (item._id) {
       setOrderItem(JSON.stringify({ ...orderParse, [user?._id]: arrOrderList }))
+    } else {
+      router.replace({
+        pathname: 'login',
+        query: { returnUrl: router.asPath }
+      })
     }
   }
 
