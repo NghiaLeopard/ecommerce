@@ -1,14 +1,13 @@
-// ** Next
+import { NextPage } from 'next'
 import Head from 'next/head'
-
-// **React
 import { ReactNode } from 'react'
-
-// ** Layout
+import { getTemporaryToken } from 'src/helpers/storage'
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
 import HomePage from 'src/view/pages/home'
 
-export default function Home() {
+type TProps = {}
+
+const Home: NextPage<TProps> = () => {
   return (
     <>
       <Head>
@@ -26,3 +25,5 @@ export default function Home() {
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
+
+export default Home

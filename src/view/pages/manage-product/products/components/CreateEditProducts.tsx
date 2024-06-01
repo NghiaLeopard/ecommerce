@@ -237,7 +237,6 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       const data = res.data
 
       setLoading(false)
-      console.log(data)
       if (data) {
         reset({
           name: data.name,

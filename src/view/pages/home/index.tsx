@@ -3,7 +3,7 @@ import { Box, Grid, useTheme } from '@mui/material'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import { NextPage } from 'next'
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import CustomPagination from 'src/components/custom-pagination'
 import Spinner from 'src/components/spinner'
@@ -33,6 +33,8 @@ const HomePage: NextPage<TProps> = () => {
   const [radioSelected, setRadioSelected] = useState('')
   const [tabSelected, setTabSelected] = useState<string>('')
   const [search, setSearch] = useState('')
+
+  const firstRender = useRef<boolean>(false)
 
   const handleChangePagination = (page: number, pageSize: number) => {
     setPage(page)
@@ -83,6 +85,7 @@ const HomePage: NextPage<TProps> = () => {
 
       setAllProductTypes(productTypesArr)
       setTabSelected(productTypesArr[0].value)
+      firstRender.current = true
     } catch (error) {
       setLoading(false)
     }
@@ -93,12 +96,15 @@ const HomePage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    fetchAllProductTypes()
-  }, [])
+    if (firstRender.current) {
+      console.log('hahah')
+      getListProductsPublic()
+    }
+  }, [radioSelected, search, tabSelected])
 
   useEffect(() => {
-    getListProductsPublic()
-  }, [radioSelected, search, tabSelected])
+    fetchAllProductTypes()
+  }, [])
 
   return (
     <>

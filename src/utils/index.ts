@@ -97,6 +97,7 @@ export const stringToSlug = (str: string) => {
 
 import { EditorState, ContentState } from 'draft-js'
 import htmlToDraft from 'html-to-draftjs'
+import { TOrderProduct } from 'src/types/cart-product'
 
 export const convertHtmlToDraft = (html: string) => {
   const blocksFromHtml = htmlToDraft(html)
@@ -108,7 +109,6 @@ export const convertHtmlToDraft = (html: string) => {
 }
 
 export const formatPriceToLocal = (price: number) => {
-  console.log(price)
   try {
     return Number(price).toLocaleString('vi-VN', {
       minimumFractionDigits: 0,
@@ -116,5 +116,25 @@ export const formatPriceToLocal = (price: number) => {
     })
   } catch (error) {
     return price
+  }
+}
+
+export const cloneDeep = (item: TOrderProduct[]) => {
+  return JSON.parse(JSON.stringify(item))
+}
+
+export const convertAddToCart = (orderItem: TOrderProduct[], addItem: TOrderProduct) => {
+  const cloneArr = cloneDeep(orderItem)
+  try {
+    const findItem = cloneArr.find((item: TOrderProduct) => item.product === addItem.product)
+    if (findItem) {
+      findItem.amount = findItem.amount + 1
+    } else {
+      cloneArr.push(addItem)
+    }
+
+    return cloneArr
+  } catch (error) {
+    return orderItem
   }
 }
