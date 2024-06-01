@@ -10,11 +10,14 @@ import {
   TParamsGetProductTypes
 } from 'src/types/product-types'
 
+// ** axios 
+import axios from 'axios'
+
 // ** Type
 
 export const getAllProductTypes = async (data: { params: TParamsGetProductTypes }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPES.INDEX}`, data)
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPES.INDEX}`, data)
 
     return res.data
   } catch (error) {

@@ -18,7 +18,7 @@ export const loginAuth = async (data: LoginParams) => {
 
 export const logoutAuth = async () => {
   try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/logout`)
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/logout`)
 
     return res.data
   } catch (error) {}

@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
+import { ACCESS_TOKEN, ORDER_ITEM, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
+import { TOrderProduct } from 'src/types/cart-product'
 
 export const setLocalUserData = (userData: string, accessToken: string, refreshToken: string) => {
   if (typeof window !== 'undefined') {
@@ -47,5 +48,17 @@ export const getTemporaryToken = () => {
 export const clearTemporaryToken = () => {
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(TEMPORARY_TOKEN)
+  }
+}
+
+export const setOrderItem = (data: string) => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(ORDER_ITEM, data)
+  }
+}
+
+export const getOrderItem = () => {
+  if (typeof window !== 'undefined') {
+    return window.localStorage.getItem(ORDER_ITEM)
   }
 }

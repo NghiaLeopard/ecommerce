@@ -25,6 +25,7 @@ import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** React
 import { useTranslation } from 'react-i18next'
+import CartProduct from './components/cart-product'
 
 // ** i18n
 
@@ -111,6 +112,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
 
           <LanguageDropDown />
           <ModeToggle />
+          <CartProduct />
           {user !== null ? (
             <UserDropDown />
           ) : (

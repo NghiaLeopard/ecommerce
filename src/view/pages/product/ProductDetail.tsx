@@ -1,6 +1,7 @@
 // ** Next
 import { NextPage } from 'next'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 // ** React
 import { useEffect, useState } from 'react'
@@ -17,17 +18,17 @@ import { Box, Button, Grid, Rating, Typography, useTheme } from '@mui/material'
 
 // ** I18n
 
+// ** Type
+import { TProduct } from 'src/types/products'
+
 // ** Component
 import Spinner from 'src/components/spinner'
-import { getDetailProductsPublic } from 'src/services/products'
-import { useRouter } from 'next/router'
-import { TProduct } from 'src/types/products'
 import CustomIcon from 'src/components/Icon'
-import { formatPriceToLocal } from 'src/utils'
 
 // ** Hooks
 
 // ** Service
+import { getDetailProductsPublic } from 'src/services/products'
 
 // ** Utils
 
@@ -36,6 +37,7 @@ import { formatPriceToLocal } from 'src/utils'
 // ** Store
 
 // ** utils
+import { formatPriceToLocal } from 'src/utils'
 
 type TProps = {}
 
@@ -44,7 +46,6 @@ const ProductDetail: NextPage<TProps> = () => {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [avatar, setAvatar] = useState('')
   const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>({})
 
   const { productSlug } = router?.query
@@ -59,6 +60,8 @@ const ProductDetail: NextPage<TProps> = () => {
       setLoading(false)
     }
   }
+
+  const handleAddToCart = (data: TProduct) => {}
 
   useEffect(() => {
     if (productSlug) {
@@ -165,12 +168,16 @@ const ProductDetail: NextPage<TProps> = () => {
             </Typography>
 
             <Box sx={{ display: 'flex', direction: 'column', gap: 5, mt: '20px' }}>
-              <Button type='submit' variant='outlined' sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
+              <Button
+                variant='outlined'
+                sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+                onClick={() => handleAddToCart(dataDetailProduct)}
+              >
                 <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
                 {t('Add_to_cart')}
               </Button>
 
-              <Button type='submit' variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
+              <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
                 <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
                 {t('Buy_now')}
               </Button>

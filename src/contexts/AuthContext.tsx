@@ -32,6 +32,8 @@ import {
 // ** Axios
 import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { addToCart } from 'src/stores/cart-product'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -56,6 +58,8 @@ const AuthProvider = ({ children }: Props) => {
 
   // ** Hooks
   const router = useRouter()
+
+  const dispatch = useDispatch()
 
   // this useEffect is impact : when refresh page : call api/auth/me with accessToken
   // access token contains information to know : who account ?
@@ -121,6 +125,12 @@ const AuthProvider = ({ children }: Props) => {
       setUser(null)
       removeLocalUserData()
       clearTemporaryToken()
+
+      dispatch(
+        addToCart({
+          orderItem: []
+        })
+      )
       router.replace('/login')
     })
   }
