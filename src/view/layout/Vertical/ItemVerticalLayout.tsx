@@ -25,7 +25,6 @@ import CustomIcon from 'src/components/Icon'
 
 // ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { usePermissions } from 'src/hooks/usePermissions'
 
 // ** Type
 
@@ -49,6 +48,7 @@ type TProps = {
 
 // each one component will have useState and event handle difference.
 export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical, fatherActive }) => {
+  // ** Hook
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const theme = useTheme()

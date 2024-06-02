@@ -20,6 +20,7 @@ type TProps = {
 }
 
 const UserLayout: NextPage<TProps> = ({ children }) => {
+  // ** Hook
   const [open, setOpen] = useState(true)
   const theme = useTheme()
   const toggleDrawer = () => {
