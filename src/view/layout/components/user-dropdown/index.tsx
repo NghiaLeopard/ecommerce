@@ -70,10 +70,19 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 }))
 
 const UserDropDown: NextPage<TProps> = () => {
+  // ** Router
   const route = useRouter()
+
+  // ** Translation
   const { t, i18n } = useTranslation()
+
+  // ** auth
   const { user, logout, setUser } = useAuth()
+
+  // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  // ** Selector
   const { userData } = useSelector((state: RootState) => state.auth)
 
   const open = Boolean(anchorEl)

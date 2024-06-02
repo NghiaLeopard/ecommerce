@@ -18,10 +18,13 @@ interface TProps {
 }
 
 export const ListVerticalLayout: NextPage<TProps> = ({ openVertical }) => {
-  const level = 0
+  // ** Hook
   const router = useRouter()
   const vertical = VerticalItems()
   const { user } = useAuth()
+
+  const level = 0
+
   const permissionsUser: any = user?.role?.permissions
 
   const isParentHaveChildActive = (item: any) => {

@@ -9,7 +9,7 @@ import { Fragment, MouseEvent, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Mui
-import { Badge, Button, Divider, Typography, useTheme } from '@mui/material'
+import { Badge, Button, Typography, useTheme } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -27,31 +27,44 @@ import CustomIcon from '../../../../components/Icon'
 import { useTranslation } from 'react-i18next'
 
 // ** Config
-import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** Utils
-import { formatPriceToLocal, toFullName } from 'src/utils'
+import { formatPriceToLocal } from 'src/utils'
 
 // ** Store
 import { RootState } from 'src/stores'
+import { updateToCart } from 'src/stores/cart-product'
 import { TOrderProduct } from 'src/types/cart-product'
+
+// ** Helper
 import { getOrderItem } from 'src/helpers/storage'
-import { addToCart } from 'src/stores/cart-product'
+
+// ** Stores
 
 interface TProps {}
 
 const CartProduct: NextPage<TProps> = () => {
+  // ** Router
   const route = useRouter()
-  const { t, i18n } = useTranslation()
+
+  // ** Translation
+  const { t } = useTranslation()
+
+  // ** Auth
   const { user, setUser } = useAuth()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  // ** Theme
   const theme = useTheme()
+
+  // ** Dispatch
+  const dispatch = useDispatch()
+
+  // ** useState
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   // ** useSelector
   const { userData } = useSelector((state: RootState) => state.auth)
   const { orderItem } = useSelector((state: RootState) => state.cartProduct)
-
-  const dispatch = useDispatch()
 
   const open = Boolean(anchorEl)
 
@@ -71,12 +84,12 @@ const CartProduct: NextPage<TProps> = () => {
   }
 
   const handleNavigationItem = (slug: string) => {
-    route.push(`product/${slug}`)
+    route.push(`/product/${slug}`)
     handleClose()
   }
 
   const handleNavigationViewCart = () => {
-    route.push('my-cart')
+    route.push('/my-cart')
     handleClose()
   }
 
@@ -91,7 +104,7 @@ const CartProduct: NextPage<TProps> = () => {
     const orderParse = getOrderItemStorage ? JSON.parse(getOrderItemStorage) : []
     if (user?._id) {
       dispatch(
-        addToCart({
+        updateToCart({
           orderItem: orderParse[user?._id] || []
         })
       )
@@ -113,7 +126,7 @@ const CartProduct: NextPage<TProps> = () => {
           </IconButton>
         </Tooltip>
       </Box>
-      {user?._id && (
+      {user?._id && orderItem.length >= 1 && (
         <Menu
           anchorEl={anchorEl}
           id='account-menu'

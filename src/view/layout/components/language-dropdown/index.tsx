@@ -26,6 +26,7 @@ const LanguageDropDown: NextPage<TProps> = () => {
   const { i18n } = useTranslation()
 
   const open = Boolean(anchorEl)
+
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }

@@ -123,15 +123,18 @@ export const cloneDeep = (item: TOrderProduct[]) => {
   return JSON.parse(JSON.stringify(item))
 }
 
-export const convertAddToCart = (orderItem: TOrderProduct[], addItem: TOrderProduct) => {
-  const cloneArr = cloneDeep(orderItem)
+export const executeUpdateCard = (orderItem: TOrderProduct[], addItem: TOrderProduct) => {
   try {
+    let cloneArr = cloneDeep(orderItem)
+
     const findItem = cloneArr.find((item: TOrderProduct) => item.product === addItem.product)
     if (findItem) {
-      findItem.amount = findItem.amount + 1
+      findItem.amount += addItem.amount
     } else {
       cloneArr.push(addItem)
     }
+
+    cloneArr = cloneArr.filter((item: TOrderProduct) => item.amount >= 1)
 
     return cloneArr
   } catch (error) {

@@ -2,50 +2,39 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import { Avatar, Box, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
 
-// **Form
-import { useForm } from 'react-hook-form'
-
-// **Yup
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-
-// ** Regex
-import { EMAIL_REG } from 'src/configs/regex'
-
-// ** I18n
-
 // ** Component
 import Spinner from 'src/components/spinner'
+import CustomTextField from 'src/components/text-field'
+
+import CustomIcon from 'src/components/Icon'
 
 // ** Hooks
-
-// ** Service
-import { getAuthMe } from 'src/services/auth'
-import { getAllCity } from 'src/services/city'
-import { getAllRoles } from 'src/services/role'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Utils
-import toast from 'react-hot-toast'
+import { executeUpdateCard, formatPriceToLocal } from 'src/utils'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/auth'
-import { updateAuthMeSync } from 'src/stores/auth/actions'
+import { updateToCart } from 'src/stores/cart-product'
 
 // ** utils
-import { convertBase64, formatPriceToLocal, separationFullName, toFullName } from 'src/utils'
+import { useRouter } from 'next/router'
+
+// ** Helper
+import { getOrderItem, setOrderItem } from 'src/helpers/storage'
+
+// ** Type
 import { TOrderProduct } from 'src/types/cart-product'
-import CustomIcon from 'src/components/Icon'
-import CustomTextField from 'src/components/text-field'
 
 type TProps = {}
 
@@ -55,8 +44,103 @@ const MyCartPage: NextPage<TProps> = () => {
 
   const [loading, setLoading] = useState(false)
   const dispatch: AppDispatch = useDispatch()
+  const { user } = useAuth()
+  const router = useRouter()
+  const [checkboxSelected, setCheckboxSelected] = useState<string[]>([])
 
   const { orderItem } = useSelector((state: RootState) => state.cartProduct)
+
+  const memoAllId = useMemo(() => {
+    return orderItem.map((item: TOrderProduct) => item.product)
+  }, [orderItem])
+
+  const handleChangeAmountCart = (item: TOrderProduct, amount: number) => {
+    const dataCart = getOrderItem()
+    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
+
+    const arrCart = executeUpdateCard(orderItem, {
+      name: item.name,
+      amount: amount,
+      slug: item.slug,
+      price: item.price,
+      product: item.product,
+      image: item.image,
+      discount: item.discount
+    })
+
+    // This page is public then when adjust amount cart , you must log in
+
+    if (user?._id) {
+      dispatch(
+        updateToCart({
+          orderItem: arrCart
+        })
+      )
+      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: arrCart }))
+    } else {
+      router.replace({
+        pathname: 'login',
+        query: { returnUrl: router.asPath }
+      })
+    }
+  }
+
+  const handleDeleteCart = (id: string) => {
+    const dataCart = getOrderItem()
+    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
+    const filteredCart = orderItem.filter((item: TOrderProduct) => item.product !== id)
+    if (user?._id) {
+      dispatch(
+        updateToCart({
+          orderItem: filteredCart
+        })
+      )
+      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: filteredCart }))
+    } else {
+      router.replace({
+        pathname: 'login',
+        query: { returnUrl: router.asPath }
+      })
+    }
+  }
+
+  const handleDeleteManyCart = () => {
+    const dataCart = getOrderItem()
+    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
+    const filteredCart = orderItem.filter((item: TOrderProduct) => !checkboxSelected.includes(item.product))
+    if (user?._id) {
+      dispatch(
+        updateToCart({
+          orderItem: filteredCart
+        })
+      )
+      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: filteredCart }))
+    } else {
+      router.replace({
+        pathname: 'login',
+        query: { returnUrl: router.asPath }
+      })
+    }
+  }
+
+  const handleChangeCheckbox = (id: string) => {
+    const hadArr = checkboxSelected.includes(id)
+    if (hadArr) {
+      const filteredArr = checkboxSelected.filter((item: string) => item !== id)
+      setCheckboxSelected([...filteredArr])
+    } else {
+      setCheckboxSelected(prev => [...prev, id])
+    }
+  }
+
+  const handleChangeManyCheckbox = (value: string) => {
+    const hadArr = checkboxSelected.length === orderItem.length
+    if (hadArr) {
+      setCheckboxSelected([])
+    } else {
+      setCheckboxSelected(memoAllId)
+    }
+  }
 
   return (
     <>
@@ -65,8 +149,12 @@ const MyCartPage: NextPage<TProps> = () => {
       <Box sx={{ background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5, width: '100%' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 5 }}>
           <Box sx={{ width: 'calc(10% - 100px)' }}>
-            <Tooltip title={t('Selected_all')}>
-              <Checkbox />
+            <Tooltip title={t('Select_all')}>
+              <Checkbox
+                checked={memoAllId.every(id => checkboxSelected.includes(id))}
+                value={memoAllId}
+                onChange={e => handleChangeManyCheckbox(e.target.value)}
+              />
             </Tooltip>
           </Box>
           <Typography sx={{ width: '80px', marginLeft: '20px' }}>{t('Image')}</Typography>
@@ -76,7 +164,7 @@ const MyCartPage: NextPage<TProps> = () => {
           <Typography sx={{ flexBasis: '10%' }}>{t('Count')}</Typography>
           <Box sx={{ flexBasis: '5%' }}>
             <Tooltip title='Delete'>
-              <IconButton>
+              <IconButton onClick={handleDeleteManyCart}>
                 <CustomIcon icon='mingcute:delete-2-fill' />
               </IconButton>
             </Tooltip>
@@ -86,9 +174,13 @@ const MyCartPage: NextPage<TProps> = () => {
 
         {orderItem.map((item: TOrderProduct) => {
           return (
-            <Box key={item.name} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box key={item.product} sx={{ display: 'flex', alignItems: 'center' }}>
               <Box sx={{ width: 'calc(10% - 120px)' }}>
-                <Checkbox />
+                <Checkbox
+                  checked={checkboxSelected.includes(item.product)}
+                  value={item.product}
+                  onChange={e => handleChangeCheckbox(e.target.value)}
+                />
               </Box>
               <Avatar src={item.image} sx={{ width: '120px', height: '100px' }} />
               <Typography
@@ -103,16 +195,20 @@ const MyCartPage: NextPage<TProps> = () => {
               >
                 {item.name}
               </Typography>
-              {item.discount > 0 && (
-                <Typography
-                  color={theme.palette.primary.main}
-                  fontWeight='bold'
-                  fontSize='20px'
-                  sx={{ textDecoration: 'line-through', color: theme.palette.error.main, flexBasis: '20%' }}
-                >
-                  {`${formatPriceToLocal(item.price)} VNĐ`}
-                </Typography>
-              )}
+              <Box sx={{ flexBasis: '20%' }}>
+                {item.discount > 0 ? (
+                  <Typography
+                    color={theme.palette.primary.main}
+                    fontWeight='bold'
+                    fontSize='20px'
+                    sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
+                  >
+                    {`${formatPriceToLocal(item.price)} VNĐ`}
+                  </Typography>
+                ) : (
+                  <Box>{''}</Box>
+                )}
+              </Box>
               <Typography
                 color={theme.palette.primary.main}
                 fontSize='20px'
@@ -123,15 +219,24 @@ const MyCartPage: NextPage<TProps> = () => {
                   ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
                   : `${formatPriceToLocal(item.price)} VNĐ`}
               </Typography>
-              <Box sx={{ display: 'flex', flexBasis: '10%', gap: 6 }}>
+              <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2 }}>
                 <Tooltip title='Create'>
-                  <IconButton>
-                    <CustomIcon icon='ph:plus-bold' />
+                  <IconButton
+                    sx={{
+                      backgroundColor: `${theme.palette.primary.main} !important`,
+                      color: theme.palette.common.white
+                    }}
+                    onClick={() => handleChangeAmountCart(item, -1)}
+                  >
+                    <CustomIcon icon='ic:baseline-minus' />
                   </IconButton>
                 </Tooltip>
                 <CustomTextField
                   value={item.amount}
                   sx={{
+                    '.MuiInputBase-input': {
+                      width: '20px'
+                    },
                     '.MuiInputBase-root': {
                       border: 'none',
                       borderBottom: '1px solid',
@@ -140,15 +245,20 @@ const MyCartPage: NextPage<TProps> = () => {
                   }}
                 />
                 <Tooltip title='Create'>
-                  <IconButton>
+                  <IconButton
+                    onClick={() => handleChangeAmountCart(item, 1)}
+                    sx={{
+                      backgroundColor: `${theme.palette.primary.main} !important`,
+                      color: theme.palette.common.white
+                    }}
+                  >
                     <CustomIcon icon='ph:plus-bold' />
                   </IconButton>
                 </Tooltip>
               </Box>
-              
               <Box sx={{ flexBasis: '5%' }}>
                 <Tooltip title='Delete'>
-                  <IconButton>
+                  <IconButton onClick={() => handleDeleteCart(item.product)}>
                     <CustomIcon icon='mingcute:delete-2-fill' />
                   </IconButton>
                 </Tooltip>

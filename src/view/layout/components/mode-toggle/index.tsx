@@ -16,6 +16,7 @@ import { Mode } from 'src/types/layouts'
 interface TProps {}
 
 const ModeToggle: NextPage<TProps> = () => {
+  // ** Hook
   const { settings, saveSettings } = useSettings()
 
   const handleModeChange = (mode: Mode) => {

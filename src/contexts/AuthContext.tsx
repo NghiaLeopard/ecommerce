@@ -33,7 +33,7 @@ import {
 import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { addToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/cart-product'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -127,7 +127,7 @@ const AuthProvider = ({ children }: Props) => {
       clearTemporaryToken()
 
       dispatch(
-        addToCart({
+        updateToCart({
           orderItem: []
         })
       )

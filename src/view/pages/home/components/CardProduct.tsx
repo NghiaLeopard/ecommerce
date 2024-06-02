@@ -25,13 +25,13 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Stores
 import { RootState } from 'src/stores'
-import { addToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/cart-product'
 
 // ** Types
 import { TProduct } from 'src/types/products'
 
 // ** Utils
-import { convertAddToCart, formatPriceToLocal } from 'src/utils'
+import { executeUpdateCard, formatPriceToLocal } from 'src/utils'
 
 type TCardProduct = {
   item: TProduct
@@ -52,11 +52,11 @@ export default function CardProduct({ item }: TCardProduct) {
     router.push(`/product/${slug}`)
   }
 
-  const handleAddToCart = (item: TProduct) => {
+  const handleUpdateToCart = (item: TProduct) => {
     const orderItemStorage = getOrderItem()
     const orderParse = orderItemStorage ? JSON.parse(orderItemStorage) : {}
 
-    const arrOrderList = convertAddToCart(orderItem, {
+    const arrOrderList = executeUpdateCard(orderItem, {
       name: item.name,
       amount: 1,
       price: item.price,
@@ -68,7 +68,7 @@ export default function CardProduct({ item }: TCardProduct) {
 
     if (user?._id) {
       dispatch(
-        addToCart({
+        updateToCart({
           orderItem: arrOrderList
         })
       )
@@ -145,7 +145,7 @@ export default function CardProduct({ item }: TCardProduct) {
           variant='outlined'
           fullWidth
           sx={{ height: '40px', fontWeight: '600', mt: 2 }}
-          onClick={() => handleAddToCart(item)}
+          onClick={() => handleUpdateToCart(item)}
         >
           <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
           {t('Add_to_cart')}

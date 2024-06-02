@@ -21,6 +21,7 @@ type TProps = {
 }
 
 const LayoutNotApp: NextPage<TProps> = ({ children }) => {
+  // ** Hook
   const [open, setOpen] = useState(false)
   const toggleDrawer = () => {
     setOpen(!open)

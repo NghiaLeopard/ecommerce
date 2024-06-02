@@ -8,36 +8,36 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Button, Grid, Rating, Typography, useTheme } from '@mui/material'
-
-// **Form
-
-// **Yup
-
-// ** Regex
-
-// ** I18n
+import { Box, Button, Grid, IconButton, Rating, Tooltip, Typography, useTheme } from '@mui/material'
 
 // ** Type
 import { TProduct } from 'src/types/products'
 
 // ** Component
-import Spinner from 'src/components/spinner'
 import CustomIcon from 'src/components/Icon'
+import Spinner from 'src/components/spinner'
+import CustomTextField from 'src/components/text-field'
 
 // ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Service
 import { getDetailProductsPublic } from 'src/services/products'
 
 // ** Utils
+import { executeUpdateCard, formatPriceToLocal } from 'src/utils'
 
 // ** Redux
 
 // ** Store
+import { updateToCart } from 'src/stores/cart-product'
+import { RootState } from 'src/stores'
 
 // ** utils
-import { formatPriceToLocal } from 'src/utils'
+import { useDispatch, useSelector } from 'react-redux'
+
+// ** Helper
+import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -47,6 +47,11 @@ const ProductDetail: NextPage<TProps> = () => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>({})
+  const [amountCart, setAmountCart] = useState(1)
+  const dispatch = useDispatch()
+  const { user } = useAuth()
+
+  const { orderItem } = useSelector((state: RootState) => state.cartProduct)
 
   const { productSlug } = router?.query
 
@@ -61,7 +66,39 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }
 
-  const handleAddToCart = (data: TProduct) => {}
+  const handleChangeAmountCart = (item: TProduct, amount: number) => {
+    if (amount === -1 && amountCart <= 1) return
+    const dataCart = getOrderItem()
+    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
+
+    const arrCart = executeUpdateCard(orderItem, {
+      name: item.name,
+      amount: amount,
+      slug: item.slug,
+      price: item.price,
+      product: item._id,
+      image: item.image,
+      discount: item.discount
+    })
+
+    // This page is public then when adjust amount cart , you must log in
+
+    if (user?._id) {
+      setAmountCart(prev => (prev += amount))
+
+      dispatch(
+        updateToCart({
+          orderItem: arrCart
+        })
+      )
+      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: arrCart }))
+    } else {
+      router.replace({
+        pathname: 'login',
+        query: { returnUrl: router.asPath }
+      })
+    }
+  }
 
   useEffect(() => {
     if (productSlug) {
@@ -167,11 +204,50 @@ const ProductDetail: NextPage<TProps> = () => {
                 : t('Sold_product')}
             </Typography>
 
+            <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2 }}>
+              <Tooltip title='Delete'>
+                <IconButton
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main} !important`,
+                    color: theme.palette.common.white
+                  }}
+                  onClick={() => handleChangeAmountCart(dataDetailProduct, -1)}
+                >
+                  <CustomIcon icon='ic:baseline-minus' />
+                </IconButton>
+              </Tooltip>
+              <CustomTextField
+                value={amountCart}
+                sx={{
+                  '.MuiInputBase-input': {
+                    width: '20px'
+                  },
+                  '.MuiInputBase-root': {
+                    border: 'none',
+                    borderBottom: '1px solid',
+                    borderRadius: '0 !important'
+                  }
+                }}
+              />
+              <Tooltip title='Create'>
+                <IconButton
+                  onClick={() => handleChangeAmountCart(dataDetailProduct, 1)}
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main} !important`,
+                    color: theme.palette.common.white
+                  }}
+                >
+                  <CustomIcon icon='ph:plus-bold' />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
             <Box sx={{ display: 'flex', direction: 'column', gap: 5, mt: '20px' }}>
               <Button
                 variant='outlined'
                 sx={{ height: '40px', fontWeight: '600', mt: 2 }}
-                onClick={() => handleAddToCart(dataDetailProduct)}
+
+                // onClick={() => handleUpdateToCart(dataDetailProduct)}
               >
                 <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
                 {t('Add_to_cart')}
