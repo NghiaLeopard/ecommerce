@@ -5,4 +5,5 @@ export type TOrderProduct = {
   price: number
   discount: number
   product: string
+  slug: string
 }
