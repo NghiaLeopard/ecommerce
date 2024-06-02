@@ -83,20 +83,18 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             margin: '0 20px' // keep right padding when drawer closed
           }}
         >
-          {router.pathname === '/dashboard' && (
-            <IconButton
-              edge='start'
-              color='inherit'
-              aria-label='open drawer'
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' })
-              }}
-            >
-              <CustomIcon icon='ic:round-menu' />
-            </IconButton>
-          )}
+          <IconButton
+            edge='start'
+            color='inherit'
+            aria-label='open drawer'
+            onClick={toggleDrawer}
+            sx={{
+              marginRight: '36px',
+              ...(open && { display: 'none' })
+            }}
+          >
+            <CustomIcon icon='ic:round-menu' />
+          </IconButton>
 
           <Typography
             component='h1'

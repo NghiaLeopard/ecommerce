@@ -75,6 +75,11 @@ const CartProduct: NextPage<TProps> = () => {
     handleClose()
   }
 
+  const handleNavigationViewCart = () => {
+    route.push('my-cart')
+    handleClose()
+  }
+
   useEffect(() => {
     if (userData) {
       setUser(userData)
@@ -180,13 +185,16 @@ const CartProduct: NextPage<TProps> = () => {
               </MenuItem>
             )
           })}
-
-          <MenuItem sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
+            <Button
+              variant='contained'
+              sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+              onClick={handleNavigationViewCart}
+            >
               <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
               {t('View_cart')}
             </Button>
-          </MenuItem>
+          </Box>
         </Menu>
       )}
     </Fragment>
