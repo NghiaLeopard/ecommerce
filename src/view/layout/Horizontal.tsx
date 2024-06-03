@@ -38,7 +38,7 @@ interface AppBarProps extends MuiAppBarProps {
 type TProps = {
   open: boolean
   toggleDrawer: () => void
-  isHidden: boolean
+  isHidden?: boolean
 }
 
 const AppBar = styled(MuiAppBar, {
