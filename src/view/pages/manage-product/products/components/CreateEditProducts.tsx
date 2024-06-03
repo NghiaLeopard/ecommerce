@@ -46,8 +46,8 @@ import Spinner from 'src/components/spinner'
 import WrapperFileUpload from 'src/components/wrapper-file-upload'
 
 // ** Service
-import { getAllRoles } from 'src/services/role'
 import { getAllProductTypes } from 'src/services/product-types'
+import { getAllCity } from 'src/services/city'
 
 // ** Utils
 import { convertBase64, convertHtmlToDraft, stringToSlug } from 'src/utils'
@@ -65,6 +65,7 @@ type TDefaultValue = {
   price: string
   description: EditorState
   discount: string
+  location: string
   slug: string
   discountStartDate: Date | null
   discountEndDate: Date | null
@@ -80,13 +81,16 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
   // ** Hook
   const theme = useTheme()
 
+  // ** Translation
   const { t, i18n } = useTranslation()
 
+  // ** State
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   const [allProductTypes, setAllProductTypes] = useState([])
+  const [allCities, setAllCities] = useState([])
 
-  // ** Redux
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
   const defaultValues: TDefaultValue = {
@@ -99,6 +103,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
     description: EditorState.createEmpty(),
     discount: '',
     slug: '',
+    location: '',
     discountStartDate: null,
     discountEndDate: null
   }
@@ -176,6 +181,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       }),
     type: yup.string().required(t('Required_field')),
     image: yup.string().nonNullable(),
+    location: yup.string().nonNullable(),
     description: yup.object().required(),
     status: yup.number().required(t('Required_field'))
   })
@@ -199,6 +205,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
         createProductsAsync({
           name: data.name,
           status: data.status,
+          location: data.location,
           image: avatar,
           type: data.type,
           countInStock: data.countInStock,
@@ -215,6 +222,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
         editProductsAsync({
           idProducts: idProducts,
           name: data.name,
+          location: data.location,
           status: data.status,
           image: avatar,
           type: data.type,
@@ -236,10 +244,13 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       const res = await getDetailProducts(idProducts)
       const data = res.data
 
+      console.log(data)
+
       setLoading(false)
       if (data) {
         reset({
           name: data.name,
+          location: data.location,
           status: data.status,
           type: data.type,
           countInStock: data.countInStock,
@@ -279,6 +290,28 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
     }
   }
 
+  const fetchAllCities = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+
+      const productTypesArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCities(productTypesArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+  
+  useEffect(() => {
+    fetchAllCities()
+  }, [])
+
   useEffect(() => {
     fetchAllProductTypes()
   }, [])
@@ -296,6 +329,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
         description: '',
         discount: '',
         slug: '',
+        location: '',
         discountStartDate: null,
         discountEndDate: null
       })
@@ -656,8 +690,46 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                         />
                       </Box>
                     </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Box mt={11}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                            <Box>
+                              <InputLabel
+                                sx={{
+                                  fontSize: '13px',
+                                  mb: '4px'
+                                }}
+                              >
+                                {t('City')}
+                              </InputLabel>
+                              <CustomSelect
+                                fullWidth
+                                onChange={onChange}
+                                options={allCities}
+                                value={value}
+                                placeholder={t('Select')}
+                                inputRef={ref}
+                                error={Boolean(errors.location)}
+                              />
+                              {Boolean(errors.location) && (
+                                <FormHelperText
+                                  sx={{
+                                    color: `${theme.palette.error.main} !important`
+                                  }}
+                                >
+                                  {t('Select')}
+                                </FormHelperText>
+                              )}
+                            </Box>
+                          )}
+                          name='location'
+                        />
+                      </Box>
+                    </Grid>
                     <Grid item md={12} xs={12}>
-                      <Box mt={2}>
+                      <Box mt={3}>
                         <Controller
                           control={control}
                           rules={{

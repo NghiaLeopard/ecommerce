@@ -38,6 +38,7 @@ interface AppBarProps extends MuiAppBarProps {
 type TProps = {
   open: boolean
   toggleDrawer: () => void
+  isHidden: boolean
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -61,7 +62,7 @@ const AppBar = styled(MuiAppBar, {
   })
 }))
 
-const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
+const HorizontalLayout: NextPage<TProps> = ({ isHidden, open, toggleDrawer }) => {
   // ** Hook
   const { user } = useAuth()
   const router = useRouter()
@@ -84,18 +85,20 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             margin: '0 20px' // keep right padding when drawer closed
           }}
         >
-          <IconButton
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            onClick={toggleDrawer}
-            sx={{
-              marginRight: '36px',
-              ...(open && { display: 'none' })
-            }}
-          >
-            <CustomIcon icon='ic:round-menu' />
-          </IconButton>
+          {!isHidden && (
+            <IconButton
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={toggleDrawer}
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' })
+              }}
+            >
+              <CustomIcon icon='ic:round-menu' />
+            </IconButton>
+          )}
 
           <Typography
             component='h1'

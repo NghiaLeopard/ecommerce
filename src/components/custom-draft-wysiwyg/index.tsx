@@ -14,7 +14,6 @@ interface TCustomDraft extends EditorProps {
   label: string
 }
 const StyledBox = styled(Box)<TBoxProps>(({ theme, error }) => ({
-  marginTop: '40px',
   borderRadius: 8,
   backgroundColor: 'transparent !important',
   border: error ? `1px solid ${theme.palette.error.main}` : `1px solid rgba(${theme.palette.customColors.main},0.2)`,
@@ -26,8 +25,8 @@ const StyledBox = styled(Box)<TBoxProps>(({ theme, error }) => ({
 
   '.editorClassName.rdw-editor-main': {
     borderTop: `1px solid rgba(${theme.palette.customColors.main},0.2)`,
-    minHeight: '200px',
-    maxHeight: '200px',
+    minHeight: '140px',
+    maxHeight: '140px',
     padding: '5px',
 
     // description write long then need overflow: auto
@@ -41,7 +40,7 @@ export const CustomDraftWysiwyg = (props: TCustomDraft) => {
   const theme = useTheme()
 
   return (
-    <Box sx={{ position: 'relative', mt: '68px' }}>
+    <Box sx={{ position: 'relative' }}>
       <InputLabel
         sx={{
           fontSize: '13px',

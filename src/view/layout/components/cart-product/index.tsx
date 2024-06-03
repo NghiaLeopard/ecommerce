@@ -72,7 +72,7 @@ const CartProduct: NextPage<TProps> = () => {
   }
 
   const handleNavigationItem = (slug: string) => {
-    route.push(`product/${slug}`)
+    route.push(`/product/${slug}`)
     handleClose()
   }
 
@@ -110,7 +110,9 @@ const CartProduct: NextPage<TProps> = () => {
               </Badge>
             </IconButton>
           ) : (
-            <CustomIcon icon='mdi:cart' />
+            <Box sx={{ margin: '5px', display: 'flex', alignItems: 'center' }}>
+              <CustomIcon icon='mdi:cart' />
+            </Box>
           )}
         </Tooltip>
       </Box>
