@@ -62,7 +62,7 @@ const AppBar = styled(MuiAppBar, {
   })
 }))
 
-const HorizontalLayout: NextPage<TProps> = ({ isHidden, open, toggleDrawer }) => {
+const HorizontalLayout: NextPage<TProps> = ({ isHidden = false, open, toggleDrawer }) => {
   // ** Hook
   const { user } = useAuth()
   const router = useRouter()

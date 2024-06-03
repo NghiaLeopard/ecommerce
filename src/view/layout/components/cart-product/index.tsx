@@ -152,7 +152,7 @@ const CartProduct: NextPage<TProps> = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         {orderItem.length > 0 ? (
-          <>
+          <Box sx={{ overflow: 'auto', maxHeight: '200px' }}>
             {orderItem.map((item: TOrderProduct) => {
               const isExpiryDiscount = isExpiry(item.discountStartDate, item.discountEndDate)
 
@@ -165,8 +165,8 @@ const CartProduct: NextPage<TProps> = () => {
                         display: 'webkit-box',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        '-webkitLineClamp': '1',
-                        '-webkitBoxOrient': 'vertical'
+                        WebkitLineClamp: '1',
+                        WebkitBoxOrient: 'vertical' as const
                       }}
                     >
                       {item.name}
@@ -191,20 +191,23 @@ const CartProduct: NextPage<TProps> = () => {
                 </MenuItem>
               )
             })}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
-              <Button
-                variant='contained'
-                sx={{ height: '40px', fontWeight: '600', mt: 2 }}
-                onClick={handleNavigationViewCart}
-              >
-                <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
-                {t('View_cart')}
-              </Button>
-            </Box>{' '}
-          </>
+          </Box>
         ) : (
           <Box sx={{ padding: '30px' }}>
             <NoData widthImage={80} heightImage={80} textImage='No_data' />
+          </Box>
+        )}
+
+        {orderItem.length > 0 && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
+            <Button
+              variant='contained'
+              sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+              onClick={handleNavigationViewCart}
+            >
+              <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
+              {t('View_cart')}
+            </Button>
           </Box>
         )}
       </Menu>

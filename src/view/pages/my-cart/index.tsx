@@ -58,6 +58,8 @@ const MyCartPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [checkboxSelected, setCheckboxSelected] = useState<string[]>([])
 
+  console.log(checkboxSelected)
+
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.cartProduct)
 
@@ -128,6 +130,7 @@ const MyCartPage: NextPage<TProps> = () => {
           orderItem: filteredCart
         })
       )
+      setCheckboxSelected([])
       setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: filteredCart }))
     } else {
       router.replace({
@@ -149,6 +152,7 @@ const MyCartPage: NextPage<TProps> = () => {
 
   const handleChangeManyCheckbox = (value: string) => {
     const hadArr = checkboxSelected.length === orderItem.length
+
     if (hadArr) {
       setCheckboxSelected([])
     } else {
@@ -179,16 +183,18 @@ const MyCartPage: NextPage<TProps> = () => {
               <Typography sx={{ flexBasis: '20%' }}>{t('PriceDiscount')}</Typography>
               <Typography sx={{ flexBasis: '10%' }}>{t('Count')}</Typography>
               <Box sx={{ flexBasis: '5%' }}>
-                <Tooltip title='Delete'>
-                  <IconButton onClick={handleDeleteManyCart} disabled={checkboxSelected.length <= 0}>
-                    <CustomIcon icon='mingcute:delete-2-fill' />
-                  </IconButton>
+                <Tooltip title={t('Delete_all')}>
+                  <span>
+                    <IconButton onClick={handleDeleteManyCart} disabled={checkboxSelected.length <= 0}>
+                      <CustomIcon icon='mingcute:delete-2-fill' />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </Box>
             </Box>
             {orderItem.map((item: TOrderProduct) => {
               return (
-                <>
+                <Box key={item.product}>
                   <Divider />
 
                   <Box key={item.product} sx={{ display: 'flex', alignItems: 'center', my: 5 }}>
@@ -237,7 +243,7 @@ const MyCartPage: NextPage<TProps> = () => {
                         : `${formatPriceToLocal(item.price)} VNĐ`}
                     </Typography>
                     <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2 }}>
-                      <Tooltip title='Create'>
+                      <Tooltip title='Minus'>
                         <IconButton
                           sx={{
                             backgroundColor: `${theme.palette.primary.main} !important`,
@@ -261,7 +267,7 @@ const MyCartPage: NextPage<TProps> = () => {
                           }
                         }}
                       />
-                      <Tooltip title='Create'>
+                      <Tooltip title='Plus'>
                         <IconButton
                           onClick={() => handleChangeAmountCart(item, 1)}
                           sx={{
@@ -281,7 +287,7 @@ const MyCartPage: NextPage<TProps> = () => {
                       </Tooltip>
                     </Box>
                   </Box>
-                </>
+                </Box>
               )
             })}
           </Box>

@@ -212,7 +212,7 @@ const HomePage: NextPage<TProps> = () => {
               return (
                 <>
                   <Grid item key={item?._id} xs={12} sm={6} md={4}>
-                    <CardProduct item={item} />
+                    <CardProduct item={item} key={item?._id} />
                   </Grid>
                 </>
               )
