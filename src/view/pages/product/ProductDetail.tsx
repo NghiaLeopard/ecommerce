@@ -25,7 +25,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { getDetailProductsPublic } from 'src/services/products'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal } from 'src/utils'
+import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 // ** Redux
 
@@ -78,7 +78,9 @@ const ProductDetail: NextPage<TProps> = () => {
       price: item.price,
       product: item._id,
       image: item.image,
-      discount: item.discount
+      discount: item.discount,
+      discountEndDate: item.discountEndDate || null,
+      discountStartDate: item.discountStartDate || null
     })
 
     // This page is public then when adjust amount cart , you must log in
@@ -99,6 +101,8 @@ const ProductDetail: NextPage<TProps> = () => {
       })
     }
   }
+
+  const isExpiryDay = isExpiry(dataDetailProduct.discountStartDate, dataDetailProduct.discountEndDate)
 
   useEffect(() => {
     if (productSlug) {
@@ -174,7 +178,7 @@ const ProductDetail: NextPage<TProps> = () => {
                 borderRadius: '10px'
               }}
             >
-              {dataDetailProduct?.discount > 0 && (
+              {dataDetailProduct?.discount > 0 && isExpiryDay && (
                 <Typography
                   color={theme.palette.primary.main}
                   fontWeight='bold'
@@ -185,12 +189,12 @@ const ProductDetail: NextPage<TProps> = () => {
                 </Typography>
               )}
               <Typography color={theme.palette.primary.main} fontWeight='bold' variant='h4'>
-                {dataDetailProduct?.discount > 0
+                {dataDetailProduct?.discount > 0 && isExpiryDay
                   ? `${formatPriceToLocal((dataDetailProduct?.price * (100 - dataDetailProduct?.discount)) / 100)} VNĐ`
                   : `${formatPriceToLocal(dataDetailProduct?.price)} VNĐ`}
               </Typography>
 
-              {dataDetailProduct?.discount && (
+              {dataDetailProduct?.discount && isExpiryDay && (
                 <Box
                   sx={{ backgroundColor: 'rgba(254,238,234,1)', color: theme.palette.error.main, padding: '0px 6px' }}
                 >

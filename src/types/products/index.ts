@@ -51,6 +51,8 @@ export type TProduct = {
   discount: number
   description: string
   averageRating: number
+  discountStartDate?: Date | null
+  discountEndDate?: Date | null
   _id: string
   type: {
     _id: string
