@@ -6,4 +6,6 @@ export type TOrderProduct = {
   discount: number
   product: string
   slug: string
+  discountEndDate: Date | null
+  discountStartDate: Date | null
 }

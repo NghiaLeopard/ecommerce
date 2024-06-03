@@ -31,7 +31,7 @@ import { updateToCart } from 'src/stores/cart-product'
 import { TProduct } from 'src/types/products'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal } from 'src/utils'
+import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 type TCardProduct = {
   item: TProduct
@@ -63,7 +63,9 @@ export default function CardProduct({ item }: TCardProduct) {
       product: item._id,
       image: item.image,
       discount: item.discount,
-      slug: item.slug
+      slug: item.slug,
+      discountEndDate: item.discountEndDate || null,
+      discountStartDate: item.discountStartDate || null
     })
 
     if (user?._id) {
@@ -81,6 +83,8 @@ export default function CardProduct({ item }: TCardProduct) {
       })
     }
   }
+
+  const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
 
   return (
     <Card sx={{ maxWidth: '450px' }}>
@@ -104,7 +108,7 @@ export default function CardProduct({ item }: TCardProduct) {
           {item.name}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {item.discount > 0 && (
+          {item.discount > 0 && isExpiryDay && (
             <Typography
               color={theme.palette.primary.main}
               fontWeight='bold'
@@ -115,11 +119,11 @@ export default function CardProduct({ item }: TCardProduct) {
             </Typography>
           )}
           <Typography color={theme.palette.primary.main} fontWeight='bold' variant='h4'>
-            {item.discount > 0
+            {item.discount && isExpiryDay
               ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
               : `${formatPriceToLocal(item.price)} VNĐ`}
           </Typography>
-          {item.discount && (
+          {item.discount > 0 && isExpiryDay && (
             <Box sx={{ backgroundColor: 'rgba(254,238,234,1)', color: theme.palette.error.main, padding: '0px 6px' }}>
               {`-${item.discount}%`}
             </Box>
