@@ -66,7 +66,9 @@ const MyCartPage: NextPage<TProps> = () => {
       price: item.price,
       product: item.product,
       image: item.image,
-      discount: item.discount
+      discount: item.discount,
+      discountEndDate: item.discountEndDate,
+      discountStartDate: item.discountStartDate
     })
 
     // This page is public then when adjust amount cart , you must log in
