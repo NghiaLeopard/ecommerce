@@ -3,12 +3,17 @@ import instanceAxios from 'src/helpers/axios'
 
 // ** Configs
 import { API_ENDPOINT } from 'src/configs/api'
+
+// ** Types
 import {
   TParamsCreateProducts,
   TParamsDeleteManyProducts,
   TParamsEditProducts,
-  TParamsGetProducts
+  TParamsGetProducts,
+  TParamsRelated
 } from 'src/types/products'
+
+// ** Axios
 import axios from 'axios'
 
 // ** Type
@@ -26,6 +31,16 @@ export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
 export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
   try {
     const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getAllProductsRelevant = async (data: { params: TParamsRelated }) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/related`, data)
 
     return res.data
   } catch (error) {

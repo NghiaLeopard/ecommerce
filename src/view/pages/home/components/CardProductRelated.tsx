@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI
-import { Box, Button, useTheme } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -17,76 +17,40 @@ import Typography from '@mui/material/Typography'
 // ** Component
 import CustomIcon from 'src/components/Icon'
 
-// ** Helper
-import { getOrderItem, setOrderItem } from 'src/helpers/storage'
-
-// ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-
 // ** Stores
 import { RootState } from 'src/stores'
-import { updateToCart } from 'src/stores/cart-product'
 
 // ** Types
 import { TProduct } from 'src/types/products'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+import { useMemo } from 'react'
+import { formatPriceToLocal, isExpiry } from 'src/utils'
 
 type TCardProduct = {
   item: TProduct
 }
 
-export default function CardProduct({ item }: TCardProduct) {
+export default function CardProductRelated({ item }: TCardProduct) {
+  // ** Theme
   const theme = useTheme()
+
+  // ** Translation
   const { t } = useTranslation()
+
+  // ** Router
   const router = useRouter()
-  const { user } = useAuth()
-
-  const dispatch = useDispatch()
-
-  const { orderItem } = useSelector((state: RootState) => state.cartProduct)
 
   const handleNavigationPage = (slug: string) => {
     router.push(`/product/${slug}`)
   }
 
-  const handleUpdateToCart = (item: TProduct) => {
-    const orderItemStorage = getOrderItem()
-    const orderParse = orderItemStorage ? JSON.parse(orderItemStorage) : {}
-
-    const arrOrderList = executeUpdateCard(orderItem, {
-      name: item.name,
-      amount: 1,
-      price: item.price,
-      product: item._id,
-      image: item.image,
-      discount: item.discount,
-      slug: item.slug,
-      discountEndDate: item.discountEndDate || null,
-      discountStartDate: item.discountStartDate || null
-    })
-
-    if (user?._id) {
-      dispatch(
-        updateToCart({
-          orderItem: arrOrderList
-        })
-      )
-
-      setOrderItem(JSON.stringify({ ...orderParse, [user?._id]: arrOrderList }))
-    } else {
-      router.replace({
-        pathname: 'login',
-        query: { returnUrl: router.asPath }
-      })
-    }
-  }
-
-  const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
+  const isExpiryDay = useMemo(() => {
+    return isExpiry(item.discountStartDate || null, item.discountEndDate || null)
+  }, [item])
 
   return (
-    <Card sx={{ maxWidth: '450px' }}>
+    <Card sx={{ maxWidth: '400px', mt: '15px' }}>
       <CardMedia component='img' height='194' image={item.image} alt='Image' />
       <CardContent sx={{ padding: '15px 15px !important' }}>
         <Typography
@@ -98,8 +62,8 @@ export default function CardProduct({ item }: TCardProduct) {
             display: '-webkit-box',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            '-webkit-line-clamp': '2',
-            '-webkit-box-orient': 'vertical',
+            WebkitLineClamp: '2',
+            WebkitBoxOrient: 'vertical',
             height: '60px'
           }}
           onClick={() => handleNavigationPage(item.slug)}
@@ -144,21 +108,6 @@ export default function CardProduct({ item }: TCardProduct) {
             </IconButton>
           </CardActions>
         </Box>
-
-        <Button
-          variant='outlined'
-          fullWidth
-          sx={{ height: '40px', fontWeight: '600', mt: 2 }}
-          onClick={() => handleUpdateToCart(item)}
-        >
-          <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
-          {t('Add_to_cart')}
-        </Button>
-
-        <Button variant='contained' fullWidth sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
-          <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
-          {t('Buy_now')}
-        </Button>
       </CardContent>
     </Card>
   )

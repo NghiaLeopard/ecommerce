@@ -143,13 +143,10 @@ export const executeUpdateCard = (orderItem: TOrderProduct[], addItem: TOrderPro
 }
 
 export const isExpiry = (startDiscount: Date | null, endDiscount: Date | null) => {
-  console.log(startDiscount, endDiscount)
   const currentDay = new Date().getTime()
   if (startDiscount && endDiscount) {
     const startDate = new Date(startDiscount).getTime()
     const endDate = new Date(endDiscount).getTime()
-
-    console.log({ startDate, endDate, currentDay })
 
     return startDate <= currentDay && endDate > currentDay
   }

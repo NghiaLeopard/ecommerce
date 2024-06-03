@@ -27,6 +27,7 @@ import { getAllProductsPublic } from 'src/services/products'
 // ** Type
 import { TProductType } from 'src/types/product-types'
 import { TProduct } from 'src/types/products'
+import { getAllCity } from 'src/services/city'
 
 interface TProps {}
 
@@ -42,10 +43,13 @@ const HomePage: NextPage<TProps> = () => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [listProductPublic, setListProductPublic] = useState<TProduct[]>([])
   const [allProductTypes, setAllProductTypes] = useState([])
-  const [radioSelected, setRadioSelected] = useState('')
+  const [reviewSelected, setReviewSelected] = useState('')
+  const [citySelected, setCitySelected] = useState('')
   const [tabSelected, setTabSelected] = useState<string>('')
   const [search, setSearch] = useState('')
+  const [allCities, setAllCities] = useState<{ label: string; value: string }[]>([])
 
+  // ** Ref
   const firstRender = useRef<boolean>(false)
 
   const handleChangePagination = (page: number, pageSize: number) => {
@@ -53,14 +57,15 @@ const HomePage: NextPage<TProps> = () => {
     setPageSize(pageSize)
   }
 
-  const getListProductsPublic = async () => {
+  const getListProductsPublic = async (review: string, search: string, tabSelected: string, city: string) => {
     setLoading(true)
     const params = {
       limit: 10,
       page: 1,
       search: search,
-      minStar: Number(radioSelected),
-      productType: tabSelected
+      minStar: Number(review),
+      productType: tabSelected,
+      productLocation: city
     }
 
     try {
@@ -80,8 +85,24 @@ const HomePage: NextPage<TProps> = () => {
     setTabSelected(newValue)
   }
 
-  const handleFilterProduct = (value: string) => {
-    setRadioSelected(value)
+  const handleFilterProduct = (value: string, name: string) => {
+    switch (name) {
+      case 'review':
+        setReviewSelected(value)
+        break
+
+      case 'city':
+        setCitySelected(value)
+        break
+
+      default:
+        break
+    }
+  }
+
+  const handleDeleteAll = () => {
+    setReviewSelected('')
+    setCitySelected('')
   }
 
   const fetchAllProductTypes = async () => {
@@ -107,11 +128,33 @@ const HomePage: NextPage<TProps> = () => {
     setSearch(value)
   }
 
+  const fetchAllCities = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+
+      const productTypesArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCities(productTypesArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllCities()
+  }, [])
+
   useEffect(() => {
     if (firstRender.current) {
-      getListProductsPublic()
+      getListProductsPublic(reviewSelected, search, tabSelected, citySelected)
     }
-  }, [radioSelected, search, tabSelected])
+  }, [reviewSelected, search, tabSelected, citySelected])
 
   useEffect(() => {
     fetchAllProductTypes()
@@ -146,7 +189,7 @@ const HomePage: NextPage<TProps> = () => {
         }}
         mt='10px !important'
       >
-        <Grid item md={3}>
+        <Grid item md={2.5}>
           <Box
             sx={{
               border: `1px solid rgba(${theme.palette.customColors.main},0.2)`,
@@ -154,16 +197,22 @@ const HomePage: NextPage<TProps> = () => {
               borderRadius: '10px'
             }}
           >
-            <FilterProduct value={radioSelected} onChange={handleFilterProduct} />
+            <FilterProduct
+              valueReview={reviewSelected}
+              valueCities={citySelected}
+              onChange={handleFilterProduct}
+              dataCities={allCities}
+              deleteAll={handleDeleteAll}
+            />
           </Box>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9.5}>
           <Grid container spacing={2}>
             {listProductPublic.map((item: TProduct) => {
               return (
                 <>
                   <Grid item key={item?._id} xs={12} sm={6} md={4}>
-                    <CardProduct item={item} />
+                    <CardProduct item={item} key={item?._id} />
                   </Grid>
                 </>
               )

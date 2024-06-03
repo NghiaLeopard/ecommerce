@@ -28,25 +28,27 @@ import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
 import { CreateEditProducts } from './components/CreateEditProducts'
+import { CustomSelect } from 'src/components/custom-select'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import { OBJECT_STATUS_PRODUCTS } from 'src/configs/products'
 
 // ** Toast
 import toast from 'react-hot-toast'
 
 // ** utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { formatDate, formatPriceToLocal } from 'src/utils'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
-import { formatDate, formatPriceToLocal } from 'src/utils'
-import { CustomSelect } from 'src/components/custom-select'
+
+// ** Services
 import { getAllProductTypes } from 'src/services/product-types'
-import { OBJECT_STATUS_PRODUCTS } from 'src/configs/products'
 
 type TProps = {}
 
@@ -74,31 +76,32 @@ const ProductsPage: NextPage<TProps> = () => {
   const { t } = useTranslation()
 
   // ** useState
-  const [openDeleteProducts, setOpenDeleteProducts] = useState({
-    open: false,
-    idProducts: ''
-  })
-
-  const [openDeleteMultipleProducts, setOpenDeleteMultipleProducts] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [typeSelected, setTypeSelected] = useState()
   const [statusSelected, setStatusSelected] = useState()
-  const dispatch: AppDispatch = useDispatch()
-  const [allProductTypes, setAllProductTypes] = useState([])
-
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [openDeleteMultipleProducts, setOpenDeleteMultipleProducts] = useState(false)
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
+  const [allProductTypes, setAllProductTypes] = useState([])
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [openDeleteProducts, setOpenDeleteProducts] = useState({
+    open: false,
+    idProducts: ''
+  })
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idProducts: ''
   })
 
-  const tableActions = [{ label: t('Delete'), value: 'delete' }]
+  // ** Dispatch
+  const dispatch: AppDispatch = useDispatch()
 
+  // ** Permissions
   const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.Products', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
+  const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   const OBJECT_STATUS_PRODUCTS_PAGE = OBJECT_STATUS_PRODUCTS()
 
@@ -188,6 +191,7 @@ const ProductsPage: NextPage<TProps> = () => {
       }
     }
   }
+  
   const fetchAllProductTypes = async () => {
     setLoading(true)
     try {
