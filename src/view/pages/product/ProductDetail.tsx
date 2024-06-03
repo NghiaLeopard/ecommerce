@@ -365,7 +365,7 @@ const ProductDetail: NextPage<TProps> = () => {
 
               {dataProductRelated.length > 0 ? (
                 dataProductRelated.map((item: TProduct) => {
-                  return <CardProductRelated item={item} />
+                  return <CardProductRelated item={item} key={item?._id} />
                 })
               ) : (
                 <Box sx={{ padding: '30px' }}>
