@@ -83,11 +83,12 @@ export const productsSlice = createSlice({
         state.isLoading = false
         state.products.data = actions?.payload?.data?.products
         state.products.total = actions?.payload?.data?.totalCount
-      }),
-      // Get all Products Like
-      builder.addCase(getListProductsLikedAsync.pending, (state, actions) => {
-        state.isLoading = true
-      }),
+      })
+
+    // Get all Products Like
+    builder.addCase(getListProductsLikedAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
       builder.addCase(getListProductsLikedAsync.fulfilled, (state, actions) => {
         console.log(actions.payload)
         state.isLoading = false
