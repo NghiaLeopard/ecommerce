@@ -1,10 +1,22 @@
 export type TParamsGetProducts = {
-  limit?: number
-  page?: number
+  limit: number
+  page: number
   search?: string
   order?: string
   status?: string
   productType?: string
+}
+
+export type TParamsGetProductsLiked = {
+  limit: number
+  page: number
+  search?: string
+}
+
+export type TParamsGetProductsViewed = {
+  limit: number
+  page: number
+  search?: string
 }
 
 export type TParamsRelated = {
@@ -64,6 +76,7 @@ export type TProduct = {
   image: string
   name: string
   slug: string
+  likedBy: string[]
   price: number
   status: string
   discount: number

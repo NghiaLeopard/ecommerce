@@ -61,6 +61,7 @@ const InputSearch = ({ onChange }: TInputSearch) => {
   useEffect(() => {
     onChange(valueDebounce)
   }, [valueDebounce])
+
   const handleChange = (value: string) => {
     setValueSearch(value)
   }

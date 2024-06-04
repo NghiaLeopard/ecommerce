@@ -99,6 +99,11 @@ const UserDropDown: NextPage<TProps> = () => {
     handleClose()
   }
 
+  const handleNavigateMyProduct = () => {
+    route.push(`${CONFIG_ROUTE.MY_PRODUCT}`)
+    handleClose()
+  }
+
   const handleNavigateChangePassword = () => {
     route.push(`${CONFIG_ROUTE.CHANGE_PASSWORD}`)
     handleClose()
@@ -219,6 +224,14 @@ const UserDropDown: NextPage<TProps> = () => {
           </Avatar>
 
           {t('My_profile')}
+        </MenuItem>
+
+        <MenuItem onClick={handleNavigateMyProduct}>
+          <Avatar>
+            <CustomIcon icon='carbon:product' />
+          </Avatar>
+
+          {t('My_product')}
         </MenuItem>
 
         <MenuItem onClick={handleNavigateChangePassword}>

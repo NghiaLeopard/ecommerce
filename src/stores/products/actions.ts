@@ -8,6 +8,8 @@ import {
   deleteProducts,
   editProducts,
   getAllProducts,
+  getListProductsLiked,
+  getListProductsViewed,
   likeProduct,
   unLikeProduct
 } from 'src/services/products'
@@ -18,7 +20,9 @@ import {
   TParamsCreateProducts,
   TParamsDeleteManyProducts,
   TParamsEditProducts,
-  TParamsGetProducts
+  TParamsGetProducts,
+  TParamsGetProductsLiked,
+  TParamsGetProductsViewed
 } from 'src/types/products'
 
 export const serviceName = 'Products'
@@ -27,6 +31,24 @@ export const getAllProductsAsync = createAsyncThunk(
   `${serviceName}/get-all`,
   async (data: { params: TParamsGetProducts }) => {
     const response = await getAllProducts(data)
+
+    return response
+  }
+)
+
+export const getListProductsLikedAsync = createAsyncThunk(
+  `${serviceName}/get-product-liked`,
+  async (data: { params: TParamsGetProductsLiked }) => {
+    const response = await getListProductsLiked(data)
+
+    return response
+  }
+)
+
+export const getListProductsViewedAsync = createAsyncThunk(
+  `${serviceName}/get-product-view`,
+  async (data: { params: TParamsGetProductsViewed }) => {
+    const response = await getListProductsViewed(data)
 
     return response
   }
@@ -102,8 +124,16 @@ export const deleteMultipleProductsAsync = createAsyncThunk(
 export const likeProductAsync = createAsyncThunk(`${serviceName}/like-product`, async (data: TActionProduct) => {
   const response = await likeProduct(data)
 
+  console.log(response)
+
   if (response?.message) {
-    return response?.response?.data
+    return {
+      data: {
+        _id: 1
+      },
+      message: response?.message,
+      typeError: response?.typeError
+    }
   }
 
   return {
@@ -118,7 +148,13 @@ export const unLikeProductAsync = createAsyncThunk(`${serviceName}/unlike-produc
   const response = await unLikeProduct(data)
 
   if (response?.message) {
-    return response
+    return {
+      data: {
+        _id: 1
+      },
+      message: response?.message,
+      typeError: response?.typeError
+    }
   }
 
   return {
