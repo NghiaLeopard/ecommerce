@@ -4,6 +4,8 @@ import { NextPage } from 'next'
 // ** React
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 
 // ** Mui
 import { Box, Grid, useTheme } from '@mui/material'
@@ -19,6 +21,7 @@ import FilterProduct from './components/FilterProduct'
 
 // ** Configs
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Service
 import { getAllProductTypes } from 'src/services/product-types'
@@ -27,7 +30,13 @@ import { getAllProductsPublic } from 'src/services/products'
 // ** Type
 import { TProductType } from 'src/types/product-types'
 import { TProduct } from 'src/types/products'
+
+// ** Services
 import { getAllCity } from 'src/services/city'
+
+// ** Store
+import { resetInitialState } from 'src/stores/products'
+import { RootState } from 'src/stores'
 
 interface TProps {}
 
@@ -51,6 +60,21 @@ const HomePage: NextPage<TProps> = () => {
 
   // ** Ref
   const firstRender = useRef<boolean>(false)
+
+  // ** Dispatch
+  const dispatch = useDispatch()
+
+  // ** Selector
+  const {
+    isLoading,
+    isErrorLikeProduct,
+    isSuccessLikeProduct,
+    isMessageLikeProduct,
+    typeError,
+    isErrorUnLikeProduct,
+    isSuccessUnLikeProduct,
+    isMessageUnLikeProduct
+  } = useSelector((state: RootState) => state.products)
 
   const handleChangePagination = (page: number, pageSize: number) => {
     setPage(page)
@@ -159,6 +183,40 @@ const HomePage: NextPage<TProps> = () => {
   useEffect(() => {
     fetchAllProductTypes()
   }, [])
+
+  useEffect(() => {
+    if (isMessageUnLikeProduct) {
+      if (isSuccessUnLikeProduct) {
+        toast.success(t('unLike_product_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorUnLikeProduct) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('unLike_product_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorUnLikeProduct, isSuccessUnLikeProduct])
+
+  useEffect(() => {
+    if (isMessageLikeProduct) {
+      if (isSuccessLikeProduct) {
+        toast.success(t('Like_product_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorLikeProduct) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Like_product_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorLikeProduct, isSuccessLikeProduct])
 
   return (
     <>

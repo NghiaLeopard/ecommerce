@@ -50,6 +50,10 @@ export type TParamsDeleteManyProducts = {
   productTypeIds: string[]
 }
 
+export type TActionProduct = {
+  productId: string
+}
+
 export type TProduct = {
   countInStock: number
   createdAt: Date | null

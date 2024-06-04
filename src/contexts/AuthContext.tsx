@@ -1,17 +1,11 @@
 // ** React Imports
-import { createContext, useEffect, useState, ReactNode } from 'react'
+import { ReactNode, createContext, useEffect, useState } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
 
-// ** Axios
-import axios from 'axios'
-
-// ** Config
-import authConfig from 'src/configs/auth'
-
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { AuthValuesType, ErrCallbackType, LoginParams, UserDataType } from './types'
 
 // ** Services
 import { loginAuth, logoutAuth } from 'src/services/auth'
@@ -30,9 +24,9 @@ import {
 } from 'src/helpers/storage'
 
 // ** Axios
-import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+import instanceAxios from 'src/helpers/axios'
 import { updateToCart } from 'src/stores/cart-product'
 
 // ** Defaults

@@ -6,6 +6,7 @@ import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Types
 import {
+  TActionProduct,
   TParamsCreateProducts,
   TParamsDeleteManyProducts,
   TParamsEditProducts,
@@ -102,6 +103,26 @@ export const deleteProducts = async (idProducts: string) => {
 export const deleteMultipleProducts = async (data: TParamsDeleteManyProducts) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/delete-many`, { data })
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const likeProduct = async (data: TActionProduct) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/like`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const unLikeProduct = async (data: TActionProduct) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/unlike`, data)
 
     return res.data
   } catch (error) {
