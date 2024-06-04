@@ -66,7 +66,6 @@ export default function FilterProduct({ onChange, valueReview, valueCities, data
             aria-labelledby='demo-radio-buttons-group-label'
             value={valueCities}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              console.log(e.target.value)
               onChange(e.target.value, 'city')
             }}
             name='radio-buttons-group'

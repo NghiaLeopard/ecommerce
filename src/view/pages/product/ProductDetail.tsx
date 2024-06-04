@@ -146,7 +146,6 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }, [i18n.language, productSlug])
 
-  console.log(dataProductRelated)
 
   return (
     <>

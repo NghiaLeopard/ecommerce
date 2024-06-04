@@ -24,13 +24,14 @@ import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Stores
-import { RootState } from 'src/stores'
+import { AppDispatch, RootState } from 'src/stores'
 import { updateToCart } from 'src/stores/cart-product'
 
 // ** Types
 import { TProduct } from 'src/types/products'
 
 // ** Utils
+import { likeProductAsync, unLikeProductAsync } from 'src/stores/products/actions'
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 type TCardProduct = {
@@ -38,13 +39,22 @@ type TCardProduct = {
 }
 
 export default function CardProduct({ item }: TCardProduct) {
+  // ** Theme
   const theme = useTheme()
+
+  // ** Translation
   const { t } = useTranslation()
+
+  // ** Router
   const router = useRouter()
-  const { user } = useAuth()
 
-  const dispatch = useDispatch()
+  // ** Auth
+  const { user, setUser } = useAuth()
 
+  // ** Dispatch
+  const dispatch: AppDispatch = useDispatch()
+
+  // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.cartProduct)
 
   const handleNavigationPage = (slug: string) => {
@@ -84,6 +94,22 @@ export default function CardProduct({ item }: TCardProduct) {
   }
 
   const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
+
+  const handleClickLike = (id: string) => {
+    if (user?._id) {
+      console.log(user?.likedProducts)
+      if (!user?.likedProducts?.includes(id)) {
+        dispatch(likeProductAsync({ productId: id }))
+      } else {
+        dispatch(unLikeProductAsync({ productId: id }))
+      }
+    } else {
+      router.replace({
+        pathname: 'login',
+        query: { returnUrl: router.asPath }
+      })
+    }
+  }
 
   return (
     <Card sx={{ maxWidth: '450px' }}>
@@ -138,10 +164,16 @@ export default function CardProduct({ item }: TCardProduct) {
             {item.averageRating > 0 && <CustomIcon icon='emojione:star'></CustomIcon>}
           </Box>
 
-          <CardActions sx={{ padding: '0' }}>
-            <IconButton aria-label='add to favorites'>
-              <CustomIcon icon='mdi:heart' />
-            </IconButton>
+          <CardActions sx={{ padding: '0' }} onClick={() => handleClickLike(item._id)}>
+            {!user?.likedProducts?.includes(item._id) ? (
+              <IconButton aria-label='add to favorites'>
+                <CustomIcon icon='mdi:heart' />
+              </IconButton>
+            ) : (
+              <IconButton aria-label='add to favorites'>
+                <CustomIcon icon='mdi:heart' style={{ color: '#f90b0b' }} />
+              </IconButton>
+            )}
           </CardActions>
         </Box>
 

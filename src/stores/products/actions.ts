@@ -1,22 +1,25 @@
 // ** Redux
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-// ** Products
+// ** Services
 import {
   createProducts,
   deleteMultipleProducts,
   deleteProducts,
   editProducts,
-  getAllProducts
+  getAllProducts,
+  likeProduct,
+  unLikeProduct
 } from 'src/services/products'
+
+// ** Types
 import {
+  TActionProduct,
   TParamsCreateProducts,
   TParamsDeleteManyProducts,
   TParamsEditProducts,
   TParamsGetProducts
 } from 'src/types/products'
-
-// ** Type
 
 export const serviceName = 'Products'
 
@@ -95,3 +98,34 @@ export const deleteMultipleProductsAsync = createAsyncThunk(
     }
   }
 )
+
+export const likeProductAsync = createAsyncThunk(`${serviceName}/like-product`, async (data: TActionProduct) => {
+  const response = await likeProduct(data)
+
+  if (response?.message) {
+    return response?.response?.data
+  }
+
+  return {
+    data: {
+      _id: null
+    },
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})
+export const unLikeProductAsync = createAsyncThunk(`${serviceName}/unlike-product`, async (data: TActionProduct) => {
+  const response = await unLikeProduct(data)
+
+  if (response?.message) {
+    return response
+  }
+
+  return {
+    data: {
+      _id: null
+    },
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})

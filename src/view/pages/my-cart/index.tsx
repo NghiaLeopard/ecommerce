@@ -58,7 +58,6 @@ const MyCartPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [checkboxSelected, setCheckboxSelected] = useState<string[]>([])
 
-  console.log(checkboxSelected)
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.cartProduct)

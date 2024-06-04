@@ -8,7 +8,9 @@ import {
   deleteProductsAsync,
   editProductsAsync,
   getAllProductsAsync,
-  serviceName
+  likeProductAsync,
+  serviceName,
+  unLikeProductAsync
 } from './actions'
 
 const initialState = {
@@ -26,7 +28,13 @@ const initialState = {
   isMessageDelete: '',
   isSuccessMultipleDelete: false,
   isErrorMultipleDelete: false,
-  isMessageMultipleDelete: ''
+  isMessageMultipleDelete: '',
+  isSuccessLikeProduct: false,
+  isErrorLikeProduct: false,
+  isMessageLikeProduct: '',
+  isSuccessUnLikeProduct: false,
+  isErrorUnLikeProduct: false,
+  isMessageUnLikeProduct: ''
 }
 
 export const productsSlice = createSlice({
@@ -44,6 +52,12 @@ export const productsSlice = createSlice({
       state.isSuccessMultipleDelete = false
       state.isErrorMultipleDelete = false
       state.isMessageMultipleDelete = ''
+      state.isSuccessLikeProduct = false
+      state.isErrorLikeProduct = false
+      state.isMessageLikeProduct = ''
+      state.isSuccessUnLikeProduct = false
+      state.isErrorUnLikeProduct = false
+      state.isMessageUnLikeProduct = ''
       state.products = {
         data: [],
         total: 0
@@ -107,6 +121,30 @@ export const productsSlice = createSlice({
         state.isSuccessMultipleDelete = !actions.payload?.typeError
         state.isErrorMultipleDelete = !!actions.payload?.typeError
         state.isMessageMultipleDelete = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
+
+    // Like Products
+    builder.addCase(likeProductAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(likeProductAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.isSuccessLikeProduct = !!actions.payload?.data?._id
+        state.isErrorLikeProduct = !actions.payload?.data?._id
+        state.isMessageLikeProduct = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
+
+    // unlike product
+    builder.addCase(unLikeProductAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(unLikeProductAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.isSuccessUnLikeProduct = !actions.payload?.typeError
+        state.isErrorUnLikeProduct = !!actions.payload?.typeError
+        state.isMessageUnLikeProduct = actions.payload?.message
         state.typeError = actions.payload?.typeError
       })
   }
