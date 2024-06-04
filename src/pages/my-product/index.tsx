@@ -6,14 +6,14 @@ import { ReactNode } from 'react'
 
 // **Layout
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
-import ProductDetail from 'src/view/pages/product/index'
 
 // ** Page
+import MyProductPage from 'src/view/pages/my-product'
 
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  return <ProductDetail />
+  return <MyProductPage />
 }
 
 export default Index

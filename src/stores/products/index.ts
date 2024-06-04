@@ -8,6 +8,8 @@ import {
   deleteProductsAsync,
   editProductsAsync,
   getAllProductsAsync,
+  getListProductsLikedAsync,
+  getListProductsViewedAsync,
   likeProductAsync,
   serviceName,
   unLikeProductAsync
@@ -16,10 +18,6 @@ import {
 const initialState = {
   isLoading: false,
   typeError: '',
-  products: {
-    data: [],
-    total: 0
-  },
   isSuccessCreateEdit: false,
   isErrorCreateEdit: false,
   isMessageCreateEdit: '',
@@ -34,7 +32,19 @@ const initialState = {
   isMessageLikeProduct: '',
   isSuccessUnLikeProduct: false,
   isErrorUnLikeProduct: false,
-  isMessageUnLikeProduct: ''
+  isMessageUnLikeProduct: '',
+  products: {
+    data: [],
+    total: 0
+  },
+  productsViewed: {
+    data: [],
+    total: 0
+  },
+  productsLiked: {
+    data: [],
+    total: 0
+  }
 }
 
 export const productsSlice = createSlice({
@@ -74,12 +84,31 @@ export const productsSlice = createSlice({
         state.products.data = actions?.payload?.data?.products
         state.products.total = actions?.payload?.data?.totalCount
       }),
-      // eslint-disable-next-line lines-around-comment
-
-      // create Products
-      builder.addCase(createProductsAsync.pending, (state, actions) => {
+      // Get all Products Like
+      builder.addCase(getListProductsLikedAsync.pending, (state, actions) => {
         state.isLoading = true
       }),
+      builder.addCase(getListProductsLikedAsync.fulfilled, (state, actions) => {
+        console.log(actions.payload)
+        state.isLoading = false
+        state.productsLiked.data = actions?.payload?.data?.products
+        state.productsLiked.total = actions?.payload?.data?.totalCount
+      })
+
+    // Get all Products viewed
+    builder.addCase(getListProductsViewedAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(getListProductsViewedAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.productsViewed.data = actions?.payload?.data?.products
+        state.productsViewed.total = actions?.payload?.data?.totalCount
+      })
+
+    // create Products
+    builder.addCase(createProductsAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
       builder.addCase(createProductsAsync.fulfilled, (state, actions) => {
         state.isLoading = false
         state.isSuccessCreateEdit = !!actions.payload?.data?._id
@@ -129,6 +158,7 @@ export const productsSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(likeProductAsync.fulfilled, (state, actions) => {
+        console.log(actions.payload)
         state.isLoading = false
         state.isSuccessLikeProduct = !!actions.payload?.data?._id
         state.isErrorLikeProduct = !actions.payload?.data?._id
@@ -141,9 +171,10 @@ export const productsSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(unLikeProductAsync.fulfilled, (state, actions) => {
+        console.log(actions.payload)
         state.isLoading = false
-        state.isSuccessUnLikeProduct = !actions.payload?.typeError
-        state.isErrorUnLikeProduct = !!actions.payload?.typeError
+        state.isSuccessUnLikeProduct = !!actions.payload?.data?._id
+        state.isErrorUnLikeProduct = !actions.payload?.data?._id
         state.isMessageUnLikeProduct = actions.payload?.message
         state.typeError = actions.payload?.typeError
       })

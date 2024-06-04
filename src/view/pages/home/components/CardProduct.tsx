@@ -33,6 +33,7 @@ import { TProduct } from 'src/types/products'
 // ** Utils
 import { likeProductAsync, unLikeProductAsync } from 'src/stores/products/actions'
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+import { it } from 'node:test'
 
 type TCardProduct = {
   item: TProduct
@@ -95,10 +96,9 @@ export default function CardProduct({ item }: TCardProduct) {
 
   const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
 
-  const handleClickLike = (id: string) => {
+  const handleClickLike = (dataProduct: TProduct, id: string) => {
     if (user?._id) {
-      console.log(user?.likedProducts)
-      if (!user?.likedProducts?.includes(id)) {
+      if (!dataProduct?.likedBy?.includes(user?._id)) {
         dispatch(likeProductAsync({ productId: id }))
       } else {
         dispatch(unLikeProductAsync({ productId: id }))
@@ -164,8 +164,8 @@ export default function CardProduct({ item }: TCardProduct) {
             {item.averageRating > 0 && <CustomIcon icon='emojione:star'></CustomIcon>}
           </Box>
 
-          <CardActions sx={{ padding: '0' }} onClick={() => handleClickLike(item._id)}>
-            {!user?.likedProducts?.includes(item._id) ? (
+          <CardActions sx={{ padding: '0' }} onClick={() => handleClickLike(item, item._id)}>
+            {!item?.likedBy?.includes(user?._id) ? (
               <IconButton aria-label='add to favorites'>
                 <CustomIcon icon='mdi:heart' />
               </IconButton>

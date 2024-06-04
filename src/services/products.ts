@@ -29,6 +29,26 @@ export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   }
 }
 
+export const getListProductsLiked = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/liked/me`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getListProductsViewed = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/viewed/me`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
 export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
   try {
     const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public`, data)

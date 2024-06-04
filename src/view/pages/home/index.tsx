@@ -187,14 +187,15 @@ const HomePage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageUnLikeProduct) {
       if (isSuccessUnLikeProduct) {
-        toast.success(t('unLike_product_success'))
+        toast.success(t('UnLike_product_success'))
         dispatch(resetInitialState())
+        getListProductsPublic(reviewSelected, search, tabSelected, citySelected)
       } else if (isErrorUnLikeProduct) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
           toast.error(t(`${errorConfig}`))
         } else {
-          toast.error(t('unLike_product_error'))
+          toast.error(t('UnLike_product_error'))
         }
         dispatch(resetInitialState())
       }
@@ -206,6 +207,7 @@ const HomePage: NextPage<TProps> = () => {
       if (isSuccessLikeProduct) {
         toast.success(t('Like_product_success'))
         dispatch(resetInitialState())
+        getListProductsPublic(reviewSelected, search, tabSelected, citySelected)
       } else if (isErrorLikeProduct) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -220,7 +222,7 @@ const HomePage: NextPage<TProps> = () => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {(loading || isLoading) && <Spinner />}
 
       <Tabs
         value={tabSelected}
