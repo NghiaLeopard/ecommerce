@@ -35,6 +35,7 @@ import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Type
 import { TOrderProduct } from 'src/types/cart-product'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {}
 
@@ -58,14 +59,35 @@ const MyCartPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [checkboxSelected, setCheckboxSelected] = useState<string[]>([])
 
-
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.cartProduct)
 
-  // ** Meno
+  // ** Memo
   const memoAllId = useMemo(() => {
     return orderItem.map((item: TOrderProduct) => item.product)
   }, [orderItem])
+
+  const memoProductSelected = useMemo(() => {
+    const newArr: TOrderProduct[] = []
+
+    orderItem.map((item: TOrderProduct) => {
+      if (checkboxSelected.includes(item.product)) {
+        newArr.push({ ...item })
+      }
+    })
+
+    return newArr
+  }, [checkboxSelected, orderItem])
+
+  const memoTotalPriceProductSelected = useMemo(() => {
+    const total = memoProductSelected.reduce((result, current: TOrderProduct) => {
+      const currentPrice = current.discount > 0 ? (current.price * (100 - current.discount)) / 100 : current.price
+
+      return (result += currentPrice * current.amount)
+    }, 0)
+
+    return total
+  }, [memoProductSelected])
 
   const handleChangeAmountCart = (item: TOrderProduct, amount: number) => {
     const dataCart = getOrderItem()
@@ -157,6 +179,17 @@ const MyCartPage: NextPage<TProps> = () => {
     } else {
       setCheckboxSelected(memoAllId)
     }
+  }
+
+  const handleNavigationCheckOut = () => {
+    router.push(
+      {
+        pathname: CONFIG_ROUTE.CHECKOUT_PRODUCT,
+        query: { totalPrice: memoTotalPriceProductSelected, products: JSON.stringify(memoProductSelected) }
+      },
+      CONFIG_ROUTE.CHECKOUT_PRODUCT
+    ),
+      CONFIG_ROUTE.CHECKOUT_PRODUCT
   }
 
   return (
@@ -289,13 +322,23 @@ const MyCartPage: NextPage<TProps> = () => {
                 </Box>
               )
             })}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2 }}>
+              <Typography color={theme.palette.customColors.darkPaperBg} variant='h3' fontSize='25px' fontWeight='bold'>
+                {t('Sum_money')}:
+              </Typography>
+              <Typography fontSize='25px' color={theme.palette.primary.main}>
+                {`${formatPriceToLocal(memoTotalPriceProductSelected)} VNĐ`}
+              </Typography>
+            </Box>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
             <Button
               variant='contained'
               sx={{ height: '40px', fontWeight: '600', mt: 3 }}
               disabled={checkboxSelected.length <= 0}
+              onClick={handleNavigationCheckOut}
             >
+              <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-3px', marginRight: '2px' }} />
               {t('Buy_now')}
             </Button>
           </Box>

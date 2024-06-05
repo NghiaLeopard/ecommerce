@@ -3,14 +3,13 @@ import { NextPage } from 'next'
 
 // ** React
 import { ReactNode } from 'react'
-import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
-import DeliveryPage from 'src/view/pages/settings/delivery/DeliveryPage'
+
+import DeliveryPage from 'src/view/pages/settings/delivery'
 
 type TProps = {}
 

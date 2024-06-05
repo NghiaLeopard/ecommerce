@@ -1,0 +1,305 @@
+// ** Next
+import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+
+// ** React
+import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+// ** MUI
+import {
+  Avatar,
+  Box,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Typography,
+  useTheme
+} from '@mui/material'
+
+// ** Component
+import NoData from 'src/components/no-data'
+import Spinner from 'src/components/spinner'
+
+// ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
+
+// ** Utils
+import { formatPriceToLocal } from 'src/utils'
+
+// ** Redux
+import { useDispatch, useSelector } from 'react-redux'
+
+// ** Store
+import { AppDispatch, RootState } from 'src/stores'
+import { getAllDeliveryTypeAsync } from 'src/stores/delivery-type/actions'
+
+// ** utils
+
+// ** Helper
+
+// ** Type
+import { TOrderProduct } from 'src/types/cart-product'
+import { getAllDeliveryType } from 'src/services/delivery-type'
+import { getAllPaymentType } from 'src/services/payment-type'
+
+type TProps = {}
+
+const CheckOutProductPage: NextPage<TProps> = () => {
+  // **Theme
+  const theme = useTheme()
+
+  // ** Translation
+  const { t, i18n } = useTranslation()
+
+  // ** Dispatch
+  const dispatch: AppDispatch = useDispatch()
+
+  // ** Auth
+  const { user } = useAuth()
+
+  // ** Router
+  const router = useRouter()
+
+  // ** State
+  const [loading, setLoading] = useState(false)
+  const [listDeliveryType, setListDeliveryType] = useState<{ label: string; value: string }[]>([])
+  const [listPaymentType, setListPaymentType] = useState<{ label: string; value: string }[]>([])
+  const [deliveryTypeSelected, setDeliveryTypeSelected] = useState('')
+  const [paymentTypeSelected, setPaymentTypeSelected] = useState('')
+
+  const memoQueryProduct = useMemo(() => {
+    const result = {
+      totalPrice: 0,
+      products: []
+    }
+    const data: any = router?.query
+    if (data) {
+      result.totalPrice = data.totalPrice || 0
+
+      // ** check because json don't accept undefine
+      result.products = data.products ? JSON.parse(data.products) : []
+    }
+
+    return result
+  }, [router.query])
+
+  const handleChangeDeliverySelected = (value: string) => {
+    setDeliveryTypeSelected(value)
+  }
+
+  const handleChangePaymentSelected = (value: string) => {
+    setPaymentTypeSelected(value)
+  }
+
+  const getListDeliveryType = async () => {
+    try {
+      const res = await getAllDeliveryType({ params: { page: -1, limit: -1 } })
+
+      if (res.data.deliveryTypes) {
+        const dataDeliveryTypes = res.data.deliveryTypes.map((item: any) => {
+          return { label: item.name, value: item._id }
+        })
+
+        setListDeliveryType(dataDeliveryTypes)
+        setDeliveryTypeSelected(dataDeliveryTypes[0].value)
+      }
+    } catch (error) {}
+  }
+
+  const getListPaymentType = async () => {
+    try {
+      const res = await getAllPaymentType({ params: { page: -1, limit: -1 } })
+
+      if (res.data.paymentTypes) {
+        const dataPaymentTypes = res.data.paymentTypes.map((item: any) => {
+          return { label: item.name, value: item._id }
+        })
+
+        setListPaymentType(dataPaymentTypes)
+        setPaymentTypeSelected(dataPaymentTypes[0].value)
+      }
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    getListDeliveryType()
+  }, [])
+
+  useEffect(() => {
+    getListPaymentType()
+  }, [])
+
+  return (
+    <>
+      {loading && <Spinner />}
+
+      {memoQueryProduct?.products?.length > 0 ? (
+        <>
+          <Box sx={{ background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5, width: '100%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 5 }}>
+              <Typography sx={{ width: '100px', marginLeft: '20px' }}>{t('Image')}</Typography>
+              <Typography sx={{ flexBasis: '35%' }}>{t('Name_product')}</Typography>
+              <Typography sx={{ flexBasis: '20%' }}>{t('Price_original')}</Typography>
+              <Typography sx={{ flexBasis: '20%' }}>{t('Price_discount')}</Typography>
+              <Typography sx={{ flexBasis: '10%' }}>{t('Count')}</Typography>
+            </Box>
+            {memoQueryProduct?.products?.map((item: TOrderProduct) => {
+              return (
+                <Box key={item.product}>
+                  <Divider />
+
+                  <Box key={item.product} sx={{ display: 'flex', alignItems: 'center', my: 5 }}>
+                    <Avatar src={item.image} sx={{ width: '120px', height: '100px' }} />
+                    <Typography
+                      sx={{
+                        display: 'webkit-box',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        '-webkit-line-clamp': '1',
+                        '-webkit-box-orient': 'vertical',
+                        flexBasis: '35%'
+                      }}
+                    >
+                      {item.name}
+                    </Typography>
+                    <Box sx={{ flexBasis: '20%' }}>
+                      {item.discount > 0 ? (
+                        <Typography
+                          color={theme.palette.primary.main}
+                          fontWeight='bold'
+                          fontSize='20px'
+                          sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
+                        >
+                          {`${formatPriceToLocal(item.price)} VNĐ`}
+                        </Typography>
+                      ) : (
+                        <Box>{''}</Box>
+                      )}
+                    </Box>
+                    <Typography
+                      color={theme.palette.primary.main}
+                      fontSize='20px'
+                      fontWeight='bold'
+                      sx={{ flexBasis: '20%' }}
+                    >
+                      {item.discount > 0
+                        ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
+                        : `${formatPriceToLocal(item.price)} VNĐ`}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexBasis: '10%',
+                        fontSize: '18px',
+                        gap: 2,
+                        color: theme.palette.primary.main,
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {item.amount}
+                    </Box>
+                  </Box>
+                </Box>
+              )
+            })}
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column !important',
+              columnGap: '20px',
+              background: theme.palette.background.paper,
+              borderRadius: '15px',
+              px: 4,
+              py: 5,
+              width: '100%',
+              marginTop: '30px'
+            }}
+          >
+            <FormControl>
+              <Box sx={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+                <FormLabel
+                  id='demo-radio-buttons-group-label'
+                  sx={{ color: theme.palette.primary.main, fontWeight: 'bold', marginTop: '3px', width: '180px' }}
+                >
+                  {t('Delivery_type')}
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby='demo-radio-buttons-group-label'
+                  value={deliveryTypeSelected}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    handleChangeDeliverySelected(e.target.value)
+                  }}
+                  name='radio-buttons-group'
+                >
+                  {listDeliveryType.map(item => {
+                    return (
+                      <FormControlLabel
+                        checked={deliveryTypeSelected === item.value}
+                        value={item.value}
+                        control={<Radio />}
+                        label={item.label}
+                        key={item.value}
+                      />
+                    )
+                  })}
+                </RadioGroup>
+              </Box>
+            </FormControl>
+
+            <FormControl sx={{ marginTop: '20px' }}>
+              <Box sx={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+                <FormLabel
+                  id='demo-radio-buttons-group-label'
+                  sx={{ color: theme.palette.primary.main, fontWeight: 'bold', marginTop: '3px', width: '180px' }}
+                >
+                  {t('Payment_type')}
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby='demo-radio-buttons-group-label'
+                  value={paymentTypeSelected}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    handleChangePaymentSelected(e.target.value)
+                  }}
+                  name='radio-buttons-group'
+                >
+                  {listPaymentType.map(item => {
+                    return (
+                      <FormControlLabel
+                        checked={paymentTypeSelected === item.value}
+                        value={item.value}
+                        control={<Radio />}
+                        label={item.label}
+                        key={item.value}
+                      />
+                    )
+                  })}
+                </RadioGroup>
+              </Box>
+            </FormControl>
+          </Box>
+        </>
+      ) : (
+        <Box
+          sx={{
+            padding: '30px',
+            background: theme.palette.background.paper,
+            borderRadius: '15px',
+            px: 4,
+            py: 5,
+            width: '100%'
+          }}
+        >
+          <NoData widthImage={80} heightImage={80} textImage='No_data' />
+        </Box>
+      )}
+    </>
+  )
+}
+
+export default CheckOutProductPage

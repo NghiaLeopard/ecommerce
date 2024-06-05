@@ -132,7 +132,7 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }
 
-  const isExpiryDay = isExpiry(dataDetailProduct.discountStartDate, dataDetailProduct.discountEndDate)
+  const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
 
   useEffect(() => {
     if (productSlug) {
@@ -145,7 +145,6 @@ const ProductDetail: NextPage<TProps> = () => {
       fetchProductRelated(productSlug as string)
     }
   }, [i18n.language, productSlug])
-
 
   return (
     <>
