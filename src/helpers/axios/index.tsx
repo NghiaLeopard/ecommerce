@@ -8,7 +8,7 @@ import { FC, ReactNode } from 'react'
 import axios from 'axios'
 
 // ** Configs
-import { BASE_URL, API_ENDPOINT } from 'src/configs/api'
+import { API_ENDPOINT, BASE_URL } from 'src/configs/api'
 
 // ** Local storage
 import {
@@ -16,8 +16,7 @@ import {
   getLocalUserData,
   getTemporaryToken,
   removeLocalUserData,
-  setLocalUserData,
-  setTemporaryToken
+  setLocalUserData
 } from '../storage'
 
 // ** Jwt
@@ -38,7 +37,7 @@ const instanceAxios = axios.create({ baseURL: BASE_URL })
 const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | null) => void) => {
   if (router.asPath !== '/') {
     router.replace({
-      pathname: 'login',
+      pathname: '/login',
       query: { returnUrl: router.asPath }
     })
   } else {
@@ -55,6 +54,8 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
 
   instanceAxios.interceptors.request.use(
     async function (config) {
+      const isPublic = config?.params?.isPublic
+
       const { accessToken, refreshToken } = getLocalUserData()
       const temporaryToken = getTemporaryToken()?.temporaryToken
 
@@ -102,7 +103,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
             handleRedirectLogin(router, setUser)
           }
         }
-      } else {
+      } else if (!isPublic) {
         handleRedirectLogin(router, setUser)
       }
 

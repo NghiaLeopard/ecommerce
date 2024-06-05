@@ -10,3 +10,4 @@ export const TEMPORARY_TOKEN = 'temporaryToken'
 
 export const ORDER_ITEM = 'orderItem'
 
+export const LIST_ROUTE_PUBLIC = ['/product']

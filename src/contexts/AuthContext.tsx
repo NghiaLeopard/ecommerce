@@ -28,6 +28,7 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import instanceAxios from 'src/helpers/axios'
 import { updateToCart } from 'src/stores/cart-product'
+import { LIST_ROUTE_PUBLIC } from 'src/configs/auth'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -108,7 +109,6 @@ const AuthProvider = ({ children }: Props) => {
 
         router.replace(redirectURL as string)
       })
-
       .catch(err => {
         if (errorCallback) errorCallback(err)
       })
@@ -125,7 +125,17 @@ const AuthProvider = ({ children }: Props) => {
           orderItem: []
         })
       )
-      router.replace('/login')
+
+      if (!LIST_ROUTE_PUBLIC.some((item: string) => router.asPath.startsWith(item))) {
+        if (router.asPath !== '/') {
+          router.replace({
+            pathname: '/login',
+            query: { returnUrk: router.asPath }
+          })
+        } else {
+          router.replace('/')
+        }
+      }
     })
   }
 

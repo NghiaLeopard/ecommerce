@@ -1,24 +1,22 @@
-// ** Next
+//** Next
 import { NextPage } from 'next'
 
 // ** React
 import { ReactNode } from 'react'
 
-// **Layout
+//** Layout
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
-import ProductDetail from 'src/view/pages/product/index'
 
 // ** Page
+import CheckOutProductPage from 'src/view/pages/checkout-product'
 
+// **Type
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  return <ProductDetail />
+  return <CheckOutProductPage />
 }
 
-Index.guestGuard = false
-Index.authGuard = false
+export default Index
 
 Index.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
-
-export default Index

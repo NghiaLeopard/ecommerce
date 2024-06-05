@@ -112,9 +112,10 @@ const ChangePasswordPage: NextPage<TProps> = () => {
     <Box
       sx={{
         display: 'flex',
-        height: '89vh',
+        height: '100%',
         padding: '40px',
-        backgroundColor: theme.palette.background.paper
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: '15px'
       }}
     >
       <Box
@@ -133,9 +134,10 @@ const ChangePasswordPage: NextPage<TProps> = () => {
       >
         <Image
           src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
-          width={600}
+          width={0}
+          height={0}
           alt='Login Image'
-          style={{ width: 'auto', height: 'auto' }}
+          style={{ width: '63.5%', height: '100%' }}
         />
       </Box>
 

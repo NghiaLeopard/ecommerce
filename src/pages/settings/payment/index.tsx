@@ -8,7 +8,7 @@ import { ReactNode } from 'react'
 import UserLayout from 'src/view/layout/UserLayout'
 
 // ** Page
-import PaymentPage from 'src/view/pages/settings/payment/PaymentPage'
+import PaymentPage from 'src/view/pages/settings/payment'
 
 type TProps = {}
 

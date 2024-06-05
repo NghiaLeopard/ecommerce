@@ -68,8 +68,15 @@ const HorizontalLayout: NextPage<TProps> = ({ isHidden = false, open, toggleDraw
   const router = useRouter()
   const { t } = useTranslation()
 
-  const handleNavigate = () => {
-    router.push(CONFIG_ROUTE.LOGIN)
+  const handleNavigateLogin = () => {
+    if (router.asPath !== '/') {
+      router.replace({
+        pathname: '/login',
+        query: { returnUrl: router.asPath }
+      })
+    } else {
+      router.replace('/login')
+    }
   }
 
   const handleClickHome = () => {
@@ -118,7 +125,7 @@ const HorizontalLayout: NextPage<TProps> = ({ isHidden = false, open, toggleDraw
           {user !== null ? (
             <UserDropDown />
           ) : (
-            <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleNavigate}>
+            <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleNavigateLogin}>
               {t('Login')}
             </Button>
           )}

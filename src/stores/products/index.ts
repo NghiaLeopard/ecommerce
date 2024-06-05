@@ -90,7 +90,6 @@ export const productsSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(getListProductsLikedAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.productsLiked.data = actions?.payload?.data?.products
         state.productsLiked.total = actions?.payload?.data?.totalCount
@@ -159,7 +158,6 @@ export const productsSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(likeProductAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.isSuccessLikeProduct = !!actions.payload?.data?._id
         state.isErrorLikeProduct = !actions.payload?.data?._id
@@ -172,7 +170,6 @@ export const productsSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(unLikeProductAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.isSuccessUnLikeProduct = !!actions.payload?.data?._id
         state.isErrorUnLikeProduct = !actions.payload?.data?._id
