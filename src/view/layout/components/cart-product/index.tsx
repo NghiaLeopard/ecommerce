@@ -34,9 +34,9 @@ import { formatPriceToLocal, isExpiry, toFullName } from 'src/utils'
 
 // ** Store
 import { RootState } from 'src/stores'
-import { TOrderProduct } from 'src/types/cart-product'
+import { TOrderProduct } from 'src/types/order-product'
 import { getOrderItem } from 'src/helpers/storage'
-import { updateToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/order-product'
 import NoData from 'src/components/no-data'
 
 interface TProps {}
@@ -50,7 +50,7 @@ const CartProduct: NextPage<TProps> = () => {
 
   // ** useSelector
   const { userData } = useSelector((state: RootState) => state.auth)
-  const { orderItem } = useSelector((state: RootState) => state.cartProduct)
+  const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   const dispatch = useDispatch()
 

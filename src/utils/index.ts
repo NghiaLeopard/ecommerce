@@ -97,7 +97,7 @@ export const stringToSlug = (str: string) => {
 
 import { EditorState, ContentState } from 'draft-js'
 import htmlToDraft from 'html-to-draftjs'
-import { TOrderProduct } from 'src/types/cart-product'
+import { TOrderProduct } from 'src/types/order-product'
 
 export const convertHtmlToDraft = (html: string) => {
   const blocksFromHtml = htmlToDraft(html)

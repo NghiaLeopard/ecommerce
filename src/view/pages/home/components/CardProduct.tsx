@@ -25,7 +25,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Stores
 import { AppDispatch, RootState } from 'src/stores'
-import { updateToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/order-product'
 
 // ** Types
 import { TProduct } from 'src/types/products'
@@ -56,7 +56,7 @@ export default function CardProduct({ item }: TCardProduct) {
   const dispatch: AppDispatch = useDispatch()
 
   // ** Selector
-  const { orderItem } = useSelector((state: RootState) => state.cartProduct)
+  const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   const handleNavigationPage = (slug: string) => {
     router.push(`/product/${slug}`)

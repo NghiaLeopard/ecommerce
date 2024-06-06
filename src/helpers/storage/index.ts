@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN, ORDER_ITEM, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
-import { TOrderProduct } from 'src/types/cart-product'
+import { TOrderProduct } from 'src/types/order-product'
 
 export const setLocalUserData = (userData: string, accessToken: string, refreshToken: string) => {
   if (typeof window !== 'undefined') {

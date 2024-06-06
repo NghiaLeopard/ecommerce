@@ -31,7 +31,7 @@ import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 // ** Store
 import { RootState } from 'src/stores'
-import { updateToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/order-product'
 
 // ** utils
 import { useDispatch, useSelector } from 'react-redux'
@@ -67,7 +67,7 @@ const ProductDetail: NextPage<TProps> = () => {
   const { user } = useAuth()
 
   // ** Selector
-  const { orderItem } = useSelector((state: RootState) => state.cartProduct)
+  const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   const { productSlug } = router?.query
 

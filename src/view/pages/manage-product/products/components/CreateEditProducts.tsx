@@ -244,8 +244,6 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       const res = await getDetailProducts(idProducts)
       const data = res.data
 
-      console.log(data)
-
       setLoading(false)
       if (data) {
         reset({
@@ -307,7 +305,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       setLoading(false)
     }
   }
-  
+
   useEffect(() => {
     fetchAllCities()
   }, [])
