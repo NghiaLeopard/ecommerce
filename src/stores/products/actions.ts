@@ -124,7 +124,6 @@ export const deleteMultipleProductsAsync = createAsyncThunk(
 export const likeProductAsync = createAsyncThunk(`${serviceName}/like-product`, async (data: TActionProduct) => {
   const response = await likeProduct(data)
 
-  console.log(response)
 
   if (response?.message) {
     return {

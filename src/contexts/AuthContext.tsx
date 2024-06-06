@@ -27,7 +27,7 @@ import {
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import instanceAxios from 'src/helpers/axios'
-import { updateToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/order-product'
 import { LIST_ROUTE_PUBLIC } from 'src/configs/auth'
 
 // ** Defaults

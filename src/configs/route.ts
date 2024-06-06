@@ -1,23 +1,29 @@
 export const CONFIG_ROUTE = {
   MY_PROFILE: '/my-profile',
   MY_PRODUCT: '/my-product',
+  DASHBOARD: '/dashboard',
   LOGIN: '/login',
   CHECKOUT_PRODUCT: '/checkout-product',
   CHANGE_PASSWORD: '/change-password',
+
   SYSTEM: {
     USER: '/system/user',
     ROLE: '/system/role'
   },
+
   MANAGE_PRODUCT: {
-    MANAGE_PRODUCT: '/manage-product/product',
-    MANAGE_ORDER: '/manage-product/order',
-    MANAGE_REVIEWS: '/manage-product/reviews',
-    MANAGE_TYPE_PRODUCT: '/manage-product/product-types'
+    PRODUCT: '/manage-product/product',
+    TYPE_PRODUCT: '/manage-product/product-types'
   },
+
+  MANAGE_ORDER: {
+    ORDER: '/manage-product/order',
+    REVIEWS: '/manage-product/reviews'
+  },
+
   SETTINGS: {
     CITY: '/settings/city',
     DELIVERY_TYPE: '/settings/delivery',
     PAYMENT_TYPE: '/settings/payment'
-  },
-  DASHBOARD: '/dashboard'
+  }
 }

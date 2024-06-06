@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { updateToCart } from 'src/stores/cart-product'
+import { updateToCart } from 'src/stores/order-product'
 
 // ** utils
 import { useRouter } from 'next/router'
@@ -34,7 +34,7 @@ import { useRouter } from 'next/router'
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Type
-import { TOrderProduct } from 'src/types/cart-product'
+import { TOrderProduct } from 'src/types/order-product'
 import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {}
@@ -60,7 +60,7 @@ const MyCartPage: NextPage<TProps> = () => {
   const [checkboxSelected, setCheckboxSelected] = useState<string[]>([])
 
   // ** Selector
-  const { orderItem } = useSelector((state: RootState) => state.cartProduct)
+  const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   // ** Memo
   const memoAllId = useMemo(() => {

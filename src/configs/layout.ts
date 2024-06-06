@@ -43,13 +43,13 @@ export const VerticalItems = () => {
         {
           title: t('List_product'),
           icon: 'fluent-mdl2:product',
-          path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_PRODUCT,
+          path: CONFIG_ROUTE.MANAGE_PRODUCT.PRODUCT,
           permissions: CONFIG_PERMISSIONS.MANAGE_PRODUCT.PRODUCT.VIEW
         },
         {
           title: t('Type_product'),
           icon: 'material-symbols:category-outline',
-          path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT
+          path: CONFIG_ROUTE.MANAGE_PRODUCT.TYPE_PRODUCT
         }
       ]
     },
@@ -62,13 +62,13 @@ export const VerticalItems = () => {
         {
           title: t('List_order'),
           icon: 'lets-icons:order-fill',
-          path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_ORDER,
+          path: CONFIG_ROUTE.MANAGE_ORDER.ORDER,
           permissions: CONFIG_PERMISSIONS.MANAGE_ORDER.ORDER.VIEW
         },
         {
           title: t('List_review'),
           icon: 'material-symbols:reviews-outline',
-          path: CONFIG_ROUTE.MANAGE_PRODUCT.MANAGE_REVIEWS
+          path: CONFIG_ROUTE.MANAGE_ORDER.REVIEWS
         }
       ]
     },

@@ -10,7 +10,7 @@ import deliveryType from 'src/stores/delivery-type'
 import paymentType from 'src/stores/payment-type'
 import productTypes from 'src/stores/product-types'
 import products from 'src/stores/products'
-import cartProduct from 'src/stores/cart-product'
+import orderProduct from 'src/stores/order-product'
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +22,7 @@ export const store = configureStore({
     paymentType,
     productTypes,
     products,
-    cartProduct
+    orderProduct
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -5,11 +5,13 @@ import { useRouter } from 'next/router'
 // ** React
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 // ** MUI
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   FormControl,
   FormControlLabel,
@@ -28,21 +30,27 @@ import Spinner from 'src/components/spinner'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Utils
-import { formatPriceToLocal } from 'src/utils'
+import { formatPriceToLocal, toFullName } from 'src/utils'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { getAllDeliveryTypeAsync } from 'src/stores/delivery-type/actions'
+import { createOrderProductsAsync } from 'src/stores/order-product/actions'
+import { resetInitialState } from 'src/stores/order-product'
 
 // ** utils
 
 // ** Helper
 
 // ** Type
-import { TOrderProduct } from 'src/types/cart-product'
+import { TOrderProduct } from 'src/types/order-product'
+
+// ** Configs
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+
+// ** Services
 import { getAllDeliveryType } from 'src/services/delivery-type'
 import { getAllPaymentType } from 'src/services/payment-type'
 
@@ -64,9 +72,15 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   // ** Router
   const router = useRouter()
 
+  // ** Selector
+
+  const { isLoading, isErrorCreateOrder, isMessageCreateOrder, isSuccessCreateOrder, typeError } = useSelector(
+    (state: RootState) => state.orderProduct
+  )
+
   // ** State
   const [loading, setLoading] = useState(false)
-  const [listDeliveryType, setListDeliveryType] = useState<{ label: string; value: string }[]>([])
+  const [listDeliveryType, setListDeliveryType] = useState<{ label: string; value: string; price: number }[]>([])
   const [listPaymentType, setListPaymentType] = useState<{ label: string; value: string }[]>([])
   const [deliveryTypeSelected, setDeliveryTypeSelected] = useState('')
   const [paymentTypeSelected, setPaymentTypeSelected] = useState('')
@@ -101,7 +115,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
 
       if (res.data.deliveryTypes) {
         const dataDeliveryTypes = res.data.deliveryTypes.map((item: any) => {
-          return { label: item.name, value: item._id }
+          return { label: item.name, value: item._id, price: item.price }
         })
 
         setListDeliveryType(dataDeliveryTypes)
@@ -113,7 +127,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const getListPaymentType = async () => {
     try {
       const res = await getAllPaymentType({ params: { page: -1, limit: -1 } })
-
       if (res.data.paymentTypes) {
         const dataPaymentTypes = res.data.paymentTypes.map((item: any) => {
           return { label: item.name, value: item._id }
@@ -124,6 +137,29 @@ const CheckOutProductPage: NextPage<TProps> = () => {
       }
     } catch (error) {}
   }
+  const handleOrderProduct = () => {
+    const findPaymentMethod = listDeliveryType.find(item => item.value === deliveryTypeSelected)
+    const shippingPrice = findPaymentMethod ? findPaymentMethod.price : 0
+    const totalPrice = +memoQueryProduct.totalPrice + Number(shippingPrice)
+
+    if (user) {
+      dispatch(
+        createOrderProductsAsync({
+          orderItems: memoQueryProduct.products,
+          itemsPrice: +memoQueryProduct.totalPrice,
+          fullName: toFullName(user?.lastName, user?.middleName, user?.firstName, i18n.language),
+          address: user?.address,
+          city: user?.city,
+          phone: user?.phoneNumber,
+          user: user?._id,
+          paymentMethod: paymentTypeSelected,
+          deliveryMethod: deliveryTypeSelected,
+          shippingPrice: shippingPrice,
+          totalPrice: totalPrice
+        })
+      )
+    }
+  }
 
   useEffect(() => {
     getListDeliveryType()
@@ -133,9 +169,26 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     getListPaymentType()
   }, [])
 
+  useEffect(() => {
+    if (isMessageCreateOrder) {
+      if (isSuccessCreateOrder) {
+        toast.success(t('Order_product_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorCreateOrder) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Order_product_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorCreateOrder, isSuccessCreateOrder])
+
   return (
     <>
-      {loading && <Spinner />}
+      {(loading || isLoading) && <Spinner />}
 
       {memoQueryProduct?.products?.length > 0 ? (
         <>
@@ -298,6 +351,11 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           <NoData widthImage={80} heightImage={80} textImage='No_data' />
         </Box>
       )}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
+        <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 3 }} onClick={handleOrderProduct}>
+          {t('Order')}
+        </Button>
+      </Box>
     </>
   )
 }

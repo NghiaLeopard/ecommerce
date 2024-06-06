@@ -111,7 +111,8 @@ const MyProductPage: NextPage<TProps> = () => {
     const params = {
       limit: pageSize,
       page: page,
-      search: search
+      search: search,
+      isViewed: true
     }
     dispatch(
       getListProductsViewedAsync({
