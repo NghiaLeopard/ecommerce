@@ -422,7 +422,7 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
                           const findCity = allCity.find(itemCity => itemCity.value === item.city)
 
                           return (
-                            <Box sx={{ display: 'flex' }}>
+                            <Box sx={{ display: 'flex' }} key={index}>
                               <FormControlLabel
                                 checked={checkboxSelected === index}
                                 value={index}
@@ -485,7 +485,9 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
                 sx={{ mt: 3, mb: 2 }}
                 onClick={() => {
                   setTabActive(1)
-                  reset()
+                  reset({
+                    ...defaultValues
+                  })
                   setIsEditItem({
                     isEdit: false,
                     index: -1
