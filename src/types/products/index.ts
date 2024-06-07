@@ -16,8 +16,7 @@ export type TParamsGetProductsLiked = {
 export type TParamsGetProductsViewed = {
   limit: number
   page: number
-  search?: string,
-  isViewed: boolean
+  search?: string
 }
 
 export type TParamsRelated = {

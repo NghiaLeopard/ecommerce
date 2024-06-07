@@ -158,7 +158,7 @@ const CartProduct: NextPage<TProps> = () => {
 
               return (
                 <MenuItem onClick={() => handleNavigationItem(item.slug)} key={item.name}>
-                  <Avatar src={item.image} />
+                  <Avatar src={item.image} style={{objectFit: 'contain'}} />
                   <Box sx={{ width: '250px' }}>
                     <Typography
                       sx={{

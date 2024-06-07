@@ -69,21 +69,23 @@ interface TCreateEditUsers {
 }
 
 export const CreateEditUsers = ({ open, onClose, idUsers }: TCreateEditUsers) => {
-  // ** Hook
+  // ** Theme
   const theme = useTheme()
 
+  // ** Translation
   const { t, i18n } = useTranslation()
 
+  // ** State
   const [password, setPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   const [allRole, setAllRole] = useState([])
   const [allCity, setAllCity] = useState([])
 
-  const handleClickPassword = () => setPassword(show => !show)
-
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
+
+  const handleClickPassword = () => setPassword(show => !show)
 
   const defaultValues: TDefaultValue = {
     email: '',

@@ -44,11 +44,13 @@ interface TCreateEditPaymentType {
 }
 
 export const CreateEditPaymentType = ({ open, onClose, idPaymentType }: TCreateEditPaymentType) => {
-  // ** Hook
+  // ** Theme
   const theme = useTheme()
 
+  // ** Translation
   const { t, i18n } = useTranslation()
 
+  // ** State
   const [loading, setLoading] = useState(false)
 
   // ** Redux

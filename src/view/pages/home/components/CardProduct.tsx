@@ -113,7 +113,7 @@ export default function CardProduct({ item }: TCardProduct) {
 
   return (
     <Card sx={{ maxWidth: '450px' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='Image' />
+      <CardMedia component='img' height='194' image={item.image} alt='Image' style={{ objectFit: 'contain' }} />
       <CardContent sx={{ padding: '15px 15px !important' }}>
         <Typography
           variant='h4'

@@ -61,15 +61,24 @@ const schema = yup.object({
 })
 
 const ChangePasswordPage: NextPage<TProps> = () => {
+  // ** Theme
   const theme = useTheme()
+
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
+
+  // ** Auth
   const { logout } = useAuth()
+
+  // ** Translation
   const { t } = useTranslation()
 
+  // ** Selector
   const { isErrorChangePassword, isLoading, isSuccessChangePassword, messageChangePassword } = useSelector(
     (state: RootState) => state.auth
   )
 
+  // ** State
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)

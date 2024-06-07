@@ -7,10 +7,6 @@ import { Checkbox, Typography, useTheme } from '@mui/material'
 // ** Components
 import CustomDataGrid from 'src/components/custom-data-grid'
 
-// **Form
-
-// **Yup
-
 // ** Store
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
@@ -34,6 +30,7 @@ const getPermissionsValue = (value: string, mode: string, parentValue: string) =
 }
 
 export const TablePermissions = ({ permissionSelected, setPermissionSelected, disabled }: TTablePermissions) => {
+  // ** Theme
   const theme = useTheme()
 
   const handleChangeCheckBox = (value: string) => {

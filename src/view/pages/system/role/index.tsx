@@ -41,6 +41,8 @@ import { getDetailRole } from 'src/services/role'
 // ** utils
 import { getValuePermissions } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+
+// ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}
@@ -51,10 +53,6 @@ const RoleListPage: NextPage<TProps> = () => {
 
   // ** i18n
   const { t } = useTranslation()
-
-  // ** hook
-
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
   // ** useState
   const [openDialog, setOpenDialog] = useState({
@@ -75,8 +73,9 @@ const RoleListPage: NextPage<TProps> = () => {
     name: ''
   })
 
-  // ** use selector
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
+  // ** use selector
   const {
     roles,
     isErrorCreateEdit,
@@ -89,6 +88,7 @@ const RoleListPage: NextPage<TProps> = () => {
     typeError
   } = useSelector((state: RootState) => state.role)
 
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
   const getListRole = () => {

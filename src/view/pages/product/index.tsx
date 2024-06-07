@@ -17,6 +17,8 @@ import { TProduct } from 'src/types/products'
 import CustomIcon from 'src/components/Icon'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
+import NoData from 'src/components/no-data'
+import CardProductRelated from '../home/components/CardProductRelated'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -38,9 +40,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Helper
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
-import CardProduct from '../home/components/CardProductRelated'
-import CardProductRelated from '../home/components/CardProductRelated'
-import NoData from 'src/components/no-data'
 
 type TProps = {}
 
