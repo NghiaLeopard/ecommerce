@@ -60,14 +60,21 @@ const schema = yup.object({
 })
 
 const LoginPage: NextPage<TProps> = () => {
+  // ** Theme
   const theme = useTheme()
+
+  // ** Translation
   const { t } = useTranslation()
 
+  // ** Auth
+  const { login } = useAuth()
+
+
+  // ** State
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setRemember] = useState(false)
   const handleClickShowPassword = () => setShowPassword(show => !show)
 
-  const { login } = useAuth()
 
   const {
     control,

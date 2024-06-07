@@ -48,8 +48,10 @@ export const CreateEditProductTypes = ({ open, onClose, idProductTypes }: TCreat
   // ** Hook
   const theme = useTheme()
 
+  // ** Translation
   const { t, i18n } = useTranslation()
 
+  // ** state
   const [loading, setLoading] = useState(false)
 
   // ** Redux
@@ -135,7 +137,7 @@ export const CreateEditProductTypes = ({ open, onClose, idProductTypes }: TCreat
             padding: '30px'
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between',mb: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
             <Typography variant='h3'>{idProductTypes ? t('Edit_product_type') : t('Create_product_type')}</Typography>
             <IconButton onClick={onClose}>
               <CustomIcon icon='typcn:delete' />

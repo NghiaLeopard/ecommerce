@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Chip, Grid, Typography, styled, useTheme } from '@mui/material'
+import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/city'
-import { deleteMultipleCityAsync, deleteCityAsync, getAllCityAsync } from 'src/stores/city/actions'
+import { deleteCityAsync, deleteMultipleCityAsync, getAllCityAsync } from 'src/stores/city/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
@@ -41,6 +41,8 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+
+// ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}

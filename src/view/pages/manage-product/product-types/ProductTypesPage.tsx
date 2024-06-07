@@ -41,13 +41,13 @@ import toast from 'react-hot-toast'
 
 // ** utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import { formatDate } from 'src/utils'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
-import { formatDate } from 'src/utils'
 
 type TProps = {}
 
@@ -66,6 +66,7 @@ const ProductTypesPage: NextPage<TProps> = () => {
     idProductTypes: ''
   })
 
+  // ** State
   const [openDeleteMultipleProductTypes, setOpenDeleteMultipleProductTypes] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')

@@ -36,7 +36,10 @@ const schema = yup.object({
 })
 
 export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
+  // ** Theme
   const theme = useTheme()
+
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
   const {

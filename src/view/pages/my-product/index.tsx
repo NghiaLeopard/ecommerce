@@ -42,9 +42,10 @@ const MyProductPage: NextPage<TProps> = () => {
   // ** Theme
   const theme = useTheme()
 
-  // ** i18n
+  // ** Translation
   const { t } = useTranslation()
 
+  // ** State
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
@@ -111,8 +112,7 @@ const MyProductPage: NextPage<TProps> = () => {
     const params = {
       limit: pageSize,
       page: page,
-      search: search,
-      isViewed: true
+      search: search
     }
     dispatch(
       getListProductsViewedAsync({

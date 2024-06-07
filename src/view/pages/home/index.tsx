@@ -47,6 +47,7 @@ const HomePage: NextPage<TProps> = () => {
   // ** i18n
   const { t } = useTranslation()
 
+  // ** State
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
@@ -108,6 +109,8 @@ const HomePage: NextPage<TProps> = () => {
   const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
     setTabSelected(newValue)
   }
+
+  console.log(allCities)
 
   const handleFilterProduct = (value: string, name: string) => {
     switch (name) {
@@ -270,11 +273,9 @@ const HomePage: NextPage<TProps> = () => {
           <Grid container spacing={2}>
             {listProductPublic.map((item: TProduct) => {
               return (
-                <>
-                  <Grid item key={item?._id} xs={12} sm={6} md={4}>
-                    <CardProduct item={item} key={item?._id} />
-                  </Grid>
-                </>
+                <Grid item key={item?._id} xs={12} sm={6} md={4}>
+                  <CardProduct item={item} key={item?._id} />
+                </Grid>
               )
             })}
           </Grid>

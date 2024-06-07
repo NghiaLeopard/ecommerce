@@ -65,19 +65,20 @@ const DeliveryPage: NextPage<TProps> = () => {
     open: false,
     idDeliveryType: ''
   })
-
   const [openDeleteMultipleDeliveryType, setOpenDeleteMultipleDeliveryType] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idDeliveryType: ''
   })
+
+  // ** Dispatch
+  const dispatch: AppDispatch = useDispatch()
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 

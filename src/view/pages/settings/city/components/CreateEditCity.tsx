@@ -14,8 +14,8 @@ import CustomTextField from 'src/components/text-field'
 import { Controller, useForm } from 'react-hook-form'
 
 // **Yup
-import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 // ** Redux
 import { useDispatch } from 'react-redux'
@@ -28,11 +28,7 @@ import { createCityAsync, editCityAsync } from 'src/stores/city/actions'
 import Spinner from 'src/components/spinner'
 
 // ** Services
-import { getAllCity } from 'src/services/city'
 import { getDetailCity } from 'src/services/city'
-
-// ** Utils
-import { convertBase64 } from 'src/utils'
 
 type TDefaultValue = {
   name: string
@@ -48,11 +44,13 @@ export const CreateEditCity = ({ open, onClose, idCity }: TCreateEditCity) => {
   // ** Hook
   const theme = useTheme()
 
+  // ** Translation
   const { t, i18n } = useTranslation()
 
+  // ** State
   const [loading, setLoading] = useState(false)
 
-  // ** Redux
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
   const defaultValues: TDefaultValue = {

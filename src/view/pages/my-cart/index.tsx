@@ -18,7 +18,7 @@ import CustomTextField from 'src/components/text-field'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal } from 'src/utils'
+import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -225,6 +225,8 @@ const MyCartPage: NextPage<TProps> = () => {
               </Box>
             </Box>
             {orderItem.map((item: TOrderProduct) => {
+              const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
+
               return (
                 <Box key={item.product}>
                   <Divider />
@@ -264,16 +266,28 @@ const MyCartPage: NextPage<TProps> = () => {
                         <Box>{''}</Box>
                       )}
                     </Box>
-                    <Typography
-                      color={theme.palette.primary.main}
-                      fontSize='20px'
-                      fontWeight='bold'
-                      sx={{ flexBasis: '20%' }}
-                    >
-                      {item.discount > 0
-                        ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
-                        : `${formatPriceToLocal(item.price)} VNĐ`}
-                    </Typography>
+                    <Box sx={{ flexBasis: '20%', display: 'flex', gap: 2 }}>
+                      <Typography color={theme.palette.primary.main} fontSize='20px' fontWeight='bold'>
+                        {item.discount > 0
+                          ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
+                          : `${formatPriceToLocal(item.price)} VNĐ`}
+                      </Typography>
+                      {item.discount > 0 && isExpiryDay && (
+                        <Box
+                          sx={{
+                            backgroundColor: 'rgba(254,238,234,1)'
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: '13px',
+                              color: theme.palette.error.main,
+                              padding: '4px 8px'
+                            }}
+                          >{`-${item.discount}%`}</Typography>
+                        </Box>
+                      )}
+                    </Box>
                     <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2 }}>
                       <Tooltip title='Minus'>
                         <IconButton

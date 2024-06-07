@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 
 // ** React
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import {
@@ -25,6 +25,8 @@ import {
 // ** Component
 import NoData from 'src/components/no-data'
 import Spinner from 'src/components/spinner'
+import { CreateDeliveryAddress } from './components/CreateDeliveryAddress'
+import CustomIcon from 'src/components/Icon'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -37,8 +39,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { createOrderProductsAsync } from 'src/stores/order-product/actions'
 import { resetInitialState } from 'src/stores/order-product'
+import { createOrderProductsAsync } from 'src/stores/order-product/actions'
 
 // ** utils
 
@@ -53,8 +55,19 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 // ** Services
 import { getAllDeliveryType } from 'src/services/delivery-type'
 import { getAllPaymentType } from 'src/services/payment-type'
+import { getAllCity } from 'src/services/city'
 
 type TProps = {}
+
+type TAddresses = {
+  firstName: string
+  lastName: string
+  middleName: string
+  phoneNumber: string
+  address: string
+  city: string
+  isDefault: boolean
+}
 
 const CheckOutProductPage: NextPage<TProps> = () => {
   // **Theme
@@ -73,10 +86,11 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const router = useRouter()
 
   // ** Selector
-
   const { isLoading, isErrorCreateOrder, isMessageCreateOrder, isSuccessCreateOrder, typeError } = useSelector(
     (state: RootState) => state.orderProduct
   )
+
+  
 
   // ** State
   const [loading, setLoading] = useState(false)
@@ -84,6 +98,8 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const [listPaymentType, setListPaymentType] = useState<{ label: string; value: string }[]>([])
   const [deliveryTypeSelected, setDeliveryTypeSelected] = useState('')
   const [paymentTypeSelected, setPaymentTypeSelected] = useState('')
+  const [openCreate, setOpenCreate] = useState(false)
+  const [allCity, setAllCity] = useState<{ label: string; value: string }[]>([])
 
   const memoQueryProduct = useMemo(() => {
     const result = {
@@ -100,6 +116,20 @@ const CheckOutProductPage: NextPage<TProps> = () => {
 
     return result
   }, [router.query])
+
+  const memoAddressDefault = useMemo(() => {
+    return user?.addresses?.find((item: TAddresses) => item.isDefault)
+  }, [user])
+
+  console.log({ memoAddressDefault, allCity })
+
+  const memoLabelCity = useMemo(() => {
+    return allCity.find(item => item.value === memoAddressDefault.city)
+  }, [memoAddressDefault, allCity, user])
+
+  const handleCloseModal = () => {
+    setOpenCreate(false)
+  }
 
   const handleChangeDeliverySelected = (value: string) => {
     setDeliveryTypeSelected(value)
@@ -169,6 +199,8 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     getListPaymentType()
   }, [])
 
+ 
+
   useEffect(() => {
     if (isMessageCreateOrder) {
       if (isSuccessCreateOrder) {
@@ -186,13 +218,87 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     }
   }, [isErrorCreateOrder, isSuccessCreateOrder])
 
+  const fetchAllCity = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+      const CityArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCity(CityArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllCity()
+  }, [])
+
   return (
     <>
+      <CreateDeliveryAddress open={openCreate} onClose={handleCloseModal} tabActiveDefault={1} />
+
       {(loading || isLoading) && <Spinner />}
+      <Box
+        sx={{
+          padding: '30px',
+          background: theme.palette.background.paper,
+          borderRadius: '15px',
+          px: 4,
+          py: 5,
+          width: '100%'
+        }}
+      >
+        <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <CustomIcon icon='mdi:address-marker' color={theme.palette.primary.main} />
+            <Typography>{t('Delivery_address')}</Typography>
+          </Box>
+          {!memoAddressDefault ? (
+            <Button variant='contained' sx={{ marginTop: '5px' }} onClick={() => setOpenCreate(true)}>
+              {t('Add_address')}
+            </Button>
+          ) : (
+            <Box
+              sx={{ display: 'flex', justifyContent: 'flex-start', gap: 3, marginTop: '10px', alignItems: 'center' }}
+            >
+              <Typography fontWeight='bold'>
+                {memoAddressDefault.phoneNumber}{' '}
+                {toFullName(
+                  memoAddressDefault.lastName,
+                  memoAddressDefault.middleName,
+                  memoAddressDefault.firstName,
+                  i18n.language
+                )}
+              </Typography>
+              <Typography>
+                {memoLabelCity ? memoLabelCity?.label : ''} {memoAddressDefault.address}
+              </Typography>
+              <Button variant='contained' sx={{ marginTop: '5px' }} onClick={() => setOpenCreate(true)}>
+                {t('Change_address')}
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Box>
 
       {memoQueryProduct?.products?.length > 0 ? (
         <>
-          <Box sx={{ background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5, width: '100%' }}>
+          <Box
+            sx={{
+              background: theme.palette.background.paper,
+              borderRadius: '15px',
+              px: 4,
+              py: 5,
+              width: '100%',
+              marginTop: '30px'
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 5 }}>
               <Typography sx={{ width: '100px', marginLeft: '20px' }}>{t('Image')}</Typography>
               <Typography sx={{ flexBasis: '35%' }}>{t('Name_product')}</Typography>
@@ -260,82 +366,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
               )
             })}
           </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column !important',
-              columnGap: '20px',
-              background: theme.palette.background.paper,
-              borderRadius: '15px',
-              px: 4,
-              py: 5,
-              width: '100%',
-              marginTop: '30px'
-            }}
-          >
-            <FormControl>
-              <Box sx={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
-                <FormLabel
-                  id='demo-radio-buttons-group-label'
-                  sx={{ color: theme.palette.primary.main, fontWeight: 'bold', marginTop: '3px', width: '180px' }}
-                >
-                  {t('Delivery_type')}
-                </FormLabel>
-                <RadioGroup
-                  aria-labelledby='demo-radio-buttons-group-label'
-                  value={deliveryTypeSelected}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    handleChangeDeliverySelected(e.target.value)
-                  }}
-                  name='radio-buttons-group'
-                >
-                  {listDeliveryType.map(item => {
-                    return (
-                      <FormControlLabel
-                        checked={deliveryTypeSelected === item.value}
-                        value={item.value}
-                        control={<Radio />}
-                        label={item.label}
-                        key={item.value}
-                      />
-                    )
-                  })}
-                </RadioGroup>
-              </Box>
-            </FormControl>
-
-            <FormControl sx={{ marginTop: '20px' }}>
-              <Box sx={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
-                <FormLabel
-                  id='demo-radio-buttons-group-label'
-                  sx={{ color: theme.palette.primary.main, fontWeight: 'bold', marginTop: '3px', width: '180px' }}
-                >
-                  {t('Payment_type')}
-                </FormLabel>
-                <RadioGroup
-                  aria-labelledby='demo-radio-buttons-group-label'
-                  value={paymentTypeSelected}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    handleChangePaymentSelected(e.target.value)
-                  }}
-                  name='radio-buttons-group'
-                >
-                  {listPaymentType.map(item => {
-                    return (
-                      <FormControlLabel
-                        checked={paymentTypeSelected === item.value}
-                        value={item.value}
-                        control={<Radio />}
-                        label={item.label}
-                        key={item.value}
-                      />
-                    )
-                  })}
-                </RadioGroup>
-              </Box>
-            </FormControl>
-          </Box>
         </>
       ) : (
         <Box
@@ -345,12 +375,90 @@ const CheckOutProductPage: NextPage<TProps> = () => {
             borderRadius: '15px',
             px: 4,
             py: 5,
-            width: '100%'
+            width: '100%',
+            marginTop: '10px'
           }}
         >
           <NoData widthImage={80} heightImage={80} textImage='No_data' />
         </Box>
       )}
+
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column !important',
+          columnGap: '20px',
+          background: theme.palette.background.paper,
+          borderRadius: '15px',
+          px: 4,
+          py: 5,
+          width: '100%',
+          marginTop: '30px'
+        }}
+      >
+        <FormControl>
+          <Box sx={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+            <FormLabel
+              id='demo-radio-buttons-group-label'
+              sx={{ color: theme.palette.primary.main, fontWeight: 'bold', marginTop: '3px', width: '180px' }}
+            >
+              {t('Delivery_type')}
+            </FormLabel>
+            <RadioGroup
+              aria-labelledby='demo-radio-buttons-group-label'
+              value={deliveryTypeSelected}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                handleChangeDeliverySelected(e.target.value)
+              }}
+              name='radio-buttons-group'
+            >
+              {listDeliveryType.map(item => {
+                return (
+                  <FormControlLabel
+                    checked={deliveryTypeSelected === item.value}
+                    value={item.value}
+                    control={<Radio />}
+                    label={item.label}
+                    key={item.value}
+                  />
+                )
+              })}
+            </RadioGroup>
+          </Box>
+        </FormControl>
+
+        <FormControl sx={{ marginTop: '20px' }}>
+          <Box sx={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+            <FormLabel
+              id='demo-radio-buttons-group-label'
+              sx={{ color: theme.palette.primary.main, fontWeight: 'bold', marginTop: '3px', width: '180px' }}
+            >
+              {t('Payment_type')}
+            </FormLabel>
+            <RadioGroup
+              aria-labelledby='demo-radio-buttons-group-label'
+              value={paymentTypeSelected}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                handleChangePaymentSelected(e.target.value)
+              }}
+              name='radio-buttons-group'
+            >
+              {listPaymentType.map(item => {
+                return (
+                  <FormControlLabel
+                    checked={paymentTypeSelected === item.value}
+                    value={item.value}
+                    control={<Radio />}
+                    label={item.label}
+                    key={item.value}
+                  />
+                )
+              })}
+            </RadioGroup>
+          </Box>
+        </FormControl>
+      </Box>
+
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
         <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 3 }} onClick={handleOrderProduct}>
           {t('Order')}

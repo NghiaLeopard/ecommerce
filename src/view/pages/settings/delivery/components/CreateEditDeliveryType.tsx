@@ -45,11 +45,13 @@ export const CreateEditDeliveryType = ({ open, onClose, idDeliveryType }: TCreat
   // ** Hook
   const theme = useTheme()
 
+  // ** Translation
   const { t, i18n } = useTranslation()
 
+  // ** State
   const [loading, setLoading] = useState(false)
 
-  // ** Redux
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
   const defaultValues: TDefaultValue = {

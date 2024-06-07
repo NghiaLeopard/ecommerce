@@ -61,12 +61,19 @@ const schema = yup.object({
 })
 
 const RegisterPage: NextPage<TProps> = () => {
+  // ** Theme
   const theme = useTheme()
+
+  // Router
   const router = useRouter()
+
+  // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
+  // ** Selector
   const { isError, isLoading, isSuccess, message } = useSelector((state: RootState) => state.auth)
 
+  // State
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
