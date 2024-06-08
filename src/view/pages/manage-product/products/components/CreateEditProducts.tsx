@@ -244,6 +244,8 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
       const res = await getDetailProducts(idProducts)
       const data = res.data
 
+      console.log(data)
+
       setLoading(false)
       if (data) {
         reset({
@@ -254,10 +256,10 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
           countInStock: data.countInStock,
           price: data.price,
           description: convertHtmlToDraft(data.description),
-          discount: data.discount,
+          discount: data.discount || '',
           slug: data.slug,
-          discountStartDate: new Date(data.discountStartDate),
-          discountEndDate: new Date(data.discountEndDate)
+          discountStartDate: data?.discountStartDate ? new Date(data.discountStartDate) : null,
+          discountEndDate: data?.discountEndDate ? new Date(data.discountEndDate) : null
         })
         setAvatar(data.image)
       }
