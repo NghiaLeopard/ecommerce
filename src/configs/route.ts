@@ -2,6 +2,7 @@ export const CONFIG_ROUTE = {
   MY_PROFILE: '/my-profile',
   MY_PRODUCT: '/my-product',
   DASHBOARD: '/dashboard',
+  MY_CART: '/my-cart',
   LOGIN: '/login',
   CHECKOUT_PRODUCT: '/checkout-product',
   CHANGE_PASSWORD: '/change-password',

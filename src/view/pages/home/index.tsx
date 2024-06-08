@@ -268,7 +268,7 @@ const HomePage: NextPage<TProps> = () => {
           </Box>
         </Grid>
         <Grid item md={9.5}>
-          <Grid container spacing={2}>
+          <Grid container>
             {listProductPublic.map((item: TProduct) => {
               return (
                 <Grid item key={item?._id} xs={12} sm={6} md={4}>

@@ -40,6 +40,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Helper
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {}
 
@@ -95,6 +96,7 @@ const ProductDetail: NextPage<TProps> = () => {
   const handleChangeAmountCart = (amount: number) => {
     setAmountCart(prev => (prev += amount))
   }
+
   const handleUpdateToCart = (item: TProduct, amount: number) => {
     if (amount === -1 && amountCart <= 1) return
     const dataCart = getOrderItem()
@@ -129,6 +131,14 @@ const ProductDetail: NextPage<TProps> = () => {
         query: { returnUrl: router.asPath }
       })
     }
+  }
+
+  const handleBuyProduct = (item: TProduct) => {
+    handleUpdateToCart(item, 1)
+    router.push({
+      pathname: CONFIG_ROUTE.MY_CART,
+      query: { selected: item._id }
+    })
   }
 
   const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
@@ -308,6 +318,7 @@ const ProductDetail: NextPage<TProps> = () => {
                 disabled={dataDetailProduct.countInStock === 0}
                 variant='contained'
                 sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+                onClick={() => handleBuyProduct(dataDetailProduct)}
               >
                 <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
                 {t('Buy_now')}
