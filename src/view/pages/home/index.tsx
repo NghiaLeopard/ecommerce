@@ -250,7 +250,7 @@ const HomePage: NextPage<TProps> = () => {
         }}
         mt='10px !important'
       >
-        <Grid item md={2.5}>
+        <Grid item md={3}>
           <Box
             sx={{
               border: `1px solid rgba(${theme.palette.customColors.main},0.2)`,
@@ -267,8 +267,8 @@ const HomePage: NextPage<TProps> = () => {
             />
           </Box>
         </Grid>
-        <Grid item md={9.5}>
-          <Grid container>
+        <Grid item md={9}>
+          <Grid container spacing={1}>
             {listProductPublic.map((item: TProduct) => {
               return (
                 <Grid item key={item?._id} xs={12} sm={6} md={4}>

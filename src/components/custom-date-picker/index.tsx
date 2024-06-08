@@ -19,7 +19,7 @@ interface TBox extends BoxProps {
 }
 
 const StyledBox = styled(Box)<TBox>(({ theme, error }) => ({
-  width: '340px',
+  width: '380px',
   borderRadius: 8,
   backgroundColor: 'transparent !important',
   border: error ? `1px solid ${theme.palette.error.main}` : `1px solid rgba(${theme.palette.customColors.main},0.2)`,

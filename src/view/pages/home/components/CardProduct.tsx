@@ -33,6 +33,7 @@ import { TProduct } from 'src/types/products'
 // ** Utils
 import { likeProductAsync, unLikeProductAsync } from 'src/stores/products/actions'
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TCardProduct = {
   item: TProduct
@@ -91,6 +92,14 @@ export default function CardProduct({ item }: TCardProduct) {
         query: { returnUrl: router.asPath }
       })
     }
+  }
+
+  const handleBuyProduct = (item: TProduct) => {
+    handleUpdateToCart(item)
+    router.push({
+      pathname: CONFIG_ROUTE.MY_CART,
+      query: { selected: item._id }
+    })
   }
 
   const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
@@ -203,6 +212,7 @@ export default function CardProduct({ item }: TCardProduct) {
           variant='contained'
           fullWidth
           sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+          onClick={() => handleBuyProduct(item)}
         >
           <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
           {t('Buy_now')}

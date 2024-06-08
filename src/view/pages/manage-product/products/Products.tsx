@@ -191,7 +191,7 @@ const ProductsPage: NextPage<TProps> = () => {
       }
     }
   }
-  
+
   const fetchAllProductTypes = async () => {
     setLoading(true)
     try {
