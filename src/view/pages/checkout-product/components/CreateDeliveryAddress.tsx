@@ -1,6 +1,7 @@
 // ** React
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 // ** MUI
 import {
@@ -34,8 +35,7 @@ import * as yup from 'yup'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-
-// ** i18next
+import { resetInitialState } from 'src/stores/auth'
 
 // ** Components
 import { CustomSelect } from 'src/components/custom-select'
@@ -50,9 +50,9 @@ import { separationFullName, toFullName } from 'src/utils'
 // ** Services
 import { getAllCity } from 'src/services/city'
 import { updateAuthMeSync } from 'src/stores/auth/actions'
+
+// ** Hook
 import { useAuth } from 'src/hooks/useAuth'
-import toast from 'react-hot-toast'
-import { resetInitialState } from 'src/stores/auth'
 
 type TDefaultValue = {
   fullName: string

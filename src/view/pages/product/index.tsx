@@ -145,6 +145,8 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }, [i18n.language, productSlug])
 
+  console.log(dataDetailProduct)
+
   return (
     <>
       {loading && <Spinner />}
@@ -190,7 +192,14 @@ const ProductDetail: NextPage<TProps> = () => {
             >
               {dataDetailProduct?.name}
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box>
+              <Typography sx={{ mt: '5xpx' }}>
+                {dataDetailProduct?.countInStock > 0
+                  ? `Còn ${dataDetailProduct?.countInStock} sản phẩm trong kho`
+                  : t('Out_in_stock')}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography>
                   {dataDetailProduct?.averageRating > 0
@@ -201,6 +210,14 @@ const ProductDetail: NextPage<TProps> = () => {
                   <Rating name='half-rating' defaultValue={2.5} precision={0.5} />
                 )}
               </Box>
+              <Typography>|</Typography>
+              <Typography>
+                {t('Sold_product')} {dataDetailProduct?.sold} {t('Product')}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
+              <CustomIcon icon='carbon:location' />
+              {dataDetailProduct?.location?._id && <Typography>{dataDetailProduct.location.name}</Typography>}
             </Box>
             <Box
               sx={{
@@ -237,14 +254,6 @@ const ProductDetail: NextPage<TProps> = () => {
                 </Box>
               )}
             </Box>
-            {dataDetailProduct?.location?._id && (
-              <Typography sx={{ mt: '5px' }}>{dataDetailProduct.location.name}</Typography>
-            )}
-            <Typography sx={{ mt: '5xpx' }}>
-              {dataDetailProduct?.countInStock > 0
-                ? `Còn ${dataDetailProduct?.countInStock} sản phẩm trong kho`
-                : t('Sold_product')}
-            </Typography>
 
             <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2, mt: '5px' }}>
               <Tooltip title='Delete'>
@@ -289,12 +298,17 @@ const ProductDetail: NextPage<TProps> = () => {
                 variant='outlined'
                 sx={{ height: '40px', fontWeight: '600', mt: 2 }}
                 onClick={() => handleUpdateToCart(dataDetailProduct, amountCart)}
+                disabled={dataDetailProduct.countInStock === 0}
               >
                 <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
                 {t('Add_to_cart')}
               </Button>
 
-              <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
+              <Button
+                disabled={dataDetailProduct.countInStock === 0}
+                variant='contained'
+                sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+              >
                 <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
                 {t('Buy_now')}
               </Button>

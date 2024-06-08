@@ -39,7 +39,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/order-product'
+import { resetInitialState, updateToCart } from 'src/stores/order-product'
 import { createOrderProductsAsync } from 'src/stores/order-product/actions'
 
 // ** utils
@@ -57,6 +57,10 @@ import { getAllCity } from 'src/services/city'
 import { getAllDeliveryType } from 'src/services/delivery-type'
 import { getAllPaymentType } from 'src/services/payment-type'
 import { WarningNotProduct } from './components/WarningNotProduct'
+
+// ** Other
+import Swal from 'sweetalert2'
+import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -224,11 +228,33 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     getListPaymentType()
   }, [])
 
+  console.log(memoQueryProduct.products)
+
   useEffect(() => {
+    const dataCart = getOrderItem()
+    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
+
     if (isMessageCreateOrder) {
       if (isSuccessCreateOrder) {
         toast.success(t('Order_product_success'))
         dispatch(resetInitialState())
+        Swal.fire({
+          title: 'Congratulation!',
+          text: t('Order_product_success'),
+          icon: 'success',
+          confirmButtonText: t('Done_order')
+        })
+        const filterOrderItem = orderItem.filter(
+          (item: TOrderProduct) =>
+            !memoQueryProduct.products.some((itemMemo: TOrderProduct) => itemMemo.product === item.product)
+        )
+        
+        dispatch(
+          updateToCart({
+            orderItem: filterOrderItem
+          })
+        )
+        setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: filterOrderItem }))
       } else if (isErrorCreateOrder) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -237,6 +263,12 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           toast.error(t('Order_product_error'))
         }
         dispatch(resetInitialState())
+        Swal.fire({
+          title: 'Error!',
+          text: t('Warning_order_product'),
+          icon: 'error',
+          confirmButtonText: t('Done_order')
+        })
       }
     }
   }, [isErrorCreateOrder, isSuccessCreateOrder])
@@ -326,7 +358,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
                   <Divider />
 
                   <Box key={item.product} sx={{ display: 'flex', alignItems: 'center', my: 5 }}>
-                    <Avatar src={item.image} sx={{ width: '120px', height: '100px' }} />
+                    <Avatar src={`${item.image}`} sx={{ width: '120px', height: '100px' }} />
                     <Typography
                       sx={{
                         display: 'webkit-box',
