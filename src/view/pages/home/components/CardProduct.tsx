@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI
-import { Box, Button, useTheme } from '@mui/material'
+import { Box, Button, Rating, useTheme } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -33,7 +33,6 @@ import { TProduct } from 'src/types/products'
 // ** Utils
 import { likeProductAsync, unLikeProductAsync } from 'src/stores/products/actions'
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
-import { it } from 'node:test'
 
 type TCardProduct = {
   item: TProduct
@@ -160,7 +159,18 @@ export default function CardProduct({ item }: TCardProduct) {
         {item?.location?.id && <Typography>{item?.location?.name}</Typography>}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: '-8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography>{item.averageRating > 0 ? `${(<b>{item.averageRating}</b>)}` : 'Chưa có đánh giá'}</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography>
+                  {item?.averageRating > 0 ? `${(<b>{item?.averageRating}</b>)}` : 'Chưa có đánh giá'}
+                </Typography>
+                {item?.averageRating > 0 && <Rating name='half-rating' defaultValue={2.5} precision={0.5} />}
+              </Box>
+              <Typography>|</Typography>
+              <Typography>
+                {t('Sold_product')} {item?.sold} {t('Product')}
+              </Typography>
+            </Box>
             {item.averageRating > 0 && <CustomIcon icon='emojione:star'></CustomIcon>}
           </Box>
 
@@ -182,12 +192,18 @@ export default function CardProduct({ item }: TCardProduct) {
           fullWidth
           sx={{ height: '40px', fontWeight: '600', mt: 2 }}
           onClick={() => handleUpdateToCart(item)}
+          disabled={item.countInStock === 0}
         >
           <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
           {t('Add_to_cart')}
         </Button>
 
-        <Button variant='contained' fullWidth sx={{ height: '40px', fontWeight: '600', mt: 2 }}>
+        <Button
+          disabled={item.countInStock === 0}
+          variant='contained'
+          fullWidth
+          sx={{ height: '40px', fontWeight: '600', mt: 2 }}
+        >
           <CustomIcon icon='icon-park-twotone:buy' style={{ marginRight: '5px' }} />
           {t('Buy_now')}
         </Button>

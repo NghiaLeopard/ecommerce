@@ -330,5 +330,6 @@
   "ratings": "ratings",
   "comments": "comments",
   "Product_details": "Details product",
-  "Delivery_address": "Delivery address"
+  "Delivery_address": "Delivery address",
+  "Out_in_stock": "Out in stock"
 }

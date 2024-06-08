@@ -68,6 +68,7 @@ export type TActionProduct = {
 
 export type TProduct = {
   countInStock: number
+  sold: string
   createdAt: Date | null
   location: {
     id: string
