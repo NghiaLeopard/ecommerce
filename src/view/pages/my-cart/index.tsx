@@ -182,14 +182,14 @@ const MyCartPage: NextPage<TProps> = () => {
   }
 
   const handleNavigationCheckOut = () => {
-    router.push(
-      {
-        pathname: CONFIG_ROUTE.CHECKOUT_PRODUCT,
-        query: { totalPrice: memoTotalPriceProductSelected, products: JSON.stringify(memoProductSelected) }
-      },
-      CONFIG_ROUTE.CHECKOUT_PRODUCT
-    ),
-      CONFIG_ROUTE.CHECKOUT_PRODUCT
+    const productQuery = memoProductSelected.map(item => ({
+      amount: item.amount,
+      product: item.product
+    }))
+    router.push({
+      pathname: CONFIG_ROUTE.CHECKOUT_PRODUCT,
+      query: { totalPrice: memoTotalPriceProductSelected, products: JSON.stringify(productQuery) }
+    })
   }
 
   return (

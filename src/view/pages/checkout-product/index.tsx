@@ -56,6 +56,7 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { getAllDeliveryType } from 'src/services/delivery-type'
 import { getAllPaymentType } from 'src/services/payment-type'
 import { getAllCity } from 'src/services/city'
+import { WarningNotProduct } from './components/WarningNotProduct'
 
 type TProps = {}
 
@@ -86,11 +87,8 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const router = useRouter()
 
   // ** Selector
-  const { isLoading, isErrorCreateOrder, isMessageCreateOrder, isSuccessCreateOrder, typeError } = useSelector(
-    (state: RootState) => state.orderProduct
-  )
-
-  
+  const { isLoading, isErrorCreateOrder, isMessageCreateOrder, isSuccessCreateOrder, typeError, orderItem } =
+    useSelector((state: RootState) => state.orderProduct)
 
   // ** State
   const [loading, setLoading] = useState(false)
@@ -99,7 +97,13 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const [deliveryTypeSelected, setDeliveryTypeSelected] = useState('')
   const [paymentTypeSelected, setPaymentTypeSelected] = useState('')
   const [openCreate, setOpenCreate] = useState(false)
+  const [openModalWarning, setOpenModalWarning] = useState(false)
   const [allCity, setAllCity] = useState<{ label: string; value: string }[]>([])
+
+  const handleFormatProduct = (item: Record<string, string>[]) => {
+    const newArr = orderItem.filter((order: TOrderProduct) => item.some(subItem => subItem.product === order.product))
+    return newArr
+  }
 
   const memoQueryProduct = useMemo(() => {
     const result = {
@@ -111,21 +115,25 @@ const CheckOutProductPage: NextPage<TProps> = () => {
       result.totalPrice = data.totalPrice || 0
 
       // ** check because json don't accept undefine
-      result.products = data.products ? JSON.parse(data.products) : []
+      result.products = data.products ? handleFormatProduct(JSON.parse(data.products)) : []
     }
 
-    return result
-  }, [router.query])
+    return { ...result }
+  }, [router.query, orderItem])
 
   const memoAddressDefault = useMemo(() => {
     return user?.addresses?.find((item: TAddresses) => item.isDefault)
   }, [user])
 
-  console.log({ memoAddressDefault, allCity })
-
   const memoLabelCity = useMemo(() => {
     return allCity.find(item => item.value === memoAddressDefault.city)
   }, [memoAddressDefault, allCity, user])
+
+  const memoPriceDeliveryType = useMemo(() => {
+    const findDelivery = listDeliveryType.find(item => item.value === deliveryTypeSelected)
+
+    return findDelivery?.price || 0
+  }, [deliveryTypeSelected, listDeliveryType])
 
   const handleCloseModal = () => {
     setOpenCreate(false)
@@ -167,6 +175,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
       }
     } catch (error) {}
   }
+
   const handleOrderProduct = () => {
     const findPaymentMethod = listDeliveryType.find(item => item.value === deliveryTypeSelected)
     const shippingPrice = findPaymentMethod ? findPaymentMethod.price : 0
@@ -191,33 +200,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     }
   }
 
-  useEffect(() => {
-    getListDeliveryType()
-  }, [])
-
-  useEffect(() => {
-    getListPaymentType()
-  }, [])
-
- 
-
-  useEffect(() => {
-    if (isMessageCreateOrder) {
-      if (isSuccessCreateOrder) {
-        toast.success(t('Order_product_success'))
-        dispatch(resetInitialState())
-      } else if (isErrorCreateOrder) {
-        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
-        if (errorConfig) {
-          toast.error(t(`${errorConfig}`))
-        } else {
-          toast.error(t('Order_product_error'))
-        }
-        dispatch(resetInitialState())
-      }
-    }
-  }, [isErrorCreateOrder, isSuccessCreateOrder])
-
   const fetchAllCity = async () => {
     setLoading(true)
     try {
@@ -236,12 +218,45 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
+    getListDeliveryType()
+  }, [])
+
+  useEffect(() => {
+    getListPaymentType()
+  }, [])
+
+  useEffect(() => {
+    if (isMessageCreateOrder) {
+      if (isSuccessCreateOrder) {
+        toast.success(t('Order_product_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorCreateOrder) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Order_product_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorCreateOrder, isSuccessCreateOrder])
+
+  useEffect(() => {
     fetchAllCity()
   }, [])
+
+  useEffect(() => {
+    // ** router always just only value
+    if (!router?.query?.products) {
+      setOpenModalWarning(true)
+    }
+  }, [router])
 
   return (
     <>
       <CreateDeliveryAddress open={openCreate} onClose={handleCloseModal} tabActiveDefault={1} />
+      <WarningNotProduct open={openModalWarning} onClose={handleCloseModal} />
 
       {(loading || isLoading) && <Spinner />}
       <Box
@@ -457,6 +472,38 @@ const CheckOutProductPage: NextPage<TProps> = () => {
             </RadioGroup>
           </Box>
         </FormControl>
+
+        <Box
+          sx={{
+            display: 'flex',
+
+            flexDirection: 'column'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <Typography sx={{ width: '200px', fontSize: '20px' }}>{`${t('Price_item')}:`}</Typography>
+            <Typography sx={{ width: '200px', fontSize: '20px' }}>{`${formatPriceToLocal(
+              memoQueryProduct.totalPrice
+            )} VNĐ`}</Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <Typography sx={{ width: '200px', fontSize: '20px' }}>{`${t('Price_shipping')}:`}</Typography>
+            <Typography sx={{ width: '200px', fontSize: '20px' }}>{`${formatPriceToLocal(
+              memoPriceDeliveryType
+            )} VNĐ`}</Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <Typography sx={{ width: '200px', fontSize: '20px' }}>{`${t('Total_price')}:`}</Typography>
+            <Typography
+              sx={{ width: '200px', fontSize: '20px', color: theme.palette.primary.main, fontWeight: '600' }}
+            >{`${
+              formatPriceToLocal(+memoQueryProduct.totalPrice + memoPriceDeliveryType)
+              // deliveryTypeSelected.price
+            } VNĐ`}</Typography>
+          </Box>
+        </Box>
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: '8px' }}>
