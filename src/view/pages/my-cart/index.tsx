@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
@@ -191,6 +191,13 @@ const MyCartPage: NextPage<TProps> = () => {
       query: { totalPrice: memoTotalPriceProductSelected, products: JSON.stringify(productQuery) }
     })
   }
+
+  useEffect(() => {
+    const data = router?.query
+    if (data.selected) {
+      setCheckboxSelected([data?.selected as string])
+    }
+  }, [router.query])
 
   return (
     <>
