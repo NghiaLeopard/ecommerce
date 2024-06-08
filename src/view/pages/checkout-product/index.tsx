@@ -101,8 +101,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const [allCity, setAllCity] = useState<{ label: string; value: string }[]>([])
 
   const handleFormatProduct = (item: Record<string, string>[]) => {
-    const newArr = orderItem.filter((order: TOrderProduct) => item.some(subItem => subItem.product === order.product))
-    return [...newArr]
+    return orderItem.filter((order: TOrderProduct) => item.some(subItem => subItem.product === order.product))
   }
 
   const memoQueryProduct = useMemo(() => {
@@ -498,10 +497,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
             <Typography sx={{ width: '200px', fontSize: '20px' }}>{`${t('Total_price')}:`}</Typography>
             <Typography
               sx={{ width: '200px', fontSize: '20px', color: theme.palette.primary.main, fontWeight: '600' }}
-            >{`${
-              formatPriceToLocal(+memoQueryProduct.totalPrice + memoPriceDeliveryType)
-              // deliveryTypeSelected.price
-            } VNĐ`}</Typography>
+            >{`${formatPriceToLocal(+memoQueryProduct.totalPrice + memoPriceDeliveryType)} VNĐ`}</Typography>
           </Box>
         </Box>
       </Box>
