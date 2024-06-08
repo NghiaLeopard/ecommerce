@@ -1,60 +1,21 @@
+// ** Next
+import { useRouter } from 'next/router'
+
 // ** React
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import {
-  Box,
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Grid,
-  IconButton,
-  InputLabel,
-  Radio,
-  RadioGroup,
-  Typography,
-  useTheme
-} from '@mui/material'
+import { Box, Button, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
-import CustomTextField from 'src/components/text-field'
-
-// **Form
-import { Controller, useForm } from 'react-hook-form'
-
-// **Yup
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useDispatch, useSelector } from 'react-redux'
-import * as yup from 'yup'
-
-// ** Store
-import { AppDispatch, RootState } from 'src/stores'
-
-// ** i18next
-
-// ** Components
-import { CustomSelect } from 'src/components/custom-select'
-import Spinner from 'src/components/spinner'
-import NoData from 'src/components/no-data'
 
 // ** Configs
-
-// ** Utils
-import { separationFullName, toFullName } from 'src/utils'
-
-// ** Services
-import { getAllCity } from 'src/services/city'
-import { updateAuthMeSync } from 'src/stores/auth/actions'
-import { useAuth } from 'src/hooks/useAuth'
-import toast from 'react-hot-toast'
-import { resetInitialState } from 'src/stores/auth'
-import { useRouter } from 'next/router'
 import { CONFIG_ROUTE } from 'src/configs/route'
+
+// ** Hook
+import { useAuth } from 'src/hooks/useAuth'
 
 interface TWarningNotProduct {
   open: boolean

@@ -23,10 +23,10 @@ import {
 } from '@mui/material'
 
 // ** Component
+import CustomIcon from 'src/components/Icon'
 import NoData from 'src/components/no-data'
 import Spinner from 'src/components/spinner'
 import { CreateDeliveryAddress } from './components/CreateDeliveryAddress'
-import CustomIcon from 'src/components/Icon'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -53,9 +53,9 @@ import { TOrderProduct } from 'src/types/order-product'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Services
+import { getAllCity } from 'src/services/city'
 import { getAllDeliveryType } from 'src/services/delivery-type'
 import { getAllPaymentType } from 'src/services/payment-type'
-import { getAllCity } from 'src/services/city'
 import { WarningNotProduct } from './components/WarningNotProduct'
 
 type TProps = {}
@@ -102,7 +102,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
 
   const handleFormatProduct = (item: Record<string, string>[]) => {
     const newArr = orderItem.filter((order: TOrderProduct) => item.some(subItem => subItem.product === order.product))
-    return newArr
+    return [...newArr]
   }
 
   const memoQueryProduct = useMemo(() => {
