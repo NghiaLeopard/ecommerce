@@ -212,7 +212,6 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
 
   useEffect(() => {
     const findIndex = user?.addresses.findIndex((item: TAddresses) => item.isDefault)
-    console.log(findIndex)
     setCheckboxSelected(findIndex)
   }, [user])
 
@@ -233,7 +232,6 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
       const addressItem = addresses[isEditItem.index]
       const fullName = toFullName(addressItem.lastName, addressItem.middleName, addressItem.firstName, i18n.language)
       const findCity = allCity.find(item => item.value === addressItem.city)
-      console.log(addressItem)
 
       reset({
         fullName,

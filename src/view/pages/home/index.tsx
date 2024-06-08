@@ -110,8 +110,6 @@ const HomePage: NextPage<TProps> = () => {
     setTabSelected(newValue)
   }
 
-  console.log(allCities)
-
   const handleFilterProduct = (value: string, name: string) => {
     switch (name) {
       case 'review':
