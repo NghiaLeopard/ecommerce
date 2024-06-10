@@ -1,11 +1,12 @@
 // ** Redux
 import { createSlice } from '@reduxjs/toolkit'
-import { createOrderProductsAsync, serviceName } from './actions'
+import { createOrderProductsAsync, getAllOrderMeAsync, serviceName } from './actions'
 
 // ** Action
 
 const initialState = {
   orderItem: [],
+  orderItemMe: [],
   isLoading: false,
   isSuccessCreateOrder: false,
   isErrorCreateOrder: false,
@@ -29,6 +30,16 @@ export const cartProductSlice = createSlice({
     }
   },
   extraReducers: builder => {
+    // Create order product
+    builder.addCase(getAllOrderMeAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(getAllOrderMeAsync.fulfilled, (state, actions) => {
+        console.log(actions.payload)
+        state.isLoading = false
+        state.orderItemMe = actions.payload?.data?.orders
+      })
+
     // Create order product
     builder.addCase(createOrderProductsAsync.pending, (state, actions) => {
       state.isLoading = true
