@@ -1,6 +1,6 @@
 // ** Redux
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { createOrderProducts, getAllOrderMe } from 'src/services/order-product'
+import { cancelOrderProduct, createOrderProducts, getAllOrderMe } from 'src/services/order-product'
 
 // ** Services
 import {
@@ -79,21 +79,21 @@ export const createOrderProductsAsync = createAsyncThunk(`${serviceName}/create`
   }
 })
 
-// export const deleteProductsAsync = createAsyncThunk(`${serviceName}/delete`, async (idProducts: string) => {
-//   const response = await deleteProducts(idProducts)
+export const cancelOrderProductAsync = createAsyncThunk(`${serviceName}/delete`, async (orderId: string) => {
+  const response = await cancelOrderProduct(orderId)
 
-//   if (response?.data) {
-//     return response
-//   }
+  if (response?.data) {
+    return response
+  }
 
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
+  return {
+    data: {
+      _id: null
+    },
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})
 
 // export const deleteMultipleProductsAsync = createAsyncThunk(
 //   `${serviceName}/delete-many`,

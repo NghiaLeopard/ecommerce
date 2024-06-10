@@ -7,12 +7,11 @@ import { useDispatch } from 'react-redux'
 
 // ** MUI
 import { Avatar, Box, Button, useTheme } from '@mui/material'
+import { Divider } from '@mui/material'
 import Typography from '@mui/material/Typography'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
-
-// ** Helper
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -21,34 +20,50 @@ import { useAuth } from 'src/hooks/useAuth'
 import { AppDispatch } from 'src/stores'
 
 // ** Types
+import { TItemOrderMe, TOrderProduct } from 'src/types/order-product'
 
 // ** Utils
-import { Divider } from '@mui/material'
-import { TItemOrderMe, TOrderProduct } from 'src/types/order-product'
 import { formatPriceToLocal } from 'src/utils'
+import { useState } from 'react'
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
+import { cancelOrderProductAsync } from 'src/stores/order-product/actions'
 
 type TProps = {
   item: TItemOrderMe
+  tabSelected: number
 }
 
-export default function CardOrderMe({ item }: TProps) {
+export default function CardOrderMe({ item, tabSelected }: TProps) {
   // ** Theme
   const theme = useTheme()
 
   // ** Translation
   const { t } = useTranslation()
 
-  // ** Router
-  const router = useRouter()
-
-  // ** Auth
-  const { user, setUser } = useAuth()
-
   // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
+  // ** State
+  const [openConfirmCancel, setOpenConfirmCancel] = useState(false)
+
+  const handleOnCloseDeleteProducts = () => {
+    setOpenConfirmCancel(false)
+  }
+
+  const handleCancelOrder = () => {
+    dispatch(cancelOrderProductAsync(item._id))
+    setOpenConfirmCancel(false)
+  }
+
   return (
     <>
+      <CustomConfirmDialog
+        title='Title_cancel_order'
+        content='Confirm_cancel_order'
+        onClose={handleOnCloseDeleteProducts}
+        open={openConfirmCancel}
+        handleConfirm={handleCancelOrder}
+      />
       <Box mb={5} padding='20px' sx={{ background: theme.palette.background.paper, borderRadius: '15px' }}>
         <Divider />
         {item.orderItems.map((orderOfMe: TOrderProduct) => {
@@ -122,13 +137,27 @@ export default function CardOrderMe({ item }: TProps) {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
-            <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 3 }}>
-              <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
-              {t('Buy_again')}
-            </Button>
+            {[0, 1].includes(tabSelected) && (
+              <Button
+                variant='outlined'
+                sx={{
+                  height: '40px',
+                  mt: 3,
+                  color: '#da251d !important',
+                  border: '1px solid #da251d'
+                }}
+                onClick={() => setOpenConfirmCancel(true)}
+              >
+                {t('Cancel_order')}
+              </Button>
+            )}
             <Button variant='outlined' sx={{ height: '40px', fontWeight: '600', mt: 3 }}>
               <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
               {t('View_details')}
+            </Button>
+            <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 3 }}>
+              <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
+              {t('Buy_again')}
             </Button>
           </Box>
         </Box>

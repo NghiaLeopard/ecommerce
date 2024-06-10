@@ -36,10 +36,10 @@ const CustomConfirmDialog = ({ handleConfirm, onClose, open, title, content }: T
 
         <DialogActions sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mt: 4 }}>
           <Button onClick={handleConfirm} variant='contained'>
-            Delete
+            {t('Delete')}
           </Button>
           <Button onClick={onClose} variant='outlined' color='error'>
-            Close
+            {t('Close')}
           </Button>
         </DialogActions>
       </Dialog>

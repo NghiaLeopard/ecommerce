@@ -99,15 +99,15 @@ export const createOrderProducts = async (data: TCreateOrderProduct) => {
   }
 }
 
-// export const deleteProducts = async (idProducts: string) => {
-//   try {
-//     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/${idProducts}`)
+export const cancelOrderProduct = async (orderId: string) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/me/cancel/${orderId}`)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
 // export const deleteMultipleProducts = async (data: TParamsDeleteManyProducts) => {
 //   try {
