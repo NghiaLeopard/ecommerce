@@ -27,7 +27,7 @@ export type TCreateOrderProduct = {
 export type TParamsGetOrderMe = {
   limit: number
   page: number
-  status?: number
+  status?: number | string
   search?: string
   order?: string
 }

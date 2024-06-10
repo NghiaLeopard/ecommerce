@@ -51,11 +51,11 @@ const HomePage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [tabSelected, setTabSelected] = useState<string>('')
   const [listProductPublic, setListProductPublic] = useState<TProduct[]>([])
   const [allProductTypes, setAllProductTypes] = useState([])
   const [reviewSelected, setReviewSelected] = useState('')
   const [citySelected, setCitySelected] = useState('')
-  const [tabSelected, setTabSelected] = useState<string>('')
   const [search, setSearch] = useState('')
   const [allCities, setAllCities] = useState<{ label: string; value: string }[]>([])
 
@@ -81,6 +81,9 @@ const HomePage: NextPage<TProps> = () => {
     setPage(page)
     setPageSize(pageSize)
   }
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
+    setTabSelected(newValue)
+  }
 
   const getListProductsPublic = async (review: string, search: string, tabSelected: string, city: string) => {
     setLoading(true)
@@ -104,10 +107,6 @@ const HomePage: NextPage<TProps> = () => {
       setLoading(false)
       console.log(error)
     }
-  }
-
-  const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
-    setTabSelected(newValue)
   }
 
   const handleFilterProduct = (value: string, name: string) => {
