@@ -98,6 +98,11 @@ const UserDropDown: NextPage<TProps> = () => {
     handleClose()
   }
 
+  const handleNavigateMyOrderMe = () => {
+    route.push(`${CONFIG_ROUTE.MY_ORDER}`)
+    handleClose()
+  }
+
   const handleNavigateChangePassword = () => {
     route.push(`${CONFIG_ROUTE.CHANGE_PASSWORD}`)
     handleClose()
@@ -226,6 +231,13 @@ const UserDropDown: NextPage<TProps> = () => {
           </Avatar>
 
           {t('My_product')}
+        </MenuItem>
+
+        <MenuItem onClick={handleNavigateMyOrderMe}>
+          <Avatar>
+            <CustomIcon icon='lets-icons:order-fill' />
+          </Avatar>
+          {t('My_order')}
         </MenuItem>
 
         <MenuItem onClick={handleNavigateChangePassword}>

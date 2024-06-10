@@ -1,6 +1,6 @@
 // ** Redux
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { createOrderProducts } from 'src/services/order-product'
+import { createOrderProducts, getAllOrderMe } from 'src/services/order-product'
 
 // ** Services
 import {
@@ -14,29 +14,20 @@ import {
   likeProduct,
   unLikeProduct
 } from 'src/services/products'
-import { TCreateOrderProduct } from 'src/types/order-product'
+import { TCreateOrderProduct, TParamsGetOrderMe } from 'src/types/order-product'
 
 // ** Types
-import {
-  TActionProduct,
-  TParamsCreateProducts,
-  TParamsDeleteManyProducts,
-  TParamsEditProducts,
-  TParamsGetProducts,
-  TParamsGetProductsLiked,
-  TParamsGetProductsViewed
-} from 'src/types/products'
 
 export const serviceName = 'orderProduct'
 
-// export const getAllProductsAsync = createAsyncThunk(
-//   `${serviceName}/get-all`,
-//   async (data: { params: TParamsGetProducts }) => {
-//     const response = await getAllProducts(data)
+export const getAllOrderMeAsync = createAsyncThunk(
+  `${serviceName}/get-all`,
+  async (data: { params: TParamsGetOrderMe }) => {
+    const response = await getAllOrderMe(data)
 
-//     return response
-//   }
-// )
+    return response
+  }
+)
 
 // export const getListProductsLikedAsync = createAsyncThunk(
 //   `${serviceName}/get-product-liked`,
