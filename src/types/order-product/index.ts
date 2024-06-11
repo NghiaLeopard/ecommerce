@@ -48,12 +48,17 @@ export type TItemOrderMe = {
   shippingAddress: {
     fullName: string
     address: string
-    city: string
+    city: {
+      _id: string
+      name: string
+    }
     phone: number
   }
   _id: string
   orderItems: TOrderedProduct[]
   totalPrice: number
+  itemsPrice: number
+  shippingPrice: number
   user: {
     _id: string
     firstName: string

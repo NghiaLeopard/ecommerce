@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI
-import { Avatar, Box, Button, Divider, useTheme } from '@mui/material'
+import { Avatar, Box, Button, Divider, IconButton, useTheme } from '@mui/material'
 import Typography from '@mui/material/Typography'
 
 // ** Component
@@ -23,7 +23,7 @@ import { AppDispatch, RootState } from 'src/stores'
 import { TItemOrderMe, TOrderProduct, TOrderedProduct } from 'src/types/order-product'
 
 // ** Utils
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cloneDeep, executeUpdateCard, formatPriceToLocal } from 'src/utils'
 
 // ** Store
@@ -34,13 +34,11 @@ import { updateToCart } from 'src/stores/order-product'
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 import { CONFIG_ROUTE } from 'src/configs/route'
 import { OBJECT_ACTION_STATUS } from 'src/configs/order'
+import { getDetailOrderMe } from 'src/services/order-product'
 
-type TProps = {
-  item: TItemOrderMe
-  tabSelected: number
-}
+type TProps = {}
 
-export default function CardOrderMe({ item, tabSelected }: TProps) {
+export default function DetailMyOrder({}: TProps) {
   // ** Theme
   const theme = useTheme()
 
@@ -58,18 +56,23 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
 
   // ** State
   const [openConfirmCancel, setOpenConfirmCancel] = useState(false)
+  const [item, setItem] = useState<TItemOrderMe>({} as any)
+
+  console.log(item)
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   const arrCountInStockItems: number[] = []
 
+  const orderId = router?.query?.orderId
+
   const handleOnCloseDeleteProducts = () => {
     setOpenConfirmCancel(false)
   }
 
   const handleCancelOrder = () => {
-    dispatch(cancelOrderProductAsync(item._id))
+    dispatch(cancelOrderProductAsync(orderId as string))
     setOpenConfirmCancel(false)
   }
 
@@ -116,9 +119,20 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
     })
   }
 
-  const handleNavigationViewDetails = () => {
-    router.push(`${CONFIG_ROUTE.MY_ORDER}/${item._id}`)
+  const fetchDetailOrderOfMe = async (orderId: string) => {
+    try {
+      const res = await getDetailOrderMe(orderId)
+      setItem(res.data)
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+  useEffect(() => {
+    if (orderId) {
+      fetchDetailOrderOfMe(orderId as string)
+    }
+  }, [orderId])
 
   return (
     <>
@@ -130,14 +144,18 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
         handleConfirm={handleCancelOrder}
       />
       <Box mb={5} padding='20px' sx={{ background: theme.palette.background.paper, borderRadius: '15px' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button onClick={() => router.back()}>
+            <CustomIcon icon='ep:back' />
+            <Typography color={theme.palette.primary.main}>Back</Typography>
+          </Button>
           <Typography fontSize='17px' color={theme.palette.primary.main} fontWeight='600' textTransform='uppercase'>
             {t(`${OBJECT_ACTION_STATUS[item?.status]}`)}
           </Typography>
         </Box>
 
         <Divider />
-        {item.orderItems.map((orderOfMe: TOrderedProduct) => {
+        {item?.orderItems?.map((orderOfMe: TOrderedProduct) => {
           arrCountInStockItems.push(orderOfMe.product.countInStock)
 
           return (
@@ -200,49 +218,124 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
         })}
 
         <Divider />
-        <Box sx={{ mt: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2 }}>
-            <Typography color={theme.palette.customColors.darkPaperBg} variant='h3' fontSize='20px' fontWeight='bold'>
-              {t('Sum_money')}:
-            </Typography>
-            <Typography fontSize='20px' color={theme.palette.primary.main}>
-              {`${formatPriceToLocal(item.totalPrice)} VNĐ`}
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
-            {[0, 1].includes(tabSelected) && (
-              <Button
-                variant='outlined'
-                sx={{
-                  height: '40px',
-                  mt: 3,
-                  color: '#da251d !important',
-                  border: '1px solid #da251d !important',
-                  backgroundColor: 'transparent !important'
-                }}
-                onClick={() => setOpenConfirmCancel(true)}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
+              <Typography
+                color={theme.palette.customColors.darkPaperBg}
+                variant='h3'
+                fontSize='18px'
+                fontWeight='bold'
+                width='200px'
               >
-                {t('Cancel_order')}
-              </Button>
-            )}
+                {t('Delivery_address')}:
+              </Typography>
+              <Typography fontSize='18px' color={theme.palette.primary.main} width='200px'>
+                {`${item?.shippingAddress?.address} ${item?.shippingAddress?.city?.name}`}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
+              <Typography
+                color={theme.palette.customColors.darkPaperBg}
+                variant='h3'
+                fontSize='18px'
+                fontWeight='bold'
+                width='200px'
+              >
+                {t('Phone_number')}:
+              </Typography>
+              <Typography fontSize='18px' color={theme.palette.primary.main} width='200px'>
+                {`0${item?.shippingAddress?.phone}`}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
+              <Typography
+                color={theme.palette.customColors.darkPaperBg}
+                variant='h3'
+                fontSize='18px'
+                fontWeight='bold'
+                width='200px'
+              >
+                {t('Name_user')}:
+              </Typography>
+              <Typography fontSize='18px' color={theme.palette.primary.main} width='200px'>
+                {`${item?.shippingAddress?.fullName} `}
+              </Typography>
+            </Box>
+          </Box>
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
+              <Typography
+                color={theme.palette.customColors.darkPaperBg}
+                variant='h3'
+                fontSize='20px'
+                fontWeight='bold'
+                width='150px'
+              >
+                {t('Price_item')}:
+              </Typography>
+              <Typography fontSize='20px' color={theme.palette.primary.main} width='150px'>
+                {`${formatPriceToLocal(item.itemsPrice)} VNĐ`}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
+              <Typography
+                color={theme.palette.customColors.darkPaperBg}
+                variant='h3'
+                fontSize='20px'
+                fontWeight='bold'
+                width='150px'
+              >
+                {t('Price_shipping')}:
+              </Typography>
+              <Typography fontSize='20px' color={theme.palette.primary.main} width='150px'>
+                {`${formatPriceToLocal(item.shippingPrice)} VNĐ`}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
+              <Typography
+                color={theme.palette.customColors.darkPaperBg}
+                variant='h3'
+                fontSize='20px'
+                fontWeight='bold'
+                width='150px'
+              >
+                {t('Sum_money')}:
+              </Typography>
+              <Typography fontSize='20px' color={theme.palette.primary.main} width='150px'>
+                {`${formatPriceToLocal(item.totalPrice)} VNĐ`}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
+          {item.status === 2 && (
             <Button
               variant='outlined'
-              sx={{ height: '40px', fontWeight: '600', mt: 3 }}
-              onClick={handleNavigationViewDetails}
+              sx={{
+                height: '40px',
+                mt: 3,
+                color: '#da251d !important',
+                border: '1px solid #da251d !important',
+                backgroundColor: 'transparent !important'
+              }}
+              onClick={() => setOpenConfirmCancel(true)}
             >
-              <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
-              {t('View_details')}
+              {t('Cancel_order')}
             </Button>
-            <Button
-              variant='contained'
-              sx={{ height: '40px', fontWeight: '600', mt: 3 }}
-              onClick={handleBuyAgain}
-              disabled={arrCountInStockItems.some(item => item === 0)}
-            >
-              <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
-              {t('Buy_again')}
-            </Button>
-          </Box>
+          )}
+
+          <Button
+            variant='contained'
+            sx={{ height: '40px', fontWeight: '600', mt: 3 }}
+            onClick={handleBuyAgain}
+            disabled={arrCountInStockItems.some(item => item === 0)}
+          >
+            <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
+            {t('Buy_again')}
+          </Button>
         </Box>
       </Box>
     </>

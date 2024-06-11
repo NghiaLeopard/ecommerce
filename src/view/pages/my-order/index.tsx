@@ -3,16 +3,17 @@ import { NextPage } from 'next'
 
 // ** React
 import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import { Box, Tab, Tabs, useTheme } from '@mui/material'
 
 // ** Component
-import NoData from 'src/components/no-data'
-import Spinner from 'src/components/spinner'
 import CustomPagination from 'src/components/custom-pagination'
 import InputSearch from 'src/components/input-search'
+import NoData from 'src/components/no-data'
+import Spinner from 'src/components/spinner'
 import CardOrderMe from './components/CardOrderMe'
 
 // ** Hooks
@@ -25,22 +26,18 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
+import { resetInitialState } from 'src/stores/order-product'
 import { getAllOrderMeAsync } from 'src/stores/order-product/actions'
 
 // ** utils
 import { useRouter } from 'next/router'
 
-// ** Helper
-
 // ** Type
 import { TItemOrderMe } from 'src/types/order-product'
 
 // ** Config
-import * as gridConfig from 'src/configs/gridConfig'
-import { resetInitialState } from 'src/stores/order-product'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
-import toast from 'react-hot-toast'
-import { CONFIG_ROUTE } from 'src/configs/route'
+import * as gridConfig from 'src/configs/gridConfig'
 
 type TProps = {}
 

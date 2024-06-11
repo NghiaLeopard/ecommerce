@@ -16,6 +16,16 @@ export const getAllOrderMe = async (data: { params: TParamsGetOrderMe }) => {
   }
 }
 
+export const getDetailOrderMe = async (orderId: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/me/${orderId}`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
 // export const getListProductsLiked = async (data: { params: TParamsGetProducts }) => {
 //   try {
 //     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/liked/me`, data)
