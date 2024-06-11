@@ -40,6 +40,7 @@ import * as gridConfig from 'src/configs/gridConfig'
 import { resetInitialState } from 'src/stores/order-product'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import toast from 'react-hot-toast'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {}
 
@@ -107,7 +108,7 @@ const MyOrderPage: NextPage<TProps> = () => {
     const params = {
       limit: pageSize,
       page: 1,
-      order: 'created asc',
+      order: 'created desc',
       search: search,
       status: status
     }
@@ -116,7 +117,7 @@ const MyOrderPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     fetchAllOrderMe()
-  }, [pageSize, page, search, tabSelected])
+  }, [pageSize, page, search, tabSelected, isSuccessCancelOrder])
 
   useEffect(() => {
     if (isMessageCancelOrder) {

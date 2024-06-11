@@ -3,30 +3,36 @@ import { useRouter } from 'next/router'
 
 // ** React
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI
-import { Avatar, Box, Button, useTheme } from '@mui/material'
-import { Divider } from '@mui/material'
+import { Avatar, Box, Button, Divider, useTheme } from '@mui/material'
 import Typography from '@mui/material/Typography'
 
 // ** Component
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomIcon from 'src/components/Icon'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Stores
-import { AppDispatch } from 'src/stores'
+import { AppDispatch, RootState } from 'src/stores'
 
 // ** Types
-import { TItemOrderMe, TOrderProduct } from 'src/types/order-product'
+import { TItemOrderMe, TOrderProduct, TOrderedProduct } from 'src/types/order-product'
 
 // ** Utils
-import { formatPriceToLocal } from 'src/utils'
 import { useState } from 'react'
-import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
+import { cloneDeep, executeUpdateCard, formatPriceToLocal } from 'src/utils'
+
+// ** Store
 import { cancelOrderProductAsync } from 'src/stores/order-product/actions'
+import { updateToCart } from 'src/stores/order-product'
+
+// ** Helper
+import { getOrderItem, setOrderItem } from 'src/helpers/storage'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {
   item: TItemOrderMe
@@ -40,11 +46,20 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
   // ** Translation
   const { t } = useTranslation()
 
+  // ** Auth
+  const { user } = useAuth()
+
+  // ** Router
+  const router = useRouter()
+
   // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
   // ** State
   const [openConfirmCancel, setOpenConfirmCancel] = useState(false)
+
+  // ** Selector
+  const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   const handleOnCloseDeleteProducts = () => {
     setOpenConfirmCancel(false)
@@ -53,6 +68,49 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
   const handleCancelOrder = () => {
     dispatch(cancelOrderProductAsync(item._id))
     setOpenConfirmCancel(false)
+  }
+
+  const handleUpdateToCart = (orderItems: TOrderedProduct[]) => {
+    const dataCart = getOrderItem()
+    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
+    let arrCart = cloneDeep(orderItem)
+
+    orderItems.forEach((item: TOrderedProduct, index) => {
+      arrCart = executeUpdateCard(arrCart, {
+        name: item.name,
+        amount: item.amount,
+        slug: item.product.slug,
+        price: item.price,
+        product: item.product._id,
+        image: item.image,
+        discount: item.discount,
+        discountEndDate: item.discountEndDate || null,
+        discountStartDate: item.discountStartDate || null
+      })
+
+      dispatch(
+        updateToCart({
+          orderItem: arrCart
+        })
+      )
+      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: arrCart }))
+    })
+
+    // This page is public then when adjust amount cart , you must log in
+  }
+
+  const handleBuyAgain = () => {
+    handleUpdateToCart(item.orderItems)
+    const listIdProduct: string[] = []
+
+    item.orderItems.forEach((item: TOrderedProduct) => {
+      listIdProduct.push(item?.product?._id)
+    })
+
+    router.push({
+      pathname: CONFIG_ROUTE.MY_CART,
+      query: { selected: JSON.stringify(listIdProduct) }
+    })
   }
 
   return (
@@ -66,9 +124,9 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
       />
       <Box mb={5} padding='20px' sx={{ background: theme.palette.background.paper, borderRadius: '15px' }}>
         <Divider />
-        {item.orderItems.map((orderOfMe: TOrderProduct) => {
+        {item.orderItems.map((orderOfMe: TOrderedProduct) => {
           return (
-            <Box key={orderOfMe.product} sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 3 }}>
+            <Box key={orderOfMe.product._id} sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 3 }}>
               <Box sx={{ border: `1px solid rgba(${theme.palette.customColors.main},0.2)` }}>
                 <Avatar src={orderOfMe.image} sx={{ width: '90px', height: '80px', objectFit: 'contain' }} />
               </Box>
@@ -144,7 +202,8 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
                   height: '40px',
                   mt: 3,
                   color: '#da251d !important',
-                  border: '1px solid #da251d'
+                  border: '1px solid #da251d !important',
+                  backgroundColor: 'transparent !important'
                 }}
                 onClick={() => setOpenConfirmCancel(true)}
               >
@@ -155,7 +214,7 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
               <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
               {t('View_details')}
             </Button>
-            <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 3 }}>
+            <Button variant='contained' sx={{ height: '40px', fontWeight: '600', mt: 3 }} onClick={handleBuyAgain}>
               <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
               {t('Buy_again')}
             </Button>

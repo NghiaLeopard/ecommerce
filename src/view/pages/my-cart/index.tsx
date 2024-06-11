@@ -36,6 +36,7 @@ import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 // ** Type
 import { TOrderProduct } from 'src/types/order-product'
 import { CONFIG_ROUTE } from 'src/configs/route'
+import { ItemProductCart } from './components/ItemProductCart'
 
 type TProps = {}
 
@@ -89,58 +90,6 @@ const MyCartPage: NextPage<TProps> = () => {
     return total
   }, [memoProductSelected])
 
-  const handleChangeAmountCart = (item: TOrderProduct, amount: number) => {
-    const dataCart = getOrderItem()
-    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
-
-    const arrCart = executeUpdateCard(orderItem, {
-      name: item.name,
-      amount: amount,
-      slug: item.slug,
-      price: item.price,
-      product: item.product,
-      image: item.image,
-      discount: item.discount,
-      discountEndDate: item.discountEndDate,
-      discountStartDate: item.discountStartDate
-    })
-
-    // This page is public then when adjust amount cart , you must log in
-
-    if (user?._id) {
-      dispatch(
-        updateToCart({
-          orderItem: arrCart
-        })
-      )
-      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: arrCart }))
-    } else {
-      router.replace({
-        pathname: 'login',
-        query: { returnUrl: router.asPath }
-      })
-    }
-  }
-
-  const handleDeleteCart = (id: string) => {
-    const dataCart = getOrderItem()
-    const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
-    const filteredCart = orderItem.filter((item: TOrderProduct) => item.product !== id)
-    if (user?._id) {
-      dispatch(
-        updateToCart({
-          orderItem: filteredCart
-        })
-      )
-      setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: filteredCart }))
-    } else {
-      router.replace({
-        pathname: 'login',
-        query: { returnUrl: router.asPath }
-      })
-    }
-  }
-
   const handleDeleteManyCart = () => {
     const dataCart = getOrderItem()
     const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
@@ -193,9 +142,14 @@ const MyCartPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    const data = router?.query
-    if (data.selected) {
-      setCheckboxSelected([data?.selected as string])
+    const data = router?.query?.selected as string
+    if (data) {
+      if (typeof JSON.parse(data) === 'string') {
+        setCheckboxSelected([JSON.parse(data)])
+      } else {
+        const dataParse = JSON.parse(data)
+        setCheckboxSelected([...dataParse])
+      }
     }
   }, [router.query])
 
@@ -232,115 +186,13 @@ const MyCartPage: NextPage<TProps> = () => {
               </Box>
             </Box>
             {orderItem.map((item: TOrderProduct) => {
-              const isExpiryDay = isExpiry(item.discountStartDate || null, item.discountEndDate || null)
-
               return (
-                <Box key={item.product}>
-                  <Divider />
-
-                  <Box key={item.product} sx={{ display: 'flex', alignItems: 'center', my: 5 }}>
-                    <Box sx={{ width: 'calc(10% - 120px)' }}>
-                      <Checkbox
-                        checked={checkboxSelected.includes(item.product)}
-                        value={item.product}
-                        onChange={e => handleChangeCheckbox(e.target.value)}
-                      />
-                    </Box>
-                    <Avatar src={item.image} sx={{ width: '120px', height: '100px' }} />
-                    <Typography
-                      sx={{
-                        display: 'webkit-box',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        '-webkit-line-clamp': '1',
-                        '-webkit-box-orient': 'vertical',
-                        flexBasis: '35%'
-                      }}
-                    >
-                      {item.name}
-                    </Typography>
-                    <Box sx={{ flexBasis: '20%' }}>
-                      {item.discount > 0 ? (
-                        <Typography
-                          color={theme.palette.primary.main}
-                          fontWeight='bold'
-                          fontSize='20px'
-                          sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
-                        >
-                          {`${formatPriceToLocal(item.price)} VNĐ`}
-                        </Typography>
-                      ) : (
-                        <Box>{''}</Box>
-                      )}
-                    </Box>
-                    <Box sx={{ flexBasis: '20%', display: 'flex', gap: 2 }}>
-                      <Typography color={theme.palette.primary.main} fontSize='20px' fontWeight='bold'>
-                        {item.discount > 0
-                          ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
-                          : `${formatPriceToLocal(item.price)} VNĐ`}
-                      </Typography>
-                      {item.discount > 0 && isExpiryDay && (
-                        <Box
-                          sx={{
-                            backgroundColor: 'rgba(254,238,234,1)'
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              fontSize: '13px',
-                              color: theme.palette.error.main,
-                              padding: '4px 8px'
-                            }}
-                          >{`-${item.discount}%`}</Typography>
-                        </Box>
-                      )}
-                    </Box>
-                    <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2 }}>
-                      <Tooltip title='Minus'>
-                        <IconButton
-                          sx={{
-                            backgroundColor: `${theme.palette.primary.main} !important`,
-                            color: theme.palette.common.white
-                          }}
-                          onClick={() => handleChangeAmountCart(item, -1)}
-                        >
-                          <CustomIcon icon='ic:baseline-minus' />
-                        </IconButton>
-                      </Tooltip>
-                      <CustomTextField
-                        value={item.amount}
-                        sx={{
-                          '.MuiInputBase-input': {
-                            width: '20px'
-                          },
-                          '.MuiInputBase-root': {
-                            border: 'none',
-                            borderBottom: '1px solid',
-                            borderRadius: '0 !important'
-                          }
-                        }}
-                      />
-                      <Tooltip title='Plus'>
-                        <IconButton
-                          onClick={() => handleChangeAmountCart(item, 1)}
-                          sx={{
-                            backgroundColor: `${theme.palette.primary.main} !important`,
-                            color: theme.palette.common.white
-                          }}
-                        >
-                          <CustomIcon icon='ph:plus-bold' />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                    <Box sx={{ flexBasis: '5%' }}>
-                      <Tooltip title='Delete'>
-                        <IconButton onClick={() => handleDeleteCart(item.product)}>
-                          <CustomIcon icon='mingcute:delete-2-fill' />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </Box>
-                </Box>
+                <ItemProductCart
+                  key={item.product}
+                  item={item}
+                  checkboxSelected={checkboxSelected}
+                  handleChangeCheckbox={handleChangeCheckbox}
+                />
               )
             })}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2 }}>

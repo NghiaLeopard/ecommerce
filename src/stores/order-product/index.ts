@@ -41,7 +41,6 @@ export const cartProductSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(getAllOrderMeAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.orderItemMe = actions.payload?.data?.orders
       })
