@@ -137,7 +137,7 @@ const ProductDetail: NextPage<TProps> = () => {
     handleUpdateToCart(item, 1)
     router.push({
       pathname: CONFIG_ROUTE.MY_CART,
-      query: { selected: item._id }
+      query: { selected: JSON.stringify(item._id) }
     })
   }
 
@@ -154,8 +154,6 @@ const ProductDetail: NextPage<TProps> = () => {
       fetchProductRelated(productSlug as string)
     }
   }, [i18n.language, productSlug])
-
-  console.log(dataDetailProduct)
 
   return (
     <>
@@ -308,14 +306,14 @@ const ProductDetail: NextPage<TProps> = () => {
                 variant='outlined'
                 sx={{ height: '40px', fontWeight: '600', mt: 2 }}
                 onClick={() => handleUpdateToCart(dataDetailProduct, amountCart)}
-                disabled={dataDetailProduct.countInStock === 0}
+                disabled={dataDetailProduct?.countInStock === 0}
               >
                 <CustomIcon icon='mdi:cart-outline' style={{ marginRight: '5px' }} />
                 {t('Add_to_cart')}
               </Button>
 
               <Button
-                disabled={dataDetailProduct.countInStock === 0}
+                disabled={dataDetailProduct?.countInStock === 0}
                 variant='contained'
                 sx={{ height: '40px', fontWeight: '600', mt: 2 }}
                 onClick={() => handleBuyProduct(dataDetailProduct)}

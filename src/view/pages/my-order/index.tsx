@@ -2,57 +2,45 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import {
-  Avatar,
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  IconButton,
-  Tab,
-  Tabs,
-  Tooltip,
-  Typography,
-  useTheme
-} from '@mui/material'
+import { Box, Tab, Tabs, useTheme } from '@mui/material'
 
 // ** Component
-import CustomIcon from 'src/components/Icon'
 import NoData from 'src/components/no-data'
 import Spinner from 'src/components/spinner'
-import CustomTextField from 'src/components/text-field'
+import CustomPagination from 'src/components/custom-pagination'
+import InputSearch from 'src/components/input-search'
+import CardOrderMe from './components/CardOrderMe'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { updateToCart } from 'src/stores/order-product'
+import { getAllOrderMeAsync } from 'src/stores/order-product/actions'
 
 // ** utils
 import { useRouter } from 'next/router'
 
 // ** Helper
-import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Type
-import { TItemOrderMe, TOrderProduct } from 'src/types/order-product'
+import { TItemOrderMe } from 'src/types/order-product'
+
+// ** Config
+import * as gridConfig from 'src/configs/gridConfig'
+import { resetInitialState } from 'src/stores/order-product'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import toast from 'react-hot-toast'
 import { CONFIG_ROUTE } from 'src/configs/route'
-import { getAllOrderMeAsync } from 'src/stores/order-product/actions'
-import CardOrderMe from './components/CardOrderMe'
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import InputSearch from 'src/components/input-search'
-import CustomPagination from 'src/components/custom-pagination'
 
 type TProps = {}
 
@@ -82,14 +70,15 @@ const MyOrderPage: NextPage<TProps> = () => {
 
   // ** State
   const [loading, setLoading] = useState(false)
-  const [checkboxSelected, setCheckboxSelected] = useState<string[]>([])
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [pageSize, setPageSize] = useState(gridConfig.PAGE_SIZE_OPTION[0])
   const [tabSelected, setTabSelected] = useState<number>(VALUE_OPTIONS_STATUS.ALL)
   const [search, setSearch] = useState('')
 
   // ** Selector
-  const { orderItem, orderItemMe } = useSelector((state: RootState) => state.orderProduct)
+  const { orderItemMe, isMessageCancelOrder, isSuccessCancelOrder, isErrorCancelOrder, typeError } = useSelector(
+    (state: RootState) => state.orderProduct
+  )
 
   const OBJECT_TYPE_STATUS = [
     { label: t('All'), value: VALUE_OPTIONS_STATUS.ALL },
@@ -114,19 +103,12 @@ const MyOrderPage: NextPage<TProps> = () => {
     setSearch(value)
   }
 
-  useEffect(() => {
-    const data = router?.query
-    if (data.selected) {
-      setCheckboxSelected([data?.selected as string])
-    }
-  }, [router.query])
-
   const fetchAllOrderMe = () => {
     const status = tabSelected === 4 ? '' : tabSelected
     const params = {
       limit: pageSize,
       page: 1,
-      order: 'created asc',
+      order: 'created desc',
       search: search,
       status: status
     }
@@ -135,7 +117,24 @@ const MyOrderPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     fetchAllOrderMe()
-  }, [pageSize, page, search, tabSelected])
+  }, [pageSize, page, search, tabSelected, isSuccessCancelOrder])
+
+  useEffect(() => {
+    if (isMessageCancelOrder) {
+      if (isSuccessCancelOrder) {
+        toast.success(t('Cancel_order_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorCancelOrder) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Cancel_order_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorCancelOrder, isSuccessCancelOrder])
 
   return (
     <>
@@ -153,7 +152,7 @@ const MyOrderPage: NextPage<TProps> = () => {
             })
           : ''}
       </Tabs>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end',mb: 3 }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
         <Box width='200px'>
           <InputSearch onChange={handleOnChangeSearch} />
         </Box>
@@ -163,7 +162,7 @@ const MyOrderPage: NextPage<TProps> = () => {
           {orderItemMe.map((item: TItemOrderMe) => {
             return (
               <Box key={item._id}>
-                <CardOrderMe item={item} />
+                <CardOrderMe item={item} tabSelected={tabSelected} />
               </Box>
             )
           })}
@@ -186,8 +185,8 @@ const MyOrderPage: NextPage<TProps> = () => {
       <CustomPagination
         page={page}
         pageSize={pageSize}
-        rowLength={PAGE_SIZE_OPTION[0]}
-        pageSizeOptions={PAGE_SIZE_OPTION}
+        rowLength={gridConfig.PAGE_SIZE_OPTION[0]}
+        pageSizeOptions={gridConfig.PAGE_SIZE_OPTION}
         onChangePagination={handleChangePagination}
         isHideShowed={true}
       />

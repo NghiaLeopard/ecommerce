@@ -228,8 +228,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     getListPaymentType()
   }, [])
 
-  console.log(memoQueryProduct.products)
-
   useEffect(() => {
     const dataCart = getOrderItem()
     const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
@@ -248,7 +246,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           (item: TOrderProduct) =>
             !memoQueryProduct.products.some((itemMemo: TOrderProduct) => itemMemo.product === item.product)
         )
-        
+
         dispatch(
           updateToCart({
             orderItem: filterOrderItem

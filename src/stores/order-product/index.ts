@@ -1,6 +1,6 @@
 // ** Redux
 import { createSlice } from '@reduxjs/toolkit'
-import { createOrderProductsAsync, getAllOrderMeAsync, serviceName } from './actions'
+import { cancelOrderProductAsync, createOrderProductsAsync, getAllOrderMeAsync, serviceName } from './actions'
 
 // ** Action
 
@@ -11,6 +11,9 @@ const initialState = {
   isSuccessCreateOrder: false,
   isErrorCreateOrder: false,
   isMessageCreateOrder: '',
+  isSuccessCancelOrder: false,
+  isErrorCancelOrder: false,
+  isMessageCancelOrder: '',
   typeError: ''
 }
 
@@ -27,6 +30,9 @@ export const cartProductSlice = createSlice({
       state.isErrorCreateOrder = false
       state.isMessageCreateOrder = ''
       state.typeError = ''
+      state.isSuccessCancelOrder = false
+      state.isErrorCancelOrder = false
+      state.isMessageCancelOrder = ''
     }
   },
   extraReducers: builder => {
@@ -35,7 +41,6 @@ export const cartProductSlice = createSlice({
       state.isLoading = true
     }),
       builder.addCase(getAllOrderMeAsync.fulfilled, (state, actions) => {
-        console.log(actions.payload)
         state.isLoading = false
         state.orderItemMe = actions.payload?.data?.orders
       })
@@ -49,6 +54,18 @@ export const cartProductSlice = createSlice({
         state.isSuccessCreateOrder = !!actions.payload?.data?._id
         state.isErrorCreateOrder = !actions.payload?.data?._id
         state.isMessageCreateOrder = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
+
+    // cancel order product
+    builder.addCase(cancelOrderProductAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(cancelOrderProductAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.isSuccessCancelOrder = !!actions.payload?.data?._id
+        state.isErrorCancelOrder = !actions.payload?.data?._id
+        state.isMessageCancelOrder = actions.payload?.message
         state.typeError = actions.payload?.typeError
       })
   }

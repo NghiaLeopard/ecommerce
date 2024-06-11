@@ -98,7 +98,7 @@ export default function CardProduct({ item }: TCardProduct) {
     handleUpdateToCart(item)
     router.push({
       pathname: CONFIG_ROUTE.MY_CART,
-      query: { selected: item._id }
+      query: { selected: JSON.stringify(item._id) }
     })
   }
 

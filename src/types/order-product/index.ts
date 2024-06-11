@@ -10,6 +10,18 @@ export type TOrderProduct = {
   discountStartDate: Date | null
 }
 
+export type TOrderedProduct = {
+  name: string
+  amount: number
+  image: string
+  price: number
+  discount: number
+  product: { _id: string; slug: string; countInStock: number }
+  slug: string
+  discountEndDate: Date | null
+  discountStartDate: Date | null
+}
+
 export type TCreateOrderProduct = {
   orderItems: TOrderProduct[]
   fullName: string
@@ -40,7 +52,7 @@ export type TItemOrderMe = {
     phone: number
   }
   _id: string
-  orderItems: TOrderProduct[]
+  orderItems: TOrderedProduct[]
   totalPrice: number
   user: {
     _id: string
