@@ -1,6 +1,6 @@
 // ** Redux
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { cancelOrderProduct, createOrderProducts, getAllOrderMe } from 'src/services/order-product'
+import { cancelOrderProductMe, createOrderProducts, getAllOrderMe, getAllOrderProducts } from 'src/services/order-product'
 
 // ** Services
 import {
@@ -14,7 +14,7 @@ import {
   likeProduct,
   unLikeProduct
 } from 'src/services/products'
-import { TCreateOrderProduct, TParamsGetOrderMe } from 'src/types/order-product'
+import { TCreateOrderProduct, TParamsGetOrderCMS, TParamsGetOrderMe } from 'src/types/order-product'
 
 // ** Types
 
@@ -29,39 +29,14 @@ export const getAllOrderMeAsync = createAsyncThunk(
   }
 )
 
-// export const getListProductsLikedAsync = createAsyncThunk(
-//   `${serviceName}/get-product-liked`,
-//   async (data: { params: TParamsGetProductsLiked }) => {
-//     const response = await getListProductsLiked(data)
+export const getAllOrderCMSAsync = createAsyncThunk(
+  `${serviceName}/get-all-CMS`,
+  async (data: { params: TParamsGetOrderCMS }) => {
+    const response = await getAllOrderProducts(data)
 
-//     return response
-//   }
-// )
-
-// export const getListProductsViewedAsync = createAsyncThunk(
-//   `${serviceName}/get-product-view`,
-//   async (data: { params: TParamsGetProductsViewed }) => {
-//     const response = await getListProductsViewed(data)
-
-//     return response
-//   }
-// )
-
-// export const editProductsAsync = createAsyncThunk(`${serviceName}/edit`, async (data: TParamsEditProducts) => {
-//   const response = await editProducts(data)
-
-//   if (response?.data) {
-//     return response
-//   }
-
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
+    return response
+  }
+)
 
 export const createOrderProductsAsync = createAsyncThunk(`${serviceName}/create`, async (data: TCreateOrderProduct) => {
   const response = await createOrderProducts(data)
@@ -79,8 +54,8 @@ export const createOrderProductsAsync = createAsyncThunk(`${serviceName}/create`
   }
 })
 
-export const cancelOrderProductAsync = createAsyncThunk(`${serviceName}/delete`, async (orderId: string) => {
-  const response = await cancelOrderProduct(orderId)
+export const cancelOrderProductMeAsync = createAsyncThunk(`${serviceName}/delete`, async (orderId: string) => {
+  const response = await cancelOrderProductMe(orderId)
 
   if (response?.data) {
     return response
@@ -113,46 +88,3 @@ export const cancelOrderProductAsync = createAsyncThunk(`${serviceName}/delete`,
 //     }
 //   }
 // )
-
-// export const likeProductAsync = createAsyncThunk(`${serviceName}/like-product`, async (data: TActionProduct) => {
-//   const response = await likeProduct(data)
-
-//   if (response?.message) {
-//     return {
-//       data: {
-//         _id: 1
-//       },
-//       message: response?.message,
-//       typeError: response?.typeError
-//     }
-//   }
-
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
-// export const unLikeProductAsync = createAsyncThunk(`${serviceName}/unlike-product`, async (data: TActionProduct) => {
-//   const response = await unLikeProduct(data)
-
-//   if (response?.message) {
-//     return {
-//       data: {
-//         _id: 1
-//       },
-//       message: response?.message,
-//       typeError: response?.typeError
-//     }
-//   }
-
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })

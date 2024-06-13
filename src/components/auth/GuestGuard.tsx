@@ -8,7 +8,6 @@ import { ReactElement, ReactNode, useEffect } from 'react'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** LocalStorage
-import { getLocalUserData, removeLocalUserData } from 'src/helpers/storage'
 import { ACCESS_TOKEN, REFRESH_TOKEN } from 'src/configs/auth'
 
 interface GuestGuardProps {

@@ -9,14 +9,15 @@ import CustomIcon from '../Icon'
 
 interface TGridDelete {
   onClick: () => void
+  disabled?: boolean
 }
 
-const CustomGridDelete = ({ onClick }: TGridDelete) => {
+const CustomGridDelete = ({ onClick, disabled }: TGridDelete) => {
   const { t } = useTranslation()
 
   return (
     <Tooltip title='Delete'>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} disabled={disabled}>
         <CustomIcon icon='mingcute:delete-2-fill' />
       </IconButton>
     </Tooltip>

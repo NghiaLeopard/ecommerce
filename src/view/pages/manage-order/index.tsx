@@ -2,11 +2,11 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Chip, Typography, styled, useTheme } from '@mui/material'
+import { AvatarGroup, Box, Chip, ChipProps, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -14,8 +14,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/user'
-import { deleteMultipleUsersAsync, deleteUsersAsync, getAllUsersAsync } from 'src/stores/user/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
@@ -28,47 +26,42 @@ import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
-import { CreateEditUsers } from './components/CreateEditUsers'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 // ** Toast
-import toast from 'react-hot-toast'
 
 // ** utils
-import { toFullName } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Configs
 import i18n from 'src/configs/i18n'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Service
-import { getAllRoles } from 'src/services/role'
 import { OBJECT_STATUS_USER } from 'src/configs/user'
 import { getAllCity } from 'src/services/city'
+import { getAllOrderCMSAsync } from 'src/stores/order-product/actions'
+import { TItemOrderCMS, TOrderedProduct } from 'src/types/order-product'
+import { Avatar } from '@mui/material'
+import { OBJECT_ACTION_STATUS } from 'src/configs/order'
 
 type TProps = {}
 
 type TSelectedRow = { id: string; role: { id: string; permissions: string[] } }
 
-const ActiveChip = styled(Chip)(({ theme }) => ({
+interface TStatusChip extends ChipProps {
+  background: string
+}
+
+const StatusChip = styled(Chip)<TStatusChip>(({ theme, background }) => ({
   padding: '15px 0px',
-  backgroundColor: '#28c76f29',
-  color: '#3a843f',
+  backgroundColor: background,
+  color: theme.palette.common.white,
   fontWeight: 400
 }))
 
-const BlockChip = styled(Chip)(({ theme }) => ({
-  padding: '15px 0px',
-  backgroundColor: '#da251d29',
-  color: '#da251d',
-  fontWeight: 400
-}))
-
-const UserPage: NextPage<TProps> = () => {
+const OrderPage: NextPage<TProps> = () => {
   // ** Theme
   const theme = useTheme()
 
@@ -78,56 +71,38 @@ const UserPage: NextPage<TProps> = () => {
   // ** useState
   const [openDeleteUser, setOpenDeleteUser] = useState({
     open: false,
-    idUsers: ''
+    idOrderProduct: ''
   })
-
-  const [openDeleteMultipleUser, setOpenDeleteMultipleUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
-  const [allRole, setAllRole] = useState([])
   const [allCity, setAllCity] = useState([])
-  const [roleSelected, setRoleSelected] = useState('')
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
-    idUsers: ''
+    idOrderProduct: ''
   })
+
+  // ** Dispatch
+  const dispatch: AppDispatch = useDispatch()
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  const OBJECT_STATUS = OBJECT_STATUS_USER()
+  //** use selector
+  const { orderItemProduct, typeError } = useSelector((state: RootState) => state.orderProduct)
 
-  // ** use selector
-  const {
-    users,
-    isErrorCreateEdit,
-    isMessageCreateEdit,
-    isSuccessCreateEdit,
-    isLoading,
-    isErrorDelete,
-    isMessageDelete,
-    isSuccessDelete,
-    isErrorMultipleDelete,
-    isMessageMultipleDelete,
-    isSuccessMultipleDelete,
-    typeError
-  } = useSelector((state: RootState) => state.users)
-
-  const getListUsers = () => {
+  const getListOrderProduct = () => {
     dispatch(
-      getAllUsersAsync({
+      getAllOrderCMSAsync({
         params: {
           limit: pageSize,
           page: page,
           search: search,
           order: sortBy,
-          roleId: roleSelected,
           cityId: citySelected.join('|'),
           status: statusSelected === '' ? '' : Number(statusSelected)
         }
@@ -135,12 +110,19 @@ const UserPage: NextPage<TProps> = () => {
     )
   }
 
-  const handleCloseModal = () => {
-    setOpenCreateEdit({
-      open: false,
-      idUsers: ''
-    })
+  const OBJECT_ACTION_STATUS_STYLE: any = {
+    0: { label: 'Wait_payment', background: theme.palette.warning.main },
+    1: { label: 'Wait_delivery', background: theme.palette.secondary.main },
+    2: { label: 'Done', background: theme.palette.success.main },
+    3: { label: 'Cancel', background: theme.palette.error.main }
   }
+
+  // const handleCloseModal = () => {
+  //   setOpenCreateEdit({
+  //     open: false,
+  //     idOrderProduct: ''
+  //   })
+  // }
 
   const handleSort = (sort: any) => {
     const sortOptions = sort[0]
@@ -152,12 +134,8 @@ const UserPage: NextPage<TProps> = () => {
   const handleOnCloseDeleteUser = () => {
     setOpenDeleteUser({
       open: false,
-      idUsers: ''
+      idOrderProduct: ''
     })
-  }
-
-  const handleOnCloseDeleteMultipleUser = () => {
-    setOpenDeleteMultipleUser(false)
   }
 
   const handleOnChangeSearch = (value: string) => {
@@ -182,75 +160,72 @@ const UserPage: NextPage<TProps> = () => {
     )
   }
 
-  const handleActions = (action: string) => {
-    switch (action) {
-      case 'delete': {
-        setOpenDeleteMultipleUser(true)
-        break
-      }
-    }
-  }
-
-  const memoDisabledDeleteUser = useMemo(() => {
-    return checkboxRow.some((item: TSelectedRow) => item?.role?.permissions?.includes(CONFIG_PERMISSIONS.ADMIN))
-  }, [checkboxRow])
-
   useEffect(() => {
-    getListUsers()
-  }, [sortBy, search, page, pageSize, roleSelected, citySelected, statusSelected])
+    getListOrderProduct()
+  }, [sortBy, search, page, pageSize, citySelected, statusSelected])
 
-  useEffect(() => {
-    if (isMessageCreateEdit) {
-      if (isSuccessCreateEdit) {
-        if (!openCreateEdit.idUsers) {
-          toast.success(t('Create_user_success'))
-        } else {
-          toast.success(t('Update_user_success'))
-        }
-        handleCloseModal()
-      } else if (isErrorCreateEdit) {
-        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
-        if (errorConfig) {
-          toast.error(t(`${errorConfig}`))
-        } else {
-          if (!openCreateEdit.idUsers) {
-            toast.error(t('Create_user_error'))
-          } else {
-            toast.error(t('Update_user_error'))
-          }
-        }
-      }
-      getListUsers()
-      dispatch(resetInitialState())
-    }
-  }, [isErrorCreateEdit, isSuccessCreateEdit])
+  // useEffect(() => {
+  //   if (isMessageCreateEdit) {
+  //     if (isSuccessCreateEdit) {
+  //       if (!openCreateEdit.idOrderProduct) {
+  //         toast.success(t('Create_user_success'))
+  //       } else {
+  //         toast.success(t('Update_user_success'))
+  //       }
+  //       handleCloseModal()
+  //     } else if (isErrorCreateEdit) {
+  //       const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+  //       if (errorConfig) {
+  //         toast.error(t(`${errorConfig}`))
+  //       } else {
+  //         if (!openCreateEdit.idOrderProduct) {
+  //           toast.error(t('Create_user_error'))
+  //         } else {
+  //           toast.error(t('Update_user_error'))
+  //         }
+  //       }
+  //     }
+  //     getListOrderProduct()
+  //     dispatch(resetInitialState())
+  //   }
+  // }, [isErrorCreateEdit, isSuccessCreateEdit])
 
-  useEffect(() => {
-    if (isMessageDelete) {
-      if (isSuccessDelete) {
-        toast.success(t('Delete_user_success'))
-        getListUsers()
-      } else if (isErrorDelete) {
-        toast.error(t('Delete_user_success'))
-      }
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessDelete, isErrorDelete])
-
-  useEffect(() => {
-    if (isMessageMultipleDelete) {
-      if (isSuccessMultipleDelete) {
-        toast.success(t('Delete_multiple_user_success'))
-        getListUsers()
-        setCheckboxRow([])
-        dispatch(resetInitialState())
-      } else if (isErrorMultipleDelete) {
-        toast.error(t('Delete_multiple_user_error'))
-      }
-    }
-  }, [isErrorMultipleDelete, isSuccessMultipleDelete])
+  // useEffect(() => {
+  //   if (isMessageDelete) {
+  //     if (isSuccessDelete) {
+  //       toast.success(t('Delete_user_success'))
+  //       getListOrderProduct()
+  //     } else if (isErrorDelete) {
+  //       toast.error(t('Delete_user_success'))
+  //     }
+  //     dispatch(resetInitialState())
+  //   }
+  // }, [isSuccessDelete, isErrorDelete])
 
   const columns: GridColDef<[number]>[] = [
+    {
+      field: 'productItems',
+      headerName: t('Product_items'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return (
+          <AvatarGroup max={2}>
+            {row.orderItems.map((item: TOrderedProduct) => {
+              return (
+                <>
+                  <Avatar alt={item?.product?.slug} src={item?.image} key={item.product._id} />
+                  <Avatar alt={item?.product?.slug} src={item?.image} key={item.product._id} />
+                </>
+              )
+            })}
+          </AvatarGroup>
+        )
+      }
+    },
+
     {
       field: i18n.language === 'vi' ? 'lastName' : 'firstNAme',
       headerName: t('Full_name'),
@@ -259,44 +234,33 @@ const UserPage: NextPage<TProps> = () => {
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-        const fullName = toFullName(row.lastName, row.middleName, row.firstName, i18n.language)
 
-        return <Typography>{fullName}</Typography>
+        return <Typography>{row?.shippingAddress?.fullName}</Typography>
       }
     },
     {
-      field: 'email',
-      headerName: t('email'),
+      field: 'Total price',
+      headerName: t('Total_price'),
       minWidth: 215,
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.email}</Typography>
+        return <Typography>{row?.totalPrice}</Typography>
       }
     },
     {
-      field: 'role',
-      headerName: t('Role'),
-      minWidth: 215,
-      maxWidth: 215,
-      renderCell: (params: GridRenderCellParams) => {
-        const { row } = params
-
-        return <Typography>{row?.role?.name}</Typography>
-      }
-    },
-    {
-      field: 'phoneNumber',
+      field: 'Phone number',
       headerName: t('Phone_number'),
       minWidth: 215,
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.phoneNumber}</Typography>
+        return <Typography>{row?.shippingAddress?.phone}</Typography>
       }
     },
+
     {
       field: 'city',
       headerName: t('City'),
@@ -305,7 +269,7 @@ const UserPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.city?.name}</Typography>
+        return <Typography>{row?.shippingAddress?.city?.name}</Typography>
       }
     },
     {
@@ -316,7 +280,12 @@ const UserPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return row.status === 1 ? <ActiveChip label={t('Active')} /> : <BlockChip label={t('Blocking')} />
+        return (
+          <StatusChip
+            label={t(OBJECT_ACTION_STATUS_STYLE[row?.status].label)}
+            background={OBJECT_ACTION_STATUS_STYLE[row?.status].background}
+          />
+        )
       }
     },
     {
@@ -327,11 +296,7 @@ const UserPage: NextPage<TProps> = () => {
       sortable: false,
       renderCell: (rows: any) => {
         const { row } = rows
-        let disabledDeleteAdmin = false
-        const arrPermissions: string[] = row?.role?.permissions || []
-        if (row.role) {
-          disabledDeleteAdmin = arrPermissions.includes(CONFIG_PERMISSIONS.ADMIN)
-        }
+        console.log(row)
 
         return (
           <>
@@ -339,16 +304,15 @@ const UserPage: NextPage<TProps> = () => {
               onClick={() =>
                 setOpenCreateEdit({
                   open: true,
-                  idUsers: row?._id
+                  idOrderProduct: row?._id
                 })
               }
             />
             <CustomGridDelete
-              disabled={disabledDeleteAdmin}
               onClick={() => {
                 setOpenDeleteUser({
                   open: true,
-                  idUsers: row?._id
+                  idOrderProduct: row?._id
                 })
               }}
             />
@@ -357,23 +321,6 @@ const UserPage: NextPage<TProps> = () => {
       }
     }
   ]
-
-  const fetchAllRole = async () => {
-    setLoading(true)
-    try {
-      setLoading(false)
-
-      const response = await getAllRoles({ params: { limit: -1, page: -1 } })
-      const roleArr = response?.data?.roles.map((item: any) => ({
-        label: item.name,
-        value: item._id
-      }))
-
-      setAllRole(roleArr)
-    } catch (error) {
-      setLoading(false)
-    }
-  }
 
   const fetchAllCity = async () => {
     setLoading(true)
@@ -396,15 +343,9 @@ const UserPage: NextPage<TProps> = () => {
     fetchAllCity()
   }, [])
 
-  useEffect(() => {
-    fetchAllRole()
-  }, [])
-
   return (
     <>
-      {(isLoading || loading) && <Spinner />}
-
-      <CreateEditUsers open={openCreateEdit.open} onClose={handleCloseModal} idUsers={openCreateEdit.idUsers} />
+      {loading && <Spinner />}
 
       <CustomConfirmDialog
         title='Title_delete_user'
@@ -412,22 +353,11 @@ const UserPage: NextPage<TProps> = () => {
         onClose={handleOnCloseDeleteUser}
         open={openDeleteUser.open}
         handleConfirm={() => {
-          dispatch(deleteUsersAsync(openDeleteUser?.idUsers))
+          // dispatch(deleteOrderProductAsync(openDeleteUser?.idOrderProduct))
           handleOnCloseDeleteUser()
         }}
       />
 
-      <CustomConfirmDialog
-        title='Title_delete_multiple_user'
-        content='Confirm_delete_multiple_user'
-        onClose={handleOnCloseDeleteMultipleUser}
-        open={openDeleteMultipleUser}
-        handleConfirm={() => {
-          const data = checkboxRow.map(item => item.id)
-          dispatch(deleteMultipleUsersAsync({ userIds: data }))
-          handleOnCloseDeleteMultipleUser()
-        }}
-      />
       <Box
         sx={{
           display: 'flex',
@@ -446,17 +376,6 @@ const UserPage: NextPage<TProps> = () => {
               <>
                 <Box sx={{ width: '200px', mt: 1 }}>
                   <CustomSelect
-                    value={roleSelected}
-                    options={allRole}
-                    fullWidth
-                    onChange={(data: any) => {
-                      setRoleSelected(data)
-                    }}
-                    placeholder={t('Role')}
-                  />
-                </Box>
-                <Box sx={{ width: '200px', mt: 1 }}>
-                  <CustomSelect
                     value={citySelected}
                     options={allCity}
                     fullWidth
@@ -470,7 +389,7 @@ const UserPage: NextPage<TProps> = () => {
                 <Box sx={{ width: '200px', mt: 1 }}>
                   <CustomSelect
                     value={statusSelected}
-                    options={Object.values(OBJECT_STATUS)}
+                    options={Object.values(OBJECT_ACTION_STATUS)}
                     fullWidth
                     onChange={(data: any) => {
                       setStatusSelected(data)
@@ -485,24 +404,15 @@ const UserPage: NextPage<TProps> = () => {
                   onClick={() =>
                     setOpenCreateEdit(x => ({
                       open: true,
-                      idUsers: ''
+                      idOrderProduct: ''
                     }))
                   }
                 />
               </>
             )}
           </Box>
-          {checkboxRow.length > 0 && (
-            <TableHeader
-              number={checkboxRow.length}
-              onClose={() => setCheckboxRow([])}
-              actions={tableActions}
-              handleActions={handleActions}
-              disabled={memoDisabledDeleteUser}
-            />
-          )}
           <CustomDataGrid
-            rows={users.data || {}}
+            rows={orderItemProduct || {}}
             columns={columns}
             getRowId={row => row._id}
             sortingMode='server'
@@ -516,7 +426,7 @@ const UserPage: NextPage<TProps> = () => {
             rowSelectionModel={checkboxRow.map(item => item.id)}
             onRowSelectionModelChange={(row: GridRowSelectionModel) => {
               const formatData = row?.map(item => {
-                const findRow: any = users?.data.find((itemUser: any) => itemUser._id === item)
+                const findRow: any = orderItemProduct?.find((itemUser: any) => itemUser._id === item)
 
                 return { id: findRow._id, role: { id: findRow?.row?._id, permissions: findRow?.role?.permissions } }
               })
@@ -540,4 +450,4 @@ const UserPage: NextPage<TProps> = () => {
   )
 }
 
-export default UserPage
+export default OrderPage

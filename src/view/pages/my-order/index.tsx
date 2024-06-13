@@ -73,7 +73,7 @@ const MyOrderPage: NextPage<TProps> = () => {
   const [search, setSearch] = useState('')
 
   // ** Selector
-  const { orderItemMe, isMessageCancelOrder, isSuccessCancelOrder, isErrorCancelOrder, typeError } = useSelector(
+  const { orderItemMe, isMessageCancelOrderMe, isSuccessCancelOrderMe, isErrorCancelOrderMe, typeError } = useSelector(
     (state: RootState) => state.orderProduct
   )
 
@@ -114,14 +114,14 @@ const MyOrderPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     fetchAllOrderMe()
-  }, [pageSize, page, search, tabSelected, isSuccessCancelOrder])
+  }, [pageSize, page, search, tabSelected, isSuccessCancelOrderMe])
 
   useEffect(() => {
-    if (isMessageCancelOrder) {
-      if (isSuccessCancelOrder) {
+    if (isMessageCancelOrderMe) {
+      if (isSuccessCancelOrderMe) {
         toast.success(t('Cancel_order_success'))
         dispatch(resetInitialState())
-      } else if (isErrorCancelOrder) {
+      } else if (isErrorCancelOrderMe) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
           toast.error(t(`${errorConfig}`))
@@ -131,7 +131,7 @@ const MyOrderPage: NextPage<TProps> = () => {
         dispatch(resetInitialState())
       }
     }
-  }, [isErrorCancelOrder, isSuccessCancelOrder])
+  }, [isErrorCancelOrderMe, isSuccessCancelOrderMe])
 
   return (
     <>

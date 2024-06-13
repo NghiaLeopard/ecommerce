@@ -91,7 +91,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   const router = useRouter()
 
   // ** Selector
-  const { isLoading, isErrorCreateOrder, isMessageCreateOrder, isSuccessCreateOrder, typeError, orderItem } =
+  const { isLoading, isErrorCreateOrderMe, isMessageCreateOrderMe, isSuccessCreateOrderMe, typeError, orderItem } =
     useSelector((state: RootState) => state.orderProduct)
 
   // ** State
@@ -232,8 +232,8 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     const dataCart = getOrderItem()
     const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
 
-    if (isMessageCreateOrder) {
-      if (isSuccessCreateOrder) {
+    if (isMessageCreateOrderMe) {
+      if (isSuccessCreateOrderMe) {
         toast.success(t('Order_product_success'))
         dispatch(resetInitialState())
         Swal.fire({
@@ -253,7 +253,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           })
         )
         setOrderItem(JSON.stringify({ ...dataCartParse, [user?._id]: filterOrderItem }))
-      } else if (isErrorCreateOrder) {
+      } else if (isErrorCreateOrderMe) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
           toast.error(t(`${errorConfig}`))
@@ -269,7 +269,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
         })
       }
     }
-  }, [isErrorCreateOrder, isSuccessCreateOrder])
+  }, [isErrorCreateOrderMe, isSuccessCreateOrderMe])
 
   useEffect(() => {
     fetchAllCity()

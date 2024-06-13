@@ -44,7 +44,44 @@ export type TParamsGetOrderMe = {
   order?: string
 }
 
+export type TParamsGetOrderCMS = {
+  limit: number
+  page: number
+  status?: number | string
+  search?: string
+  order?: string
+  userId?: string
+  productId?: string
+  cityId?: string
+}
+
 export type TItemOrderMe = {
+  shippingAddress: {
+    fullName: string
+    address: string
+    city: {
+      _id: string
+      name: string
+    }
+    phone: number
+  }
+  _id: string
+  orderItems: TOrderedProduct[]
+  totalPrice: number
+  itemsPrice: number
+  shippingPrice: number
+  user: {
+    _id: string
+    firstName: string
+    lastName: string
+    middleName: string
+  }
+  isPaid: number
+  isDelivered: number
+  status: number
+}
+
+export type TItemOrderCMS = {
   shippingAddress: {
     fullName: string
     address: string
