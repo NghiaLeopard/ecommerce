@@ -27,7 +27,7 @@ import { useState } from 'react'
 import { cloneDeep, executeUpdateCard, formatPriceToLocal } from 'src/utils'
 
 // ** Store
-import { cancelOrderProductAsync } from 'src/stores/order-product/actions'
+import { cancelOrderProductMeAsync } from 'src/stores/order-product/actions'
 import { updateToCart } from 'src/stores/order-product'
 
 // ** Helper
@@ -69,7 +69,7 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
   }
 
   const handleCancelOrder = () => {
-    dispatch(cancelOrderProductAsync(item._id))
+    dispatch(cancelOrderProductMeAsync(item._id))
     setOpenConfirmCancel(false)
   }
 
@@ -132,7 +132,7 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
       <Box mb={5} padding='20px' sx={{ background: theme.palette.background.paper, borderRadius: '15px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Typography fontSize='17px' color={theme.palette.primary.main} fontWeight='600' textTransform='uppercase'>
-            {t(`${OBJECT_ACTION_STATUS[item?.status]}`)}
+            {t(`${OBJECT_ACTION_STATUS[item?.status]?.label}`)}
           </Typography>
         </Box>
 

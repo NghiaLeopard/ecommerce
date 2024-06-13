@@ -1,19 +1,26 @@
 // ** Redux
 import { createSlice } from '@reduxjs/toolkit'
-import { cancelOrderProductAsync, createOrderProductsAsync, getAllOrderMeAsync, serviceName } from './actions'
+import {
+  cancelOrderProductMeAsync,
+  createOrderProductsAsync,
+  getAllOrderCMSAsync,
+  getAllOrderMeAsync,
+  serviceName
+} from './actions'
 
 // ** Action
 
 const initialState = {
   orderItem: [],
+  orderItemProduct: [],
   orderItemMe: [],
   isLoading: false,
-  isSuccessCreateOrder: false,
-  isErrorCreateOrder: false,
-  isMessageCreateOrder: '',
-  isSuccessCancelOrder: false,
-  isErrorCancelOrder: false,
-  isMessageCancelOrder: '',
+  isSuccessCreateOrderMe: false,
+  isErrorCreateOrderMe: false,
+  isMessageCreateOrderMe: '',
+  isSuccessCancelOrderMe: false,
+  isErrorCancelOrderMe: false,
+  isMessageCancelOrderMe: '',
   typeError: ''
 }
 
@@ -26,17 +33,17 @@ export const cartProductSlice = createSlice({
     },
     resetInitialState(state) {
       state.isLoading = false
-      state.isSuccessCreateOrder = false
-      state.isErrorCreateOrder = false
-      state.isMessageCreateOrder = ''
+      state.isSuccessCreateOrderMe = false
+      state.isErrorCreateOrderMe = false
+      state.isMessageCreateOrderMe = ''
       state.typeError = ''
-      state.isSuccessCancelOrder = false
-      state.isErrorCancelOrder = false
-      state.isMessageCancelOrder = ''
+      state.isSuccessCancelOrderMe = false
+      state.isErrorCancelOrderMe = false
+      state.isMessageCancelOrderMe = ''
     }
   },
   extraReducers: builder => {
-    // Create order product
+    // get order product me
     builder.addCase(getAllOrderMeAsync.pending, (state, actions) => {
       state.isLoading = true
     }),
@@ -45,27 +52,36 @@ export const cartProductSlice = createSlice({
         state.orderItemMe = actions.payload?.data?.orders
       })
 
+    // get order product
+    builder.addCase(getAllOrderCMSAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(getAllOrderCMSAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.orderItemProduct = actions.payload?.data?.orders
+      })
+
     // Create order product
     builder.addCase(createOrderProductsAsync.pending, (state, actions) => {
       state.isLoading = true
     }),
       builder.addCase(createOrderProductsAsync.fulfilled, (state, actions) => {
         state.isLoading = false
-        state.isSuccessCreateOrder = !!actions.payload?.data?._id
-        state.isErrorCreateOrder = !actions.payload?.data?._id
-        state.isMessageCreateOrder = actions.payload?.message
+        state.isSuccessCreateOrderMe = !!actions.payload?.data?._id
+        state.isErrorCreateOrderMe = !actions.payload?.data?._id
+        state.isMessageCreateOrderMe = actions.payload?.message
         state.typeError = actions.payload?.typeError
       })
 
-    // cancel order product
-    builder.addCase(cancelOrderProductAsync.pending, (state, actions) => {
+    // cancel order product me
+    builder.addCase(cancelOrderProductMeAsync.pending, (state, actions) => {
       state.isLoading = true
     }),
-      builder.addCase(cancelOrderProductAsync.fulfilled, (state, actions) => {
+      builder.addCase(cancelOrderProductMeAsync.fulfilled, (state, actions) => {
         state.isLoading = false
-        state.isSuccessCancelOrder = !!actions.payload?.data?._id
-        state.isErrorCancelOrder = !actions.payload?.data?._id
-        state.isMessageCancelOrder = actions.payload?.message
+        state.isSuccessCancelOrderMe = !!actions.payload?.data?._id
+        state.isErrorCancelOrderMe = !actions.payload?.data?._id
+        state.isMessageCancelOrderMe = actions.payload?.message
         state.typeError = actions.payload?.typeError
       })
   }

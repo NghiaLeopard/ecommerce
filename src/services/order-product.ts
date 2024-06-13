@@ -4,11 +4,21 @@ import instanceAxios from 'src/helpers/axios'
 // ** Configs
 import { API_ENDPOINT } from 'src/configs/api'
 
-import { TCreateOrderProduct, TParamsGetOrderMe } from 'src/types/order-product'
+import { TCreateOrderProduct, TItemOrderCMS, TParamsGetOrderCMS, TParamsGetOrderMe } from 'src/types/order-product'
 
 export const getAllOrderMe = async (data: { params: TParamsGetOrderMe }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/me`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const cancelOrderProductMe = async (orderId: string) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/me/cancel/${orderId}`)
 
     return res.data
   } catch (error) {
@@ -26,78 +36,45 @@ export const getDetailOrderMe = async (orderId: string) => {
   }
 }
 
-// export const getListProductsLiked = async (data: { params: TParamsGetProducts }) => {
-//   try {
-//     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/liked/me`, data)
+export const getAllOrderProducts = async (data: { params: TParamsGetOrderCMS }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}`, data)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
-// export const getListProductsViewed = async (data: { params: TParamsGetProducts }) => {
-//   try {
-//     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/viewed/me`, data)
+export const getAllOrderProductsDetail = async (orderId: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${orderId}`)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
-// export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
-//   try {
-//     const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public`, data)
+export const updateOrderProducts = async (data: TItemOrderCMS) => {
+  try {
+    const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/${data._id}`, data)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
-// export const getAllProductsRelevant = async (data: { params: TParamsRelated }) => {
-//   try {
-//     const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/related`, data)
+export const deleteOrderProducts = async (orderId: string) => {
+  try {
+    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${orderId}`)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
-
-// export const getDetailProducts = async (idProducts: string) => {
-//   try {
-//     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/${idProducts}`)
-
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
-
-// export const getDetailProductsPublic = async (slug: string) => {
-//   try {
-//     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public/slug/${slug}`, {
-//       params: { isPublic: true }
-//     })
-
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
-
-// export const editProducts = async (data: TParamsEditProducts) => {
-//   const { idProducts, ...rests } = data
-//   try {
-//     const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/${data.idProducts}`, rests)
-
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
 export const createOrderProducts = async (data: TCreateOrderProduct) => {
   try {
@@ -108,43 +85,3 @@ export const createOrderProducts = async (data: TCreateOrderProduct) => {
     return error
   }
 }
-
-export const cancelOrderProduct = async (orderId: string) => {
-  try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/me/cancel/${orderId}`)
-
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
-
-// export const deleteMultipleProducts = async (data: TParamsDeleteManyProducts) => {
-//   try {
-//     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/delete-many`, { data })
-
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
-
-// export const likeProduct = async (data: TActionProduct) => {
-//   try {
-//     const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/like`, data)
-
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
-
-// export const unLikeProduct = async (data: TActionProduct) => {
-//   try {
-//     const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/unlike`, data)
-
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }

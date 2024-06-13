@@ -19,8 +19,8 @@ export const CONFIG_ROUTE = {
   },
 
   MANAGE_ORDER: {
-    ORDER: '/manage-product/order',
-    REVIEWS: '/manage-product/reviews'
+    ORDER: '/manage-order/order',
+    REVIEWS: '/manage-order/reviews'
   },
 
   SETTINGS: {

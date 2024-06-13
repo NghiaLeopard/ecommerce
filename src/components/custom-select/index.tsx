@@ -3,6 +3,7 @@ import { Box, InputLabel, InputLabelProps, MenuItemProps, SelectProps, styled } 
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type TCustomSelect = SelectProps & {
   value: any
@@ -34,6 +35,8 @@ const CustomPlaceholder = styled(InputLabel)<InputLabelProps>(({ theme }) => ({
 }))
 
 export const CustomSelect = ({ value, label, onChange, fullWidth, options, placeholder, ...rest }: TCustomSelect) => {
+  const { t } = useTranslation()
+
   const handleChange = (event: any) => {
     onChange(event?.target?.value)
   }
@@ -44,8 +47,8 @@ export const CustomSelect = ({ value, label, onChange, fullWidth, options, place
       <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={handleChange} {...rest}>
         {options?.map(item => {
           return (
-            <MenuItem key={item.value} value={item.value}>
-              {item.label}
+            <MenuItem key={item.value} value={item.value === '4' ? '' : item.value}>
+              {`${t(item.label)}`}
             </MenuItem>
           )
         })}
