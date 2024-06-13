@@ -46,7 +46,7 @@ export default function FilterProduct({ onChange, valueReview, valueCities, data
           {Object.values(objectStar).map(item => {
             return (
               <FormControlLabel
-                checked={valueReview === item.value}
+                checked={Number(valueReview) === item.value}
                 value={item.value}
                 control={<Radio />}
                 label={item.label}
