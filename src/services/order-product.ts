@@ -4,7 +4,13 @@ import instanceAxios from 'src/helpers/axios'
 // ** Configs
 import { API_ENDPOINT } from 'src/configs/api'
 
-import { TCreateOrderProduct, TItemOrderCMS, TParamsGetOrderCMS, TParamsGetOrderMe } from 'src/types/order-product'
+import {
+  TCreateOrderProduct,
+  TItemOrderCMS,
+  TParamsGetOrderCMS,
+  TParamsGetOrderMe,
+  TUpdateOrderProduct
+} from 'src/types/order-product'
 
 export const getAllOrderMe = async (data: { params: TParamsGetOrderMe }) => {
   try {
@@ -46,7 +52,7 @@ export const getAllOrderProducts = async (data: { params: TParamsGetOrderCMS }) 
   }
 }
 
-export const getAllOrderProductsDetail = async (orderId: string) => {
+export const getOrderProductsDetail = async (orderId: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${orderId}`)
 
@@ -56,9 +62,9 @@ export const getAllOrderProductsDetail = async (orderId: string) => {
   }
 }
 
-export const updateOrderProducts = async (data: TItemOrderCMS) => {
+export const updateOrderProducts = async (data: TUpdateOrderProduct) => {
   try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/${data._id}`, data)
+    const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${data._id}`, data)
 
     return res.data
   } catch (error) {

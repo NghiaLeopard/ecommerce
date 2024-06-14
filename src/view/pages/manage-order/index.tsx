@@ -41,10 +41,14 @@ import i18n from 'src/configs/i18n'
 // ** Service
 import { OBJECT_STATUS_USER } from 'src/configs/user'
 import { getAllCity } from 'src/services/city'
-import { getAllOrderCMSAsync } from 'src/stores/order-product/actions'
+import { deleteOrderProductsAsync, getAllOrderCMSAsync } from 'src/stores/order-product/actions'
 import { TItemOrderCMS, TOrderedProduct } from 'src/types/order-product'
 import { Avatar } from '@mui/material'
 import { OBJECT_ACTION_STATUS } from 'src/configs/order'
+import { resetInitialState } from 'src/stores/order-product'
+import toast from 'react-hot-toast'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { UpdateOrderProduct } from './components/UpdateOrderProduct'
 
 type TProps = {}
 
@@ -71,7 +75,7 @@ const OrderPage: NextPage<TProps> = () => {
   // ** useState
   const [openDeleteUser, setOpenDeleteUser] = useState({
     open: false,
-    idOrderProduct: ''
+    orderId: ''
   })
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
@@ -82,9 +86,9 @@ const OrderPage: NextPage<TProps> = () => {
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
-  const [openCreateEdit, setOpenCreateEdit] = useState({
+  const [openEdit, setOpenEdit] = useState({
     open: false,
-    idOrderProduct: ''
+    orderId: ''
   })
 
   // ** Dispatch
@@ -93,7 +97,16 @@ const OrderPage: NextPage<TProps> = () => {
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   //** use selector
-  const { orderItemProduct, typeError } = useSelector((state: RootState) => state.orderProduct)
+  const {
+    orderItemProduct,
+    typeError,
+    isErrorDeleteOrderProduct,
+    isMessageDeleteOrderProduct,
+    isSuccessDeleteOrderProduct,
+    isSuccessUpdateOrderProduct,
+    isErrorUpdateOrderProduct,
+    isMessageUpdateOrderProduct
+  } = useSelector((state: RootState) => state.orderProduct)
 
   const getListOrderProduct = () => {
     dispatch(
@@ -117,12 +130,12 @@ const OrderPage: NextPage<TProps> = () => {
     3: { label: 'Cancel', background: theme.palette.error.main }
   }
 
-  // const handleCloseModal = () => {
-  //   setOpenCreateEdit({
-  //     open: false,
-  //     idOrderProduct: ''
-  //   })
-  // }
+  const handleCloseModal = () => {
+    setOpenEdit({
+      open: false,
+      orderId: ''
+    })
+  }
 
   const handleSort = (sort: any) => {
     const sortOptions = sort[0]
@@ -134,7 +147,7 @@ const OrderPage: NextPage<TProps> = () => {
   const handleOnCloseDeleteUser = () => {
     setOpenDeleteUser({
       open: false,
-      idOrderProduct: ''
+      orderId: ''
     })
   }
 
@@ -164,43 +177,35 @@ const OrderPage: NextPage<TProps> = () => {
     getListOrderProduct()
   }, [sortBy, search, page, pageSize, citySelected, statusSelected])
 
-  // useEffect(() => {
-  //   if (isMessageCreateEdit) {
-  //     if (isSuccessCreateEdit) {
-  //       if (!openCreateEdit.idOrderProduct) {
-  //         toast.success(t('Create_user_success'))
-  //       } else {
-  //         toast.success(t('Update_user_success'))
-  //       }
-  //       handleCloseModal()
-  //     } else if (isErrorCreateEdit) {
-  //       const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
-  //       if (errorConfig) {
-  //         toast.error(t(`${errorConfig}`))
-  //       } else {
-  //         if (!openCreateEdit.idOrderProduct) {
-  //           toast.error(t('Create_user_error'))
-  //         } else {
-  //           toast.error(t('Update_user_error'))
-  //         }
-  //       }
-  //     }
-  //     getListOrderProduct()
-  //     dispatch(resetInitialState())
-  //   }
-  // }, [isErrorCreateEdit, isSuccessCreateEdit])
+  useEffect(() => {
+    if (isMessageUpdateOrderProduct) {
+      if (isSuccessUpdateOrderProduct) {
+        toast.success(t('Update_order_product_success'))
+        handleCloseModal()
+      } else if (isErrorUpdateOrderProduct) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Update_order_product_error'))
+        }
+      }
+      getListOrderProduct()
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessUpdateOrderProduct, isErrorUpdateOrderProduct])
 
-  // useEffect(() => {
-  //   if (isMessageDelete) {
-  //     if (isSuccessDelete) {
-  //       toast.success(t('Delete_user_success'))
-  //       getListOrderProduct()
-  //     } else if (isErrorDelete) {
-  //       toast.error(t('Delete_user_success'))
-  //     }
-  //     dispatch(resetInitialState())
-  //   }
-  // }, [isSuccessDelete, isErrorDelete])
+  useEffect(() => {
+    if (isMessageDeleteOrderProduct) {
+      if (isSuccessDeleteOrderProduct) {
+        toast.success(t('Delete_order_product_success'))
+        getListOrderProduct()
+      } else if (isErrorDeleteOrderProduct) {
+        toast.error(t('Delete_order_product_success'))
+      }
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessDeleteOrderProduct, isErrorDeleteOrderProduct])
 
   const columns: GridColDef<[number]>[] = [
     {
@@ -214,12 +219,7 @@ const OrderPage: NextPage<TProps> = () => {
         return (
           <AvatarGroup max={2}>
             {row.orderItems.map((item: TOrderedProduct) => {
-              return (
-                <>
-                  <Avatar alt={item?.product?.slug} src={item?.image} key={item.product._id} />
-                  <Avatar alt={item?.product?.slug} src={item?.image} key={item.product._id} />
-                </>
-              )
+              return <Avatar alt={item?.product?.slug} src={item?.image} key={item.product._id} />
             })}
           </AvatarGroup>
         )
@@ -239,7 +239,7 @@ const OrderPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'Total price',
+      field: 'totalPrice',
       headerName: t('Total_price'),
       minWidth: 215,
       maxWidth: 215,
@@ -250,7 +250,7 @@ const OrderPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'Phone number',
+      field: 'phone',
       headerName: t('Phone_number'),
       minWidth: 215,
       maxWidth: 215,
@@ -296,15 +296,14 @@ const OrderPage: NextPage<TProps> = () => {
       sortable: false,
       renderCell: (rows: any) => {
         const { row } = rows
-        console.log(row)
 
         return (
           <>
             <CustomGridEdit
               onClick={() =>
-                setOpenCreateEdit({
+                setOpenEdit({
                   open: true,
-                  idOrderProduct: row?._id
+                  orderId: row?._id
                 })
               }
             />
@@ -312,7 +311,7 @@ const OrderPage: NextPage<TProps> = () => {
               onClick={() => {
                 setOpenDeleteUser({
                   open: true,
-                  idOrderProduct: row?._id
+                  orderId: row?._id
                 })
               }}
             />
@@ -347,13 +346,15 @@ const OrderPage: NextPage<TProps> = () => {
     <>
       {loading && <Spinner />}
 
+      <UpdateOrderProduct open={openEdit.open} orderId={openEdit.orderId} onClose={handleCloseModal} />
+
       <CustomConfirmDialog
-        title='Title_delete_user'
-        content='Confirm_delete_user'
+        title='Title_delete_order_product'
+        content='Confirm_delete_order_product'
         onClose={handleOnCloseDeleteUser}
         open={openDeleteUser.open}
         handleConfirm={() => {
-          // dispatch(deleteOrderProductAsync(openDeleteUser?.idOrderProduct))
+          dispatch(deleteOrderProductsAsync(openDeleteUser?.orderId))
           handleOnCloseDeleteUser()
         }}
       />
@@ -400,14 +401,6 @@ const OrderPage: NextPage<TProps> = () => {
                 <Box sx={{ width: '200px' }}>
                   <InputSearch onChange={handleOnChangeSearch} />
                 </Box>
-                <CustomGridCreate
-                  onClick={() =>
-                    setOpenCreateEdit(x => ({
-                      open: true,
-                      idOrderProduct: ''
-                    }))
-                  }
-                />
               </>
             )}
           </Box>

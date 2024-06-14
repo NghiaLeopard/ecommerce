@@ -315,6 +315,7 @@
   "Count_user_by_status": "Count user by status",
   "Count_order_by_status": "Count order by status",
   "Delivery_status": "Delivery status",
+  "Update_order_product": "Update order product",
   "Paid_status": "Paid status",
   "Notifications": "Notification",
   "Marked_all_notification_success": "Marked all notification success",

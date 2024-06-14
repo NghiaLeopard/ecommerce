@@ -46,10 +46,10 @@ import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
 // **
 import { getAllRoles } from 'src/services/role'
+import { getAllCity } from 'src/services/city'
 
 // ** Utils
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
-import { getAllCity } from 'src/services/city'
 
 type TDefaultValue = {
   email: string

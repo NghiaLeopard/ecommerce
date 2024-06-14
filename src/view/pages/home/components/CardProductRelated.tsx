@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 // ** React
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useMemo } from 'react'
 
 // ** MUI
 import { Box, useTheme } from '@mui/material'
@@ -17,14 +17,10 @@ import Typography from '@mui/material/Typography'
 // ** Component
 import CustomIcon from 'src/components/Icon'
 
-// ** Stores
-import { RootState } from 'src/stores'
-
 // ** Types
 import { TProduct } from 'src/types/products'
 
 // ** Utils
-import { useMemo } from 'react'
 import { formatPriceToLocal, isExpiry } from 'src/utils'
 
 type TCardProduct = {
