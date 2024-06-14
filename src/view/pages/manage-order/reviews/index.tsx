@@ -73,7 +73,7 @@ const ReviewsPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
-  const [starSelected, setStarSelected] = useState([])
+  const [starSelected, setStarSelected] = useState()
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idReviews: ''
