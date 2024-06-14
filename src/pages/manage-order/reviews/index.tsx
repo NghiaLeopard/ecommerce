@@ -8,14 +8,14 @@ import { ReactNode } from 'react'
 import UserLayout from 'src/view/layout/UserLayout'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
+import ReviewsPage from 'src/view/pages/manage-order/reviews'
 
 type TProps = {}
 
-const Reviews: NextPage<TProps> = () => {
-  return <h1>Review</h1>
+const Index: NextPage<TProps> = () => {
+  return <ReviewsPage />
 }
 
-export default Reviews
+export default Index
 
-Reviews.getLayout = (page: ReactNode) => <UserLayout>{page}</UserLayout>
+Index.getLayout = (page: ReactNode) => <UserLayout>{page}</UserLayout>

@@ -94,10 +94,9 @@ const OrderPage: NextPage<TProps> = () => {
   // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
 
-  const tableActions = [{ label: t('Delete'), value: 'delete' }]
-
   //** use selector
   const {
+    isLoading,
     orderItemProduct,
     typeError,
     isErrorDeleteOrderProduct,
@@ -344,7 +343,7 @@ const OrderPage: NextPage<TProps> = () => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {(loading || isLoading) && <Spinner />}
 
       <UpdateOrderProduct open={openEdit.open} orderId={openEdit.orderId} onClose={handleCloseModal} />
 

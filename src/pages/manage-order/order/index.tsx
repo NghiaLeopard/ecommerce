@@ -6,10 +6,9 @@ import { ReactNode } from 'react'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
-import OrderPage from 'src/view/pages/manage-order'
 
 // ** Page
-import MyProfilePage from 'src/view/pages/my-profile'
+import OrderPage from 'src/view/pages/manage-order/order'
 
 type TProps = {}
 

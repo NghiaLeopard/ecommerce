@@ -47,7 +47,7 @@ export const CustomSelect = ({ value, label, onChange, fullWidth, options, place
       <StyledSelect fullWidth={fullWidth} value={value} label={label} onChange={handleChange} {...rest}>
         {options?.map(item => {
           return (
-            <MenuItem key={item.value} value={item.value === '4' ? '' : item.value}>
+            <MenuItem key={item.value} value={item.value}>
               {`${t(item.label)}`}
             </MenuItem>
           )
