@@ -33,6 +33,9 @@ import { CreateEditUsers } from './components/CreateEditUsers'
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { CONFIG_PERMISSIONS } from 'src/configs/permission'
+import i18n from 'src/configs/i18n'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { OBJECT_STATUS_USER } from 'src/configs/user'
 
 // ** Toast
 import toast from 'react-hot-toast'
@@ -41,13 +44,8 @@ import toast from 'react-hot-toast'
 import { toFullName } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
-// ** Configs
-import i18n from 'src/configs/i18n'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
-
 // ** Service
 import { getAllRoles } from 'src/services/role'
-import { OBJECT_STATUS_USER } from 'src/configs/user'
 import { getAllCity } from 'src/services/city'
 
 type TProps = {}

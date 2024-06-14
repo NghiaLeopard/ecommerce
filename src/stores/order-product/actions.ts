@@ -1,6 +1,13 @@
 // ** Redux
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { cancelOrderProductMe, createOrderProducts, getAllOrderMe, getAllOrderProducts } from 'src/services/order-product'
+import {
+  cancelOrderProductMe,
+  createOrderProducts,
+  deleteOrderProducts,
+  getAllOrderMe,
+  getAllOrderProducts,
+  updateOrderProducts
+} from 'src/services/order-product'
 
 // ** Services
 import {
@@ -14,7 +21,7 @@ import {
   likeProduct,
   unLikeProduct
 } from 'src/services/products'
-import { TCreateOrderProduct, TParamsGetOrderCMS, TParamsGetOrderMe } from 'src/types/order-product'
+import { TCreateOrderProduct, TParamsGetOrderCMS, TParamsGetOrderMe, TUpdateOrderProduct } from 'src/types/order-product'
 
 // ** Types
 
@@ -53,8 +60,23 @@ export const createOrderProductsAsync = createAsyncThunk(`${serviceName}/create`
     typeError: response?.response?.data?.typeError
   }
 })
+export const UpdateOrderProductsAsync = createAsyncThunk(`${serviceName}/update`, async (data: TUpdateOrderProduct) => {
+  const response = await updateOrderProducts(data)
 
-export const cancelOrderProductMeAsync = createAsyncThunk(`${serviceName}/delete`, async (orderId: string) => {
+  if (response?.data) {
+    return response
+  }
+
+  return {
+    data: {
+      _id: null
+    },
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})
+
+export const cancelOrderProductMeAsync = createAsyncThunk(`${serviceName}/cancel`, async (orderId: string) => {
   const response = await cancelOrderProductMe(orderId)
 
   if (response?.data) {
@@ -70,21 +92,18 @@ export const cancelOrderProductMeAsync = createAsyncThunk(`${serviceName}/delete
   }
 })
 
-// export const deleteMultipleProductsAsync = createAsyncThunk(
-//   `${serviceName}/delete-many`,
-//   async (data: TParamsDeleteManyProducts) => {
-//     const response = await deleteMultipleProducts(data)
+export const deleteOrderProductsAsync = createAsyncThunk(`${serviceName}/delete`, async (orderId: string) => {
+  const response = await deleteOrderProducts(orderId)
 
-//     if (response?.message) {
-//       return response
-//     }
+  if (response?.message) {
+    return response
+  }
 
-//     return {
-//       data: {
-//         _id: null
-//       },
-//       message: response?.response?.data?.message,
-//       typeError: response?.response?.data?.typeError
-//     }
-//   }
-// )
+  return {
+    data: {
+      _id: null
+    },
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})

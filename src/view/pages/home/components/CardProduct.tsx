@@ -33,6 +33,8 @@ import { TProduct } from 'src/types/products'
 // ** Utils
 import { likeProductAsync, unLikeProductAsync } from 'src/stores/products/actions'
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+
+// ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TCardProduct = {

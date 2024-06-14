@@ -36,6 +36,19 @@ export type TCreateOrderProduct = {
   deliveryMethod: string
 }
 
+export type TUpdateOrderProduct = {
+  shippingAddress: {
+    fullName: string
+    address: string
+    city: string
+    phone: string
+  }
+  orderItems: TOrderedProduct[]
+  isPaid: boolean
+  isDelivered: boolean
+  _id: string
+}
+
 export type TParamsGetOrderMe = {
   limit: number
   page: number

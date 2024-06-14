@@ -58,8 +58,6 @@ export default function DetailMyOrder({}: TProps) {
   const [openConfirmCancel, setOpenConfirmCancel] = useState(false)
   const [item, setItem] = useState<TItemOrderMe>({} as any)
 
-  console.log(item)
-
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
