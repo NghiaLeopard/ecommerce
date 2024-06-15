@@ -40,7 +40,9 @@ const LayoutNotApp: NextPage<TProps> = ({ children }) => {
             theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
           flexGrow: 1,
           height: '100vh',
-          overflow: 'auto'
+          width: '100vw',
+          overflowY: 'auto',
+          overflowX: 'hidden'
         }}
       >
         <Toolbar />

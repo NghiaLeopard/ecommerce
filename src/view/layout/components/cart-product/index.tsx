@@ -21,6 +21,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Components
+import NoData from 'src/components/no-data'
 import CustomIcon from '../../../../components/Icon'
 
 // ** i18n
@@ -34,10 +35,13 @@ import { formatPriceToLocal, isExpiry, toFullName } from 'src/utils'
 
 // ** Store
 import { RootState } from 'src/stores'
-import { TOrderProduct } from 'src/types/order-product'
-import { getOrderItem } from 'src/helpers/storage'
 import { updateToCart } from 'src/stores/order-product'
-import NoData from 'src/components/no-data'
+
+// ** Type
+import { TOrderProduct } from 'src/types/order-product'
+
+// ** Helper
+import { getOrderItem } from 'src/helpers/storage'
 
 interface TProps {}
 
@@ -158,7 +162,7 @@ const CartProduct: NextPage<TProps> = () => {
 
               return (
                 <MenuItem onClick={() => handleNavigationItem(item.slug)} key={item.name}>
-                  <Avatar src={item.image} style={{objectFit: 'contain'}} />
+                  <Avatar src={item.image} style={{ objectFit: 'contain' }} />
                   <Box sx={{ width: '250px' }}>
                     <Typography
                       sx={{
@@ -171,21 +175,24 @@ const CartProduct: NextPage<TProps> = () => {
                     >
                       {item.name}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      {item.discount > 0 && isExpiryDiscount && (
-                        <Typography
-                          color={theme.palette.primary.main}
-                          fontWeight='bold'
-                          sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
-                        >
-                          {`${formatPriceToLocal(item.price)} VNĐ`}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {item.discount > 0 && isExpiryDiscount && (
+                          <Typography
+                            color={theme.palette.primary.main}
+                            fontWeight='bold'
+                            sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
+                          >
+                            {`${formatPriceToLocal(item.price)} VNĐ`}
+                          </Typography>
+                        )}
+                        <Typography color={theme.palette.primary.main} fontWeight='bold'>
+                          {item.discount > 0 && isExpiryDiscount
+                            ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
+                            : `${formatPriceToLocal(item.price)} VNĐ`}
                         </Typography>
-                      )}
-                      <Typography color={theme.palette.primary.main} fontWeight='bold'>
-                        {item.discount > 0 && isExpiryDiscount
-                          ? `${formatPriceToLocal((item.price * (100 - item.discount)) / 100)} VNĐ`
-                          : `${formatPriceToLocal(item.price)} VNĐ`}
-                      </Typography>
+                      </Box>
+                      <Typography>x{item.amount}</Typography>
                     </Box>
                   </Box>
                 </MenuItem>

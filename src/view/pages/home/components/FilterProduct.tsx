@@ -25,9 +25,13 @@ type TFilterProduct = {
 }
 
 export default function FilterProduct({ onChange, valueReview, valueCities, dataCities, deleteAll }: TFilterProduct) {
+  // ** Translation
   const { t } = useTranslation()
-  const objectStar = OBJECT_STAR_PRODUCT()
+
+  // ** Theme
   const theme = useTheme()
+
+  const objectStar = OBJECT_STAR_PRODUCT()
 
   return (
     <>

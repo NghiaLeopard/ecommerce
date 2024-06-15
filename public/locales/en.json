@@ -300,6 +300,7 @@
   "Star": "Star rating",
   "Write_review": "Write a review",
   "Review_product": "Product review",
+  "Ratings": "Ratings",
   "Payment": "Payment",
   "Payment_error": "Payment error",
   "Payment_success": "Payment successful",
@@ -350,5 +351,6 @@
   "comments": "comments",
   "Product_details": "Details product",
   "Delivery_address": "Delivery address",
-  "Out_in_stock": "Out in stock"
+  "Out_in_stock": "Out in stock",
+  "Enter_content": "Enter content"
 }

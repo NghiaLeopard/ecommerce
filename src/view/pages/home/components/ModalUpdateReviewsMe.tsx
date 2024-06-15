@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Rating, Typography, useTheme } from '@mui/material'
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
+import { CustomTextArea } from 'src/components/text-area'
 import CustomModal from 'src/components/custom-modal'
-import CustomTextField from 'src/components/text-field'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -27,9 +27,10 @@ import { AppDispatch } from 'src/stores'
 import Spinner from 'src/components/spinner'
 
 // ** Services
-import { getDetailReviews } from 'src/services/reviews'
-import { CustomTextArea } from 'src/components/text-area'
-import { editReviewsAsync } from 'src/stores/reviews/actions'
+import { createReviewsAsync, editReviewsMeAsync } from 'src/stores/reviews/actions'
+
+// ** Type
+import { TReviewsProduct } from 'src/types/reviews'
 
 // ** Utils
 
@@ -38,13 +39,13 @@ type TDefaultValue = {
   content: string
 }
 
-interface TCreateEditReviews {
+interface TModalUpdateReviews {
   open: boolean
   onClose: () => void
-  idReviews: string
+  item: TReviewsProduct
 }
 
-export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditReviews) => {
+export const ModalUpdateReviews = ({ open, onClose, item }: TModalUpdateReviews) => {
   // ** Hook
   const theme = useTheme()
 
@@ -80,41 +81,26 @@ export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditRevie
 
   const handleOnSubmit = (data: TDefaultValue) => {
     dispatch(
-      editReviewsAsync({
-        reviewId: idReviews,
+      editReviewsMeAsync({
+        product: item?.product?._id,
         content: data.content,
-        star: +data.star
+        star: +data.star,
+        user: item?.user?._id,
+        reviewId: item?._id
       })
     )
-  }
 
-  const fetchDetailReviews = async (idReviews: string) => {
-    setLoading(true)
-    try {
-      const res = await getDetailReviews(idReviews)
-      const data = res.data
-      setLoading(false)
-      if (data) {
-        reset({
-          star: data?.star,
-          content: data?.content
-        })
-      }
-    } catch (error) {
-      setLoading(false)
-    }
+    onClose()
   }
 
   useEffect(() => {
-    if (!open || !idReviews) {
+    if (item) {
       reset({
-        star: '',
-        content: ''
+        star: String(item?.star),
+        content: item?.content
       })
-    } else if (idReviews) {
-      fetchDetailReviews(idReviews)
     }
-  }, [open, idReviews])
+  }, [item])
 
   return (
     <CustomModal open={open}>
@@ -128,12 +114,14 @@ export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditRevie
             padding: '30px'
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-            <Typography variant='h3'>{idReviews ? t('Edit_product_type') : t('Create_product_type')}</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
             <IconButton onClick={onClose}>
               <CustomIcon icon='typcn:delete' />
             </IconButton>
           </Box>
+          <Typography variant='h3' textAlign='center'>
+            {t('Review_product')}
+          </Typography>
 
           <form onSubmit={handleSubmit(handleOnSubmit)} autoComplete='off' noValidate>
             <Box>
@@ -141,18 +129,13 @@ export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditRevie
                 <Controller
                   control={control}
                   render={({ field: { onChange, onBlur, value, ref } }) => (
-                    <CustomTextField
-                      onChange={e => {
-                        onChange(e.target.value)
-                      }}
+                    <Rating
+                      defaultValue={0}
+                      value={+value}
+                      onChange={(e: any) => onChange(e?.target?.value)}
+                      ref={ref}
                       onBlur={onBlur}
-                      value={value}
-                      fullWidth
-                      label={t('Star')}
-                      placeholder={t('Enter_star')}
-                      inputRef={ref}
-                      error={Boolean(errors.star)}
-                      helperText={errors.star?.message}
+                      precision={0.5}
                     />
                   )}
                   name='star'
@@ -167,7 +150,7 @@ export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditRevie
                       onBlur={onBlur}
                       value={value}
                       ref={ref}
-                      placeholder='Enter_content'
+                      placeholder={t('Enter_content')}
                       error={Boolean(errors.content)}
                       helperText={errors.content?.message}
                       label={t('Content')}
@@ -180,7 +163,7 @@ export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditRevie
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {idReviews ? t('Update') : t('Create')}
+                {t('Update')}
               </Button>
             </Box>
           </form>

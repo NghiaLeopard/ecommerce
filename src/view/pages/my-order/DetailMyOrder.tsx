@@ -6,35 +6,43 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI
-import { Avatar, Box, Button, Divider, IconButton, useTheme } from '@mui/material'
+import { Avatar, Box, Button, Divider, useTheme } from '@mui/material'
 import Typography from '@mui/material/Typography'
 
 // ** Component
-import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomIcon from 'src/components/Icon'
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
+import { ModelReviewOrder } from './components/ModalReviewOrder'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Stores
 import { AppDispatch, RootState } from 'src/stores'
+import { updateToCart } from 'src/stores/order-product'
+import { cancelOrderProductMeAsync } from 'src/stores/order-product/actions'
+import { resetInitialState } from 'src/stores/reviews'
 
 // ** Types
-import { TItemOrderMe, TOrderProduct, TOrderedProduct } from 'src/types/order-product'
+import { TItemOrderMe, TOrderedProduct } from 'src/types/order-product'
 
 // ** Utils
 import { useEffect, useState } from 'react'
 import { cloneDeep, executeUpdateCard, formatPriceToLocal } from 'src/utils'
 
-// ** Store
-import { cancelOrderProductMeAsync } from 'src/stores/order-product/actions'
-import { updateToCart } from 'src/stores/order-product'
-
 // ** Helper
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
-import { CONFIG_ROUTE } from 'src/configs/route'
+
+// ** Config
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { OBJECT_ACTION_STATUS } from 'src/configs/order'
+import { CONFIG_ROUTE } from 'src/configs/route'
+
+// ** Service
 import { getDetailOrderMe } from 'src/services/order-product'
+
+// ** Other
+import toast from 'react-hot-toast'
 
 type TProps = {}
 
@@ -57,8 +65,17 @@ export default function DetailMyOrder({}: TProps) {
   // ** State
   const [openConfirmCancel, setOpenConfirmCancel] = useState(false)
   const [item, setItem] = useState<TItemOrderMe>({} as any)
+  const [openModalReview, setOpenModalReview] = useState({
+    open: false,
+    userId: '',
+    productId: ''
+  })
 
   // ** Selector
+  const { isSuccessCreate, isErrorCreate, isMessageCreate, typeError, isLoading } = useSelector(
+    (state: RootState) => state.reviews
+  )
+
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
   const arrCountInStockItems: number[] = []
@@ -67,6 +84,14 @@ export default function DetailMyOrder({}: TProps) {
 
   const handleOnCloseDeleteProducts = () => {
     setOpenConfirmCancel(false)
+  }
+
+  const handleCloseModalReview = () => {
+    setOpenModalReview({
+      open: false,
+      userId: '',
+      productId: ''
+    })
   }
 
   const handleCancelOrder = () => {
@@ -126,11 +151,37 @@ export default function DetailMyOrder({}: TProps) {
     }
   }
 
+  const handleOpenModalReview = (productId: string, userId: string) => {
+    setOpenModalReview({
+      open: true,
+      userId: userId,
+      productId: productId
+    })
+  }
+
   useEffect(() => {
     if (orderId) {
       fetchDetailOrderOfMe(orderId as string)
     }
   }, [orderId])
+
+  useEffect(() => {
+    if (isMessageCreate) {
+      if (isSuccessCreate) {
+        toast.success(t('Create_order_success'))
+        dispatch(resetInitialState())
+        handleCloseModalReview()
+      } else if (isErrorCreate) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Create_order_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorCreate, isSuccessCreate])
 
   return (
     <>
@@ -141,6 +192,14 @@ export default function DetailMyOrder({}: TProps) {
         open={openConfirmCancel}
         handleConfirm={handleCancelOrder}
       />
+
+      <ModelReviewOrder
+        open={openModalReview.open}
+        productId={openModalReview.productId}
+        userId={openModalReview.userId}
+        onClose={handleCloseModalReview}
+      />
+
       <Box mb={5} padding='20px' sx={{ background: theme.palette.background.paper, borderRadius: '15px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button onClick={() => router.back()}>
@@ -157,59 +216,73 @@ export default function DetailMyOrder({}: TProps) {
           arrCountInStockItems.push(orderOfMe.product.countInStock)
 
           return (
-            <Box key={orderOfMe.product._id} sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 3 }}>
-              <Box sx={{ border: `1px solid rgba(${theme.palette.customColors.main},0.2)` }}>
-                <Avatar src={orderOfMe.image} sx={{ width: '90px', height: '80px', objectFit: 'contain' }} />
-              </Box>
-              <Box sx={{ ml: 3 }}>
-                <Typography
-                  sx={{
-                    display: 'webkit-box',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {orderOfMe.name}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  {orderOfMe.discount > 0 ? (
-                    <Typography
-                      color={theme.palette.primary.main}
-                      fontWeight='bold'
-                      fontSize='15px'
-                      sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
-                    >
-                      {`${formatPriceToLocal(orderOfMe.price)} VNĐ`}
-                    </Typography>
-                  ) : (
-                    <Box>{''}</Box>
-                  )}
-                  <Box sx={{ display: 'flex', gap: 2, flexDirection: 'row' }}>
-                    <Typography color={theme.palette.primary.main} fontSize='15px' fontWeight='bold'>
-                      {orderOfMe.discount > 0
-                        ? `${formatPriceToLocal((orderOfMe.price * (100 - orderOfMe.discount)) / 100)} VNĐ`
-                        : `${formatPriceToLocal(orderOfMe.price)} VNĐ`}
-                    </Typography>
-                    {orderOfMe.discount > 0 && (
-                      <Box
-                        sx={{
-                          backgroundColor: 'rgba(254,238,234,1)'
-                        }}
+            <Box key={orderOfMe.product._id} sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 3 }}>
+                <Box sx={{ border: `1px solid rgba(${theme.palette.customColors.main},0.2)` }}>
+                  <Avatar src={orderOfMe.image} sx={{ width: '90px', height: '80px', objectFit: 'contain' }} />
+                </Box>
+                <Box sx={{ ml: 3 }}>
+                  <Typography
+                    sx={{
+                      display: 'webkit-box',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
+                    {orderOfMe.name}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    {orderOfMe.discount > 0 ? (
+                      <Typography
+                        color={theme.palette.primary.main}
+                        fontWeight='bold'
+                        fontSize='15px'
+                        sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
                       >
-                        <Typography
-                          sx={{
-                            fontSize: '13px',
-                            color: theme.palette.error.main,
-                            padding: '4px 8px'
-                          }}
-                        >{`-${orderOfMe.discount}%`}</Typography>
-                      </Box>
+                        {`${formatPriceToLocal(orderOfMe.price)} VNĐ`}
+                      </Typography>
+                    ) : (
+                      <Box>{''}</Box>
                     )}
+                    <Box sx={{ display: 'flex', gap: 2, flexDirection: 'row' }}>
+                      <Typography color={theme.palette.primary.main} fontSize='15px' fontWeight='bold'>
+                        {orderOfMe.discount > 0
+                          ? `${formatPriceToLocal((orderOfMe.price * (100 - orderOfMe.discount)) / 100)} VNĐ`
+                          : `${formatPriceToLocal(orderOfMe.price)} VNĐ`}
+                      </Typography>
+                      {orderOfMe.discount > 0 && (
+                        <Box
+                          sx={{
+                            backgroundColor: 'rgba(254,238,234,1)'
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: '13px',
+                              color: theme.palette.error.main,
+                              padding: '4px 8px'
+                            }}
+                          >{`-${orderOfMe.discount}%`}</Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Typography>{`x${orderOfMe.amount}`}</Typography>
                   </Box>
                 </Box>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Typography>{`x${orderOfMe.amount}`}</Typography>
-                </Box>
+              </Box>
+              <Box>
+                {OBJECT_ACTION_STATUS[item.status]?.value === '2' && (
+                  <Button
+                    variant='outlined'
+                    sx={{ height: '40px', fontWeight: '600', mt: 3 }}
+                    onClick={() => handleOpenModalReview(orderOfMe?.product?._id, user?._id)}
+                  >
+                    <CustomIcon icon='icon-park-outline:buy' style={{ marginTop: '-2px', marginRight: '3px' }} />
+                    {t('Review')}
+                  </Button>
+                )}
               </Box>
             </Box>
           )
@@ -309,7 +382,7 @@ export default function DetailMyOrder({}: TProps) {
 
         {/* Button */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
-          {item.status === 2 && (
+          {OBJECT_ACTION_STATUS[item.status]?.value !== '2' && (
             <Button
               variant='outlined'
               sx={{

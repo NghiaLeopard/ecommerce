@@ -42,7 +42,7 @@ border: ${error ? `1px solid ${theme.palette.error.main}` : `1px solid rgba(${th
 }
 
 &::placeholder {
-color: ${error && theme.palette.error.main}
+color: ${error ? theme.palette.error.main : theme.palette.grey[400]}
 }
 `
 )
@@ -51,7 +51,6 @@ export const CustomTextArea = (props: TCustomTextArea) => {
   const { label, helperText, error, placeholder, ...rest } = props
   const { t } = useTranslation()
   const theme = useTheme()
-  console.log(error)
 
   return (
     <Box sx={{ position: 'relative', mt: '30px' }}>

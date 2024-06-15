@@ -15,15 +15,17 @@ import { TProduct } from 'src/types/products'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
+import NoData from 'src/components/no-data'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
-import NoData from 'src/components/no-data'
+import CardReviewProduct from '../home/components/CardReviewProduct'
 import CardProductRelated from '../home/components/CardProductRelated'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Service
+import { getAllReviews } from 'src/services/reviews'
 import { getAllProductsRelevant, getDetailProductsPublic } from 'src/services/products'
 
 // ** Utils
@@ -40,7 +42,15 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Helper
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
+
+// ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
+
+// ** Type
+import { TReviewsProduct } from 'src/types/reviews'
+import toast from 'react-hot-toast'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { resetInitialState } from 'src/stores/reviews'
 
 type TProps = {}
 
@@ -58,6 +68,7 @@ const ProductDetail: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>({})
   const [dataProductRelated, setDataProductRelated] = useState<TProduct[]>([])
+  const [listReviewsProduct, setListReviewsProduct] = useState<TReviewsProduct[]>([])
   const [amountCart, setAmountCart] = useState(1)
 
   // ** Dispatch
@@ -68,8 +79,20 @@ const ProductDetail: NextPage<TProps> = () => {
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
+  const {
+    isLoading,
+    isErrorDelete,
+    isSuccessDelete,
+    isMessageDelete,
+    isErrorUpdate,
+    isSuccessUpdate,
+    isMessageUpdate,
+    typeError
+  } = useSelector((state: RootState) => state.reviews)
 
   const { productSlug } = router?.query
+
+  const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
 
   const fetchDetailProduct = async (slug: string) => {
     setLoading(true)
@@ -141,7 +164,24 @@ const ProductDetail: NextPage<TProps> = () => {
     })
   }
 
-  const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
+  const fetchAllReviewsProduct = async () => {
+    const params = {
+      limit: 10,
+      page: 1,
+      productId: dataDetailProduct?._id,
+      isPublic: true
+    }
+    try {
+      const res = await getAllReviews({ params: params })
+      setListReviewsProduct(res?.data?.reviews)
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    if (dataDetailProduct?._id) {
+      fetchAllReviewsProduct()
+    }
+  }, [dataDetailProduct?._id, isSuccessUpdate, isSuccessDelete])
 
   useEffect(() => {
     if (productSlug) {
@@ -155,6 +195,43 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }, [i18n.language, productSlug])
 
+  useEffect(() => {
+    if (isMessageDelete) {
+      if (isSuccessDelete) {
+        toast.success(t('Delete_reviews_product_success'))
+        dispatch(resetInitialState())
+        fetchAllReviewsProduct()
+      } else if (isErrorDelete) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Delete_reviews_product_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorUpdate, isSuccessDelete])
+
+  useEffect(() => {
+    if (isMessageUpdate) {
+      if (isSuccessUpdate) {
+        toast.success(t('Update_reviews_product_success'))
+        dispatch(resetInitialState())
+        fetchAllReviewsProduct()
+      } else if (isErrorUpdate) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Update_reviews_product_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorDelete, isSuccessUpdate])
+
+
   return (
     <>
       {loading && <Spinner />}
@@ -165,12 +242,10 @@ const ProductDetail: NextPage<TProps> = () => {
           sx={{
             padding: '20px',
             backgroundColor: theme.palette.background.paper,
-            borderRadius: '15px',
-            m: 1
+            borderRadius: '15px'
           }}
           md={12}
           xs={12}
-          spacing={5}
         >
           <Grid item xs={12} md={5}>
             <Image
@@ -209,16 +284,38 @@ const ProductDetail: NextPage<TProps> = () => {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography>
-                  {dataDetailProduct?.averageRating > 0
-                    ? `${(<b>{dataDetailProduct?.averageRating}</b>)}`
-                    : 'Chưa có đánh giá'}
-                </Typography>
-                {dataDetailProduct?.averageRating > 0 && (
-                  <Rating name='half-rating' defaultValue={2.5} precision={0.5} />
+                {dataDetailProduct?.averageRating > 0 ? (
+                  <Box sx={{ display: 'flex', alignContent: 'center', gap: 1 }}>
+                    <Typography
+                      sx={{ textDecoration: 'underline', color: theme.palette.primary.main }}
+                      fontWeight='600'
+                      fontSize='18px'
+                    >
+                      {dataDetailProduct?.averageRating}
+                    </Typography>
+                    <Rating
+                      name='half-rating'
+                      defaultValue={2.5}
+                      value={dataDetailProduct?.averageRating}
+                      precision={0.5}
+                    />
+                  </Box>
+                ) : (
+                  <Typography>Chưa có đánh giá</Typography>
                 )}
               </Box>
               <Typography>|</Typography>
+              {dataDetailProduct?.totalReviews ? (
+                <>
+                  <Typography>
+                    {dataDetailProduct?.totalReviews} {t('Ratings')}
+                  </Typography>
+
+                  <Typography>|</Typography>
+                </>
+              ) : (
+                <></>
+              )}
               <Typography>
                 {t('Sold_product')} {dataDetailProduct?.sold} {t('Product')}
               </Typography>
@@ -327,20 +424,9 @@ const ProductDetail: NextPage<TProps> = () => {
       </Grid>
 
       <Grid container mt={{ md: 5, xs: 0 }} width='100%'>
-        <Grid
-          container
-          item
-          md={9}
-          xs={12}
-          sx={{ background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5 }}
-        >
-          <Box sx={{ width: '100%', height: '100%' }}>
-            <Box
-              sx={{
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: '15px'
-              }}
-            >
+        <Grid container item md={9} xs={12}>
+          <Box>
+            <Box sx={{ width: '100%', background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5 }}>
               <Box
                 sx={{
                   backgroundColor: theme.palette.customColors.bodyBg,
@@ -356,11 +442,48 @@ const ProductDetail: NextPage<TProps> = () => {
                 style={{ marginTop: '10px' }}
               ></div>
             </Box>
+
+            {listReviewsProduct.length > 0 && (
+              <Box
+                sx={{
+                  width: '100%',
+                  background: theme.palette.background.paper,
+                  borderRadius: '15px',
+                  px: 4,
+                  py: 5,
+                  mt: 5
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.customColors.bodyBg,
+                    width: '100%',
+                    padding: 2,
+                    borderRadius: '10px'
+                  }}
+                >
+                  {t('Review')}
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 8,
+                    justifyContent: 'flex-start',
+                    flexDirection: { md: 'row', xs: 'column' }
+                  }}
+                >
+                  {listReviewsProduct?.map((item: TReviewsProduct) => {
+                    return <CardReviewProduct key={item._id} item={item} />
+                  })}
+                </Box>
+              </Box>
+            )}
           </Box>
         </Grid>
 
         <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
-          <Box
+          <Grid
+            item
             sx={{
               height: '100%',
               width: '100%',
@@ -369,13 +492,13 @@ const ProductDetail: NextPage<TProps> = () => {
               px: 4,
               py: 5
             }}
+            md={12}
             marginLeft={{ md: 5, xs: 0 }}
           >
             <Box>
               <Box
                 sx={{
                   backgroundColor: theme.palette.customColors.bodyBg,
-                  width: '100%',
                   padding: 2,
                   borderRadius: '10px'
                 }}
@@ -384,7 +507,7 @@ const ProductDetail: NextPage<TProps> = () => {
               </Box>
 
               {dataProductRelated.length > 0 ? (
-                dataProductRelated.map((item: TProduct) => {
+                dataProductRelated.map((item: TProduct, index) => {
                   return <CardProductRelated item={item} key={item?._id} />
                 })
               ) : (
@@ -393,7 +516,7 @@ const ProductDetail: NextPage<TProps> = () => {
                 </Box>
               )}
             </Box>
-          </Box>
+          </Grid>
         </Grid>
       </Grid>
     </>
