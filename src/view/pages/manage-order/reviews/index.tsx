@@ -86,9 +86,9 @@ const ReviewsPage: NextPage<TProps> = () => {
   // ** use selector
   const {
     reviews,
-    isErrorCreateEdit,
-    isMessageCreateEdit,
-    isSuccessCreateEdit,
+    isErrorUpdate,
+    isMessageUpdate,
+    isSuccessUpdate,
     isLoading,
     isErrorDelete,
     isMessageDelete,
@@ -174,13 +174,13 @@ const ReviewsPage: NextPage<TProps> = () => {
   }, [sortBy, search, page, pageSize, starSelected])
 
   useEffect(() => {
-    if (isMessageCreateEdit) {
-      if (isSuccessCreateEdit) {
+    if (isMessageUpdate) {
+      if (isSuccessUpdate) {
         toast.success(t('Update_reviews_success'))
         handleCloseModal()
         getListReviews()
         dispatch(resetInitialState())
-      } else if (isErrorCreateEdit) {
+      } else if (isErrorUpdate) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
           toast.error(t(`${errorConfig}`))
@@ -190,7 +190,7 @@ const ReviewsPage: NextPage<TProps> = () => {
         dispatch(resetInitialState())
       }
     }
-  }, [isErrorCreateEdit, isSuccessCreateEdit])
+  }, [isErrorUpdate, isSuccessUpdate])
 
   useEffect(() => {
     if (isMessageDelete) {

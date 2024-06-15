@@ -368,6 +368,7 @@
   "Marked_notification_failed": "Đánh dấu thông báo thất bại",
   "Marked_notification_success": "Đánh dấu thông báo thành công",
   "Unread": "Chưa đọc",
+  "Ratings": "Xếp hạng",
   "Read": "Đã đọc",
   "Payment_vn_pay_success": "Thanh toán VNPay thành công",
   "Payment_vn_pay_failed": "Thanh toán VNPay thất bại",
@@ -375,5 +376,6 @@
   "comments": "bình luận",
   "Product_details": "Chi tiết sản phẩm",
   "Delivery_address": "Địa chỉ giao hàng",
-  "Out_in_stock": "Hết hàng"
+  "Out_in_stock": "Hết hàng",
+  "Enter_content": "Nhập bình luận"
 }

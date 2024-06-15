@@ -133,7 +133,6 @@ export const UpdateOrderProduct = ({ open, onClose, orderId }: TUpdateOrderProdu
       const res = await getOrderProductsDetail(orderId)
       setLoading(false)
       setOrderDetail(res.data)
-      console.log(res.data)
       if (res.data) {
         reset({
           fullName: res?.data?.shippingAddress?.fullName,

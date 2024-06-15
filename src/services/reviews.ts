@@ -7,6 +7,7 @@ import {
   TParamsCreateReviews,
   TParamsDeleteManyReviews,
   TParamsEditReviews,
+  TParamsEditReviewsMe,
   TParamsGetReviews
 } from 'src/types/reviews'
 
@@ -32,6 +33,16 @@ export const getDetailReviews = async (idReviews: string) => {
   }
 }
 
+export const createReviews = async (data: TParamsCreateReviews) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}`, data)
+
+    return res.data
+  } catch (error: any) {
+    return error
+  }
+}
+
 export const editReviews = async (data: TParamsEditReviews) => {
   const { reviewId, ...rests } = data
   try {
@@ -43,19 +54,30 @@ export const editReviews = async (data: TParamsEditReviews) => {
   }
 }
 
-export const createReviews = async (data: TParamsCreateReviews) => {
+export const deleteReviews = async (idReviews: string) => {
   try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}`, data)
+    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}/${idReviews}`)
 
     return res.data
-  } catch (error: any) {
+  } catch (error) {
     return error
   }
 }
 
-export const deleteReviews = async (idReviews: string) => {
+export const editReviewsMe = async (data: TParamsEditReviewsMe) => {
+  const { reviewId, ...rests } = data
   try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}/${idReviews}`)
+    const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}/me/${data.reviewId}`, rests)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const deleteReviewsMe = async (idReviews: string) => {
+  try {
+    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}/me/${idReviews}`)
 
     return res.data
   } catch (error) {

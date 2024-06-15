@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 
 // ** MUI
-import { Box, useTheme } from '@mui/material'
+import { Box, Rating, useTheme } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -46,8 +46,8 @@ export default function CardProductRelated({ item }: TCardProduct) {
   }, [item])
 
   return (
-    <Card sx={{ maxWidth: '400px', mt: '15px' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='Image' />
+    <Card sx={{ maxWidth: '100%', mt: '15px' }}>
+      <CardMedia component='img' height='194' width='100%' image={item.image} alt='Image' />
       <CardContent sx={{ padding: '15px 15px !important' }}>
         <Typography
           variant='h4'
@@ -57,6 +57,7 @@ export default function CardProductRelated({ item }: TCardProduct) {
             cursor: 'pointer',
             display: '-webkit-box',
             overflow: 'hidden',
+            width: '100%',
             textOverflow: 'ellipsis',
             WebkitLineClamp: '2',
             WebkitBoxOrient: 'vertical',
@@ -92,10 +93,17 @@ export default function CardProductRelated({ item }: TCardProduct) {
           {item.countInStock > 0 ? `Còn ${item.countInStock} sản phẩm trong kho` : 'Sản phẩm đã hết hàng'}
         </Typography>
         {item?.location?.id && <Typography>{item?.location?.name}</Typography>}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: '-8px' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography>{item.averageRating > 0 ? `${(<b>{item.averageRating}</b>)}` : 'Chưa có đánh giá'}</Typography>
-            {item.averageRating > 0 && <CustomIcon icon='emojione:star'></CustomIcon>}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: '-4px' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            {item?.averageRating > 0 ? (
+              <Rating name='half-rating' defaultValue={2.5} value={item?.averageRating} precision={0.5} />
+            ) : (
+              <Typography>Chưa có đánh giá</Typography>
+            )}
+            <Typography>|</Typography>
+            <Typography>
+              {t('Sold_product')} {item?.sold} {t('Product')}
+            </Typography>
           </Box>
 
           <CardActions sx={{ padding: '0' }}>

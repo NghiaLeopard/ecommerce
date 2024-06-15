@@ -130,7 +130,16 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
         handleConfirm={handleCancelOrder}
       />
       <Box mb={5} padding='20px' sx={{ background: theme.palette.background.paper, borderRadius: '15px' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
+          {OBJECT_ACTION_STATUS[item.status].value === '2' && (
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <CustomIcon icon='hugeicons:truck-delivery'></CustomIcon>
+              <Typography color={theme.palette.success.main} fontSize='17px' fontWeight='700'>
+                {t('Order_has_been_delivery')}
+              </Typography>
+            </Box>
+          )}
+          <span>|</span>
           <Typography fontSize='17px' color={theme.palette.primary.main} fontWeight='600' textTransform='uppercase'>
             {t(`${OBJECT_ACTION_STATUS[item?.status]?.label}`)}
           </Typography>
@@ -225,6 +234,7 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
                 {t('Cancel_order')}
               </Button>
             )}
+
             <Button
               variant='outlined'
               sx={{ height: '40px', fontWeight: '600', mt: 3 }}

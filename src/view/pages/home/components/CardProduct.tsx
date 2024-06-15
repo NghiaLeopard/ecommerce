@@ -121,6 +121,8 @@ export default function CardProduct({ item }: TCardProduct) {
     }
   }
 
+  console.log(item)
+
   return (
     <Card sx={{ maxWidth: '450px' }}>
       <CardMedia component='img' height='194' image={item.image} alt='Image' style={{ objectFit: 'contain' }} />
@@ -168,21 +170,19 @@ export default function CardProduct({ item }: TCardProduct) {
           {item.countInStock > 0 ? `Còn ${item.countInStock} sản phẩm trong kho` : 'Sản phẩm đã hết hàng'}
         </Typography>
         {item?.location?.id && <Typography>{item?.location?.name}</Typography>}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: '-8px' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: '-4px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography>
-                  {item?.averageRating > 0 ? `${(<b>{item?.averageRating}</b>)}` : 'Chưa có đánh giá'}
-                </Typography>
-                {item?.averageRating > 0 && <Rating name='half-rating' defaultValue={2.5} precision={0.5} />}
-              </Box>
+              {item?.averageRating > 0 ? (
+                <Rating name='half-rating' defaultValue={2.5} value={item?.averageRating} precision={0.5} />
+              ) : (
+                <Typography>Chưa có đánh giá</Typography>
+              )}
               <Typography>|</Typography>
               <Typography>
                 {t('Sold_product')} {item?.sold} {t('Product')}
               </Typography>
             </Box>
-            {item.averageRating > 0 && <CustomIcon icon='emojione:star'></CustomIcon>}
           </Box>
 
           <CardActions sx={{ padding: '0' }} onClick={() => handleClickLike(item, item._id)}>
