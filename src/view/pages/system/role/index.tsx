@@ -44,6 +44,7 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
+import CustomIcon from 'src/components/Icon'
 
 type TProps = {}
 
@@ -74,6 +75,7 @@ const RoleListPage: NextPage<TProps> = () => {
   })
 
   const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+  console.log(UPDATE)
 
   // ** use selector
   const {
@@ -124,7 +126,7 @@ const RoleListPage: NextPage<TProps> = () => {
 
         return (
           <>
-            {!row?.permissions?.some((per: string) => ['BASIC.PUBLIC', 'ADMIN.GRANTED'].includes(per)) && (
+            {!row?.permissions?.some((per: string) => ['BASIC.PUBLIC', 'ADMIN.GRANTED'].includes(per)) ? (
               <Box>
                 {UPDATE && (
                   <CustomGridEdit
@@ -147,6 +149,8 @@ const RoleListPage: NextPage<TProps> = () => {
                   />
                 )}
               </Box>
+            ) : (
+              <CustomIcon icon='material-symbols:lock-outline' />
             )}
           </>
         )

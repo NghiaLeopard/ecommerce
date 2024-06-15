@@ -1,8 +1,8 @@
-// ** React Imports
-import { ReactNode, createContext, useEffect, useState } from 'react'
-
-// ** Next Import
+// ** Next
 import { useRouter } from 'next/router'
+
+// ** React
+import { ReactNode, createContext, useEffect, useState } from 'react'
 
 // ** Types
 import { AuthValuesType, ErrCallbackType, LoginParams, UserDataType } from './types'
@@ -11,6 +11,7 @@ import { AuthValuesType, ErrCallbackType, LoginParams, UserDataType } from './ty
 import { loginAuth, logoutAuth } from 'src/services/auth'
 
 // ** Configs
+import { LIST_ROUTE_PUBLIC } from 'src/configs/auth'
 import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Helpers
@@ -26,9 +27,12 @@ import {
 // ** Axios
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+
+// ** Helper
 import instanceAxios from 'src/helpers/axios'
+
+// ** Store
 import { updateToCart } from 'src/stores/order-product'
-import { LIST_ROUTE_PUBLIC } from 'src/configs/auth'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {

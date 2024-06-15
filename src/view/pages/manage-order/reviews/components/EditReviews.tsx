@@ -38,13 +38,13 @@ type TDefaultValue = {
   content: string
 }
 
-interface TCreateEditReviews {
+interface TEditReviews {
   open: boolean
   onClose: () => void
   idReviews: string
 }
 
-export const CreateEditReviews = ({ open, onClose, idReviews }: TCreateEditReviews) => {
+export const EditReviews = ({ open, onClose, idReviews }: TEditReviews) => {
   // ** Hook
   const theme = useTheme()
 

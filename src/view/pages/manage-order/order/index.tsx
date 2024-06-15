@@ -14,41 +14,41 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
+import { resetInitialState } from 'src/stores/order-product'
+import { deleteOrderProductsAsync, getAllOrderCMSAsync } from 'src/stores/order-product/actions'
+import { TOrderedProduct } from 'src/types/order-product'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import CustomPagination from 'src/components/custom-pagination'
 import { CustomSelect } from 'src/components/custom-select'
-import CustomGridCreate from 'src/components/grid-create'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
+import { UpdateOrderProduct } from './components/UpdateOrderProduct'
 import Spinner from 'src/components/spinner'
-import TableHeader from 'src/components/table-header'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import i18n from 'src/configs/i18n'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { OBJECT_ACTION_STATUS } from 'src/configs/order'
 
+import toast from 'react-hot-toast'
 // ** Toast
 
 // ** utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
-// ** Configs
-import i18n from 'src/configs/i18n'
-
 // ** Service
-import { OBJECT_STATUS_USER } from 'src/configs/user'
 import { getAllCity } from 'src/services/city'
-import { deleteOrderProductsAsync, getAllOrderCMSAsync } from 'src/stores/order-product/actions'
-import { TItemOrderCMS, TOrderedProduct } from 'src/types/order-product'
+
+// ** MUI
 import { Avatar } from '@mui/material'
-import { OBJECT_ACTION_STATUS } from 'src/configs/order'
-import { resetInitialState } from 'src/stores/order-product'
-import toast from 'react-hot-toast'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
-import { UpdateOrderProduct } from './components/UpdateOrderProduct'
+
+// ** Hooks
+import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}
 
@@ -93,6 +93,8 @@ const OrderPage: NextPage<TProps> = () => {
 
   // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
+
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.ORDER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
   //** use selector
   const {
@@ -298,22 +300,26 @@ const OrderPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenEdit({
-                  open: true,
-                  orderId: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteUser({
-                  open: true,
-                  orderId: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenEdit({
+                    open: true,
+                    orderId: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeleteUser({
+                    open: true,
+                    orderId: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }

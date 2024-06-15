@@ -82,7 +82,12 @@ const PaymentPage: NextPage<TProps> = () => {
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.PaymentType', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.PAYMENT_TYPE', [
+    'CREATE',
+    'UPDATE',
+    'DELETE',
+    'VIEW'
+  ])
 
   const objectPaymentType: any = PAYMENT_TYPES()
 
@@ -273,22 +278,26 @@ const PaymentPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idPaymentType: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeletePaymentType({
-                  open: true,
-                  idPaymentType: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idPaymentType: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeletePaymentType({
+                    open: true,
+                    idPaymentType: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -354,14 +363,16 @@ const PaymentPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>
-              <CustomGridCreate
-                onClick={() =>
-                  setOpenCreateEdit(x => ({
-                    open: true,
-                    idPaymentType: ''
-                  }))
-                }
-              />
+              {CREATE && (
+                <CustomGridCreate
+                  onClick={() =>
+                    setOpenCreateEdit(x => ({
+                      open: true,
+                      idPaymentType: ''
+                    }))
+                  }
+                />
+              )}
             </Box>
           )}
           {checkboxRow.length > 0 && (

@@ -82,7 +82,7 @@ const ProductTypesPage: NextPage<TProps> = () => {
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.ProductTypes', [
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_PRODUCT.PRODUCT_TYPE', [
     'CREATE',
     'UPDATE',
     'DELETE',
@@ -276,22 +276,26 @@ const ProductTypesPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idProductTypes: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteProductTypes({
-                  open: true,
-                  idProductTypes: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idProductTypes: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeleteProductTypes({
+                    open: true,
+                    idProductTypes: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -357,14 +361,16 @@ const ProductTypesPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>
-              <CustomGridCreate
-                onClick={() =>
-                  setOpenCreateEdit(x => ({
-                    open: true,
-                    idProductTypes: ''
-                  }))
-                }
-              />
+              {CREATE && (
+                <CustomGridCreate
+                  onClick={() =>
+                    setOpenCreateEdit(x => ({
+                      open: true,
+                      idProductTypes: ''
+                    }))
+                  }
+                />
+              )}
             </Box>
           )}
           {checkboxRow.length > 0 && (

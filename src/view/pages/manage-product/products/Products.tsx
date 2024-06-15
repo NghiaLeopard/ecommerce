@@ -99,7 +99,12 @@ const ProductsPage: NextPage<TProps> = () => {
   const dispatch: AppDispatch = useDispatch()
 
   // ** Permissions
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.Products', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_PRODUCT.PRODUCT', [
+    'CREATE',
+    'UPDATE',
+    'DELETE',
+    'VIEW'
+  ])
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
@@ -349,22 +354,26 @@ const ProductsPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idProducts: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteProducts({
-                  open: true,
-                  idProducts: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idProducts: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeleteProducts({
+                    open: true,
+                    idProducts: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -428,15 +437,17 @@ const ProductsPage: NextPage<TProps> = () => {
               }}
             >
               <Box sx={{ width: '200px', mt: 1 }}>
-                <CustomSelect
-                  value={typeSelected}
-                  options={allProductTypes}
-                  fullWidth
-                  onChange={(data: any) => {
-                    setTypeSelected(data)
-                  }}
-                  placeholder={t('Type')}
-                />
+                {CREATE && (
+                  <CustomSelect
+                    value={typeSelected}
+                    options={allProductTypes}
+                    fullWidth
+                    onChange={(data: any) => {
+                      setTypeSelected(data)
+                    }}
+                    placeholder={t('Type')}
+                  />
+                )}
               </Box>
               <Box sx={{ width: '200px', mt: 1 }}>
                 <CustomSelect
