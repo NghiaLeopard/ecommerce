@@ -35,8 +35,8 @@ import i18n from 'src/configs/i18n'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { OBJECT_ACTION_STATUS } from 'src/configs/order'
 
-import toast from 'react-hot-toast'
 // ** Toast
+import toast from 'react-hot-toast'
 
 // ** utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
