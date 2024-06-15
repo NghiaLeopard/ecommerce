@@ -81,11 +81,11 @@ const CityPage: NextPage<TProps> = () => {
 
   // ** use selector
   const {
+    isLoading,
     city,
     isErrorCreateEdit,
     isMessageCreateEdit,
     isSuccessCreateEdit,
-    isLoading,
     isErrorDelete,
     isMessageDelete,
     isSuccessDelete,
@@ -248,22 +248,26 @@ const CityPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idCity: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteCity({
-                  open: true,
-                  idCity: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idCity: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeleteCity({
+                    open: true,
+                    idCity: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -325,14 +329,16 @@ const CityPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>
-              <CustomGridCreate
-                onClick={() =>
-                  setOpenCreateEdit(x => ({
-                    open: true,
-                    idCity: ''
-                  }))
-                }
-              />
+              {CREATE && (
+                <CustomGridCreate
+                  onClick={() =>
+                    setOpenCreateEdit(x => ({
+                      open: true,
+                      idCity: ''
+                    }))
+                  }
+                />
+              )}
             </Box>
           )}
           {checkboxRow.length > 0 && (

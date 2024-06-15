@@ -47,6 +47,7 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 // ** Service
 import { getAllRoles } from 'src/services/role'
 import { getAllCity } from 'src/services/city'
+import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}
 
@@ -100,6 +101,8 @@ const UserPage: NextPage<TProps> = () => {
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   const OBJECT_STATUS = OBJECT_STATUS_USER()
+
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.USER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
   // ** use selector
   const {
@@ -333,23 +336,27 @@ const UserPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idUsers: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              disabled={disabledDeleteAdmin}
-              onClick={() => {
-                setOpenDeleteUser({
-                  open: true,
-                  idUsers: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idUsers: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                disabled={disabledDeleteAdmin}
+                onClick={() => {
+                  setOpenDeleteUser({
+                    open: true,
+                    idUsers: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -454,16 +461,18 @@ const UserPage: NextPage<TProps> = () => {
                   />
                 </Box>
                 <Box sx={{ width: '200px', mt: 1 }}>
-                  <CustomSelect
-                    value={citySelected}
-                    options={allCity}
-                    fullWidth
-                    multiple
-                    onChange={(data: any) => {
-                      setCitySelected(data)
-                    }}
-                    placeholder={t('City')}
-                  />
+                  {CREATE && (
+                    <CustomSelect
+                      value={citySelected}
+                      options={allCity}
+                      fullWidth
+                      multiple
+                      onChange={(data: any) => {
+                        setCitySelected(data)
+                      }}
+                      placeholder={t('City')}
+                    />
+                  )}
                 </Box>
                 <Box sx={{ width: '200px', mt: 1 }}>
                   <CustomSelect

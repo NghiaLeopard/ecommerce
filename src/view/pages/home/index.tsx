@@ -91,7 +91,7 @@ const HomePage: NextPage<TProps> = () => {
       limit: 10,
       page: 1,
       search: search,
-      minStar: Number(review),
+      maxStar: +review,
       productType: tabSelected,
       productLocation: city
     }

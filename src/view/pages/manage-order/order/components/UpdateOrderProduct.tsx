@@ -108,7 +108,6 @@ export const UpdateOrderProduct = ({ open, onClose, orderId }: TUpdateOrderProdu
   })
 
   const handleOnSubmit = (data: TDefaultValue) => {
-    console.log(data)
     if (data) {
       dispatch(
         UpdateOrderProductsAsync({

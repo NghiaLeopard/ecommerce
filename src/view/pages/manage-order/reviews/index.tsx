@@ -15,37 +15,34 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/reviews'
-import { deleteReviewsAsync, deleteMultipleReviewsAsync, getAllReviewsAsync } from 'src/stores/reviews/actions'
+import { deleteMultipleReviewsAsync, deleteReviewsAsync, getAllReviewsAsync } from 'src/stores/reviews/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import CustomPagination from 'src/components/custom-pagination'
-import CustomGridCreate from 'src/components/grid-create'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
-import { CreateEditReviews } from './components/CreateEditReviews'
+import { CustomSelect } from 'src/components/custom-select'
+import { EditReviews } from './components/EditReviews'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
 // ** Toast
 import toast from 'react-hot-toast'
-
-// ** utils
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { formatDate, toFullName } from 'src/utils'
-
-// ** Configs
+import { OBJECT_STAR_REVIEW } from 'src/configs/reviews'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
-// ** Hooks
+// ** utils
+import { toFullName } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
+
+// ** Hook
 import { usePermissions } from 'src/hooks/usePermissions'
-import { CustomSelect } from 'src/components/custom-select'
-import { OBJECT_STAR_REVIEW } from 'src/configs/reviews'
 
 type TProps = {}
 
@@ -81,7 +78,7 @@ const ReviewsPage: NextPage<TProps> = () => {
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.Reviews', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.REVIEW', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
   // ** use selector
   const {
@@ -284,22 +281,26 @@ const ReviewsPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idReviews: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteReviews({
-                  open: true,
-                  idReviews: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idReviews: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeleteReviews({
+                    open: true,
+                    idReviews: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -310,7 +311,7 @@ const ReviewsPage: NextPage<TProps> = () => {
     <>
       {(isLoading || loading) && <Spinner />}
 
-      <CreateEditReviews open={openCreateEdit.open} onClose={handleCloseModal} idReviews={openCreateEdit.idReviews} />
+      <EditReviews open={openCreateEdit.open} onClose={handleCloseModal} idReviews={openCreateEdit.idReviews} />
 
       <CustomConfirmDialog
         title={t('Title_delete_reviews')}

@@ -82,7 +82,7 @@ const DeliveryPage: NextPage<TProps> = () => {
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.DeliveryType', [
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SETTING.DELIVERY_TYPE', [
     'CREATE',
     'UPDATE',
     'DELETE',
@@ -276,22 +276,26 @@ const DeliveryPage: NextPage<TProps> = () => {
 
         return (
           <>
-            <CustomGridEdit
-              onClick={() =>
-                setOpenCreateEdit({
-                  open: true,
-                  idDeliveryType: row?._id
-                })
-              }
-            />
-            <CustomGridDelete
-              onClick={() => {
-                setOpenDeleteDeliveryType({
-                  open: true,
-                  idDeliveryType: row?._id
-                })
-              }}
-            />
+            {UPDATE && (
+              <CustomGridEdit
+                onClick={() =>
+                  setOpenCreateEdit({
+                    open: true,
+                    idDeliveryType: row?._id
+                  })
+                }
+              />
+            )}
+            {DELETE && (
+              <CustomGridDelete
+                onClick={() => {
+                  setOpenDeleteDeliveryType({
+                    open: true,
+                    idDeliveryType: row?._id
+                  })
+                }}
+              />
+            )}
           </>
         )
       }
@@ -357,14 +361,16 @@ const DeliveryPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>
-              <CustomGridCreate
-                onClick={() =>
-                  setOpenCreateEdit(x => ({
-                    open: true,
-                    idDeliveryType: ''
-                  }))
-                }
-              />
+              {CREATE && (
+                <CustomGridCreate
+                  onClick={() =>
+                    setOpenCreateEdit(x => ({
+                      open: true,
+                      idDeliveryType: ''
+                    }))
+                  }
+                />
+              )}
             </Box>
           )}
           {checkboxRow.length > 0 && (

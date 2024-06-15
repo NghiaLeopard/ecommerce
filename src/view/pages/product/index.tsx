@@ -187,7 +187,7 @@ const ProductDetail: NextPage<TProps> = () => {
     if (productSlug) {
       fetchDetailProduct(productSlug as string)
     }
-  }, [i18n.language, productSlug])
+  }, [i18n.language, productSlug, isSuccessUpdate, isSuccessDelete])
 
   useEffect(() => {
     if (productSlug) {
@@ -230,7 +230,6 @@ const ProductDetail: NextPage<TProps> = () => {
       }
     }
   }, [isErrorDelete, isSuccessUpdate])
-
 
   return (
     <>
