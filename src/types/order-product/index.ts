@@ -79,6 +79,7 @@ export type TItemOrderMe = {
     phone: number
   }
   _id: string
+  paidAt: string
   orderItems: TOrderedProduct[]
   totalPrice: number
   itemsPrice: number
@@ -92,6 +93,11 @@ export type TItemOrderMe = {
   isPaid: number
   isDelivered: number
   status: number
+  paymentMethod: {
+    name: string
+    type: string
+    _id: string
+  }
 }
 
 export type TItemOrderCMS = {

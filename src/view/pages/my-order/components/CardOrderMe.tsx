@@ -34,6 +34,8 @@ import { updateToCart } from 'src/stores/order-product'
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 import { CONFIG_ROUTE } from 'src/configs/route'
 import { OBJECT_ACTION_STATUS } from 'src/configs/order'
+import { createUrlPaymentVNPay } from 'src/services/payment'
+import { PAYMENT_TYPES } from 'src/configs/payment'
 
 type TProps = {
   item: TItemOrderMe
@@ -45,7 +47,7 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
   const theme = useTheme()
 
   // ** Translation
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   // ** Auth
   const { user } = useAuth()
@@ -58,11 +60,37 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
 
   // ** State
   const [openConfirmCancel, setOpenConfirmCancel] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
 
+  const PAYMENT_TYPE: any = PAYMENT_TYPES()
+
   const arrCountInStockItems: number[] = []
+
+  console.log(item)
+
+  const handleClickPayment = async (type: string) => {
+    try {
+      switch (type) {
+        case 'VN_PAYMENT': {
+          const res = await createUrlPaymentVNPay({
+            totalPrice: item?.totalPrice,
+            language: i18n.language,
+            orderId: item?._id
+          })
+
+          window.open(res?.data, '_blank')
+
+          break
+        }
+
+        default:
+          break
+      }
+    } catch (error) {}
+  }
 
   const handleOnCloseDeleteProducts = () => {
     setOpenConfirmCancel(false)
@@ -120,6 +148,8 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
     router.push(`${CONFIG_ROUTE.MY_ORDER}/${item._id}`)
   }
 
+  console.log(item)
+
   return (
     <>
       <CustomConfirmDialog
@@ -137,9 +167,30 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
               <Typography color={theme.palette.success.main} fontSize='17px' fontWeight='700'>
                 {t('Order_has_been_delivery')}
               </Typography>
+              <span>|</span>
             </Box>
           )}
-          <span>|</span>
+
+          {[1].includes(tabSelected) && (
+            <>
+              <CustomIcon icon='icon-park:delivery' />
+
+              {!!item?.isDelivered ? (
+                <span>{t('Order_has_been_delivery')}</span>
+              ) : (
+                <span>{t('Order_has_not_been_delivery')}</span>
+              )}
+              <span>|</span>
+            </>
+          )}
+
+          {[0].includes(tabSelected) && (
+            <>
+              <CustomIcon icon='mdi:payment-clock' />
+              {!!item?.isPaid ? <span>{t('Order_has_been_paid')}</span> : <span>{t('Order_has_not_been_paid')}</span>}
+              <span>|</span>
+            </>
+          )}
           <Typography fontSize='17px' color={theme.palette.primary.main} fontWeight='600' textTransform='uppercase'>
             {t(`${OBJECT_ACTION_STATUS[item?.status]?.label}`)}
           </Typography>
@@ -235,6 +286,17 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
               </Button>
             )}
 
+            {[0].includes(tabSelected) && PAYMENT_TYPE[item?.paymentMethod?.type].value === 'VN_PAYMENT' && (
+              <Button
+                variant='outlined'
+                sx={{ height: '40px', fontWeight: '600', mt: 3 }}
+                onClick={() => handleClickPayment(item?.paymentMethod?.type)}
+                disabled={arrCountInStockItems.some(item => item === 0)}
+              >
+                <CustomIcon icon='ic:round-payment' style={{ marginTop: '-2px', marginRight: '3px' }} />
+                {t('Payment')}
+              </Button>
+            )}
             <Button
               variant='outlined'
               sx={{ height: '40px', fontWeight: '600', mt: 3 }}

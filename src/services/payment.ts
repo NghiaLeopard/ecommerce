@@ -25,7 +25,7 @@ export const createUrlPaymentVNPay = async (data: TCreateVnPay) => {
 
 export const getVNPayIpnPaymentVNPay = async (data: { params: TGetVnPayIpn }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.SETTINGS.PAYMENT_TYPE.INDEX}/vnpay_ipn/`, data)
+    const res = await instanceAxios.get(`${API_ENDPOINT.PAYMENT.VNPAY.INDEX}/vnpay_ipn/`, data)
 
     return res.data
   } catch (error) {

@@ -19,6 +19,8 @@ import { AppDispatch } from 'src/stores'
 // ** utils
 import { useRouter } from 'next/router'
 import CustomIcon from 'src/components/Icon'
+import { useEffect, useState } from 'react'
+import { getVNPayIpnPaymentVNPay } from 'src/services/payment'
 
 type TProps = {}
 
@@ -35,6 +37,35 @@ const PaymentPage: NextPage<TProps> = () => {
   // ** Router
   const router = useRouter()
 
+  // ** State
+  const [rspCode, setRspCode] = useState('')
+
+  const { vnp_SecureHash, vnp_TxnRef, vnp_ResponseCode, ...rests } = router.query
+
+  const fetchVnPayIpn = async (params: any) => {
+    try {
+      const res = await getVNPayIpnPaymentVNPay({
+        params: {
+          ...params
+        }
+      })
+
+      setRspCode(res?.data?.RspCode)
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    if (vnp_SecureHash && vnp_TxnRef && vnp_ResponseCode) {
+      fetchVnPayIpn({
+        vnp_SecureHash,
+        vnp_TxnRef,
+        vnp_ResponseCode,
+        orderId: vnp_TxnRef,
+        ...rests
+      })
+    }
+  }, [vnp_SecureHash, vnp_TxnRef, vnp_ResponseCode])
+
   return (
     <Box
       sx={{
@@ -46,28 +77,30 @@ const PaymentPage: NextPage<TProps> = () => {
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
-        columnGap: 2
+        justifyContent: 'center'
       }}
     >
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 3 }}>
-          <CustomIcon icon='carbon:warning' fontSize='130px' color={theme.palette.warning.main} />
+      {rspCode === '00' ? (
+        <Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 3 }}>
+            <CustomIcon icon='ep:success-filled' fontSize='130px' color={theme.palette.success.main} />
+          </Box>
+          <Typography variant='h3' textAlign='center'>
+            {t(`Payment_success`)}
+          </Typography>
         </Box>
-        <Typography variant='h3' textAlign='center'>
-          {t(`Payment_error`)}
-        </Typography>
-      </Box>
-
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 3 }}>
-          <CustomIcon icon='ep:success-filled' fontSize='130px' color={theme.palette.success.main} />
+      ) : (
+        <Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 3 }}>
+            <CustomIcon icon='carbon:warning' fontSize='130px' color={theme.palette.warning.main} />
+          </Box>
+          <Typography variant='h3' textAlign='center'>
+            {t(`Payment_error`)}
+          </Typography>
         </Box>
-        <Typography variant='h3' textAlign='center'>
-          {t(`Payment_success`)}
-        </Typography>
-      </Box>
+      )}
 
-      <Button variant='contained' onClick={() => router.push('/')}>
+      <Button variant='contained' onClick={() => router.push('/')} sx={{marginTop: '10px'}}>
         {t('Back_home')}
       </Button>
     </Box>
