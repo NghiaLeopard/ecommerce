@@ -81,7 +81,7 @@ export default function FilterProduct({ onChange, valueReview, valueCities, data
             }}
             name='radio-buttons-group'
           >
-            {dataCities.map(item => {
+            {dataCities?.map(item => {
               return (
                 <FormControlLabel
                   checked={valueCities === item.value}

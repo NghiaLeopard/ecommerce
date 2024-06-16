@@ -40,5 +40,10 @@ export const API_ENDPOINT = {
     REVIEW: {
       INDEX: `${BASE_URL}/reviews`
     }
+  },
+  PAYMENT: {
+    VNPAY: {
+      INDEX: `${BASE_URL}/vnpay`
+    }
   }
 }
