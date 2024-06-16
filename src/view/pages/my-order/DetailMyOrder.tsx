@@ -183,8 +183,6 @@ export default function DetailMyOrder({}: TProps) {
     }
   }, [isErrorCreate, isSuccessCreate])
 
-  console.log(item)
-
   return (
     <>
       <CustomConfirmDialog

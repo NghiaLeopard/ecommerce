@@ -42,9 +42,8 @@ import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState, updateToCart } from 'src/stores/order-product'
 import { createOrderProductsAsync } from 'src/stores/order-product/actions'
 
-// ** utils
-
 // ** Helper
+import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Type
 import { TOrderProduct } from 'src/types/order-product'
@@ -56,11 +55,11 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { getAllCity } from 'src/services/city'
 import { getAllDeliveryType } from 'src/services/delivery-type'
 import { getAllPaymentType } from 'src/services/payment-type'
+import { createUrlPaymentVNPay } from 'src/services/payment'
 import { WarningNotProduct } from './components/WarningNotProduct'
 
 // ** Other
 import Swal from 'sweetalert2'
-import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -179,6 +178,28 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     } catch (error) {}
   }
 
+  const handleClickPayment = async (type: string, orderId: string, totalPrice: number) => {
+    console.log(type)
+    try {
+      switch (type) {
+        case 'VN Pay': {
+          const res = await createUrlPaymentVNPay({
+            totalPrice,
+            language: i18n.language === 'vi' ? 'vn' : i18n.language,
+            orderId
+          })
+
+          window.open(res?.data, '_blank')
+
+          break
+        }
+
+        default:
+          break
+      }
+    } catch (error) {}
+  }
+
   const handleOrderProduct = () => {
     const findPaymentMethod = listDeliveryType.find(item => item.value === deliveryTypeSelected)
     const shippingPrice = findPaymentMethod ? findPaymentMethod.price : 0
@@ -199,7 +220,17 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           shippingPrice: shippingPrice,
           totalPrice: totalPrice
         })
-      )
+      ).then(res => {
+        console.log(res)
+
+        const orderPayment = listPaymentType.find(
+          (item: { value: string; label: string }) => item.value === res?.payload?.data?.paymentMethod
+        )
+
+        if (orderPayment) {
+          handleClickPayment(orderPayment?.label, res?.payload?.data?._id, res?.payload?.data?.totalPrice)
+        }
+      })
     }
   }
 
@@ -241,6 +272,9 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           text: t('Order_product_success'),
           icon: 'success',
           confirmButtonText: t('Done_order')
+        }).then(result => {
+          if (result.isConfirmed) {
+          }
         })
         const filterOrderItem = orderItem.filter(
           (item: TOrderProduct) =>

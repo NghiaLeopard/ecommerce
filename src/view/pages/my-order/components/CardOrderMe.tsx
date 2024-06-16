@@ -69,8 +69,6 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
 
   const arrCountInStockItems: number[] = []
 
-  console.log(item)
-
   const handleClickPayment = async (type: string) => {
     try {
       switch (type) {
@@ -147,8 +145,6 @@ export default function CardOrderMe({ item, tabSelected }: TProps) {
   const handleNavigationViewDetails = () => {
     router.push(`${CONFIG_ROUTE.MY_ORDER}/${item._id}`)
   }
-
-  console.log(item)
 
   return (
     <>
