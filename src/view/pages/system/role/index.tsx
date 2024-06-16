@@ -75,7 +75,6 @@ const RoleListPage: NextPage<TProps> = () => {
   })
 
   const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.ROLE', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
-  console.log(UPDATE)
 
   // ** use selector
   const {
