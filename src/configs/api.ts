@@ -43,7 +43,7 @@ export const API_ENDPOINT = {
   },
   PAYMENT: {
     VNPAY: {
-      INDEX: `${BASE_URL}/vnpay`
+      INDEX: `${BASE_URL}/payment/vnpay`
     }
   }
 }

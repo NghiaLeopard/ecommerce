@@ -28,7 +28,7 @@ import { TItemOrderMe, TOrderedProduct } from 'src/types/order-product'
 
 // ** Utils
 import { useEffect, useState } from 'react'
-import { cloneDeep, executeUpdateCard, formatPriceToLocal } from 'src/utils'
+import { cloneDeep, executeUpdateCard, formatDate, formatPriceToLocal } from 'src/utils'
 
 // ** Helper
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
@@ -183,6 +183,8 @@ export default function DetailMyOrder({}: TProps) {
     }
   }, [isErrorCreate, isSuccessCreate])
 
+  console.log(item)
+
   return (
     <>
       <CustomConfirmDialog
@@ -206,9 +208,21 @@ export default function DetailMyOrder({}: TProps) {
             <CustomIcon icon='ep:back' />
             <Typography color={theme.palette.primary.main}>Back</Typography>
           </Button>
-          <Typography fontSize='17px' color={theme.palette.primary.main} fontWeight='600' textTransform='uppercase'>
-            {t(`${OBJECT_ACTION_STATUS[item?.status]?.label}`)}
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {OBJECT_ACTION_STATUS[item.status]?.value === '2' && (
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <CustomIcon icon='hugeicons:truck-delivery'></CustomIcon>
+                <Typography color={theme.palette.success.main} fontSize='17px' fontWeight='700'>
+                  {t('Order_has_been_delivery')}
+                </Typography>
+                <span>|</span>
+                <Box>{''}</Box>
+              </Box>
+            )}
+            <Typography fontSize='17px' color={theme.palette.primary.main} fontWeight='600' textTransform='uppercase'>
+              {t(`${OBJECT_ACTION_STATUS[item?.status]?.label}`)}
+            </Typography>
+          </Box>
         </Box>
 
         <Divider />
@@ -332,6 +346,32 @@ export default function DetailMyOrder({}: TProps) {
               <Typography fontSize='18px' color={theme.palette.primary.main} width='200px'>
                 {`${item?.shippingAddress?.fullName} `}
               </Typography>
+            </Box>
+
+            {[0, 1].includes(+item?.status) && (
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 2 }}>
+                <CustomIcon icon='mdi:payment-clock' />
+                {!!item?.isPaid ? (
+                  <span style={{ color: theme.palette.success.main }}>{t('Order_has_been_paid')}:</span>
+                ) : (
+                  <span style={{ color: theme.palette.error.main }}>{t('Order_has_not_been_paid')}</span>
+                )}
+
+                <Typography fontWeight='600'>{formatDate(item?.paidAt)}</Typography>
+              </Box>
+            )}
+            <Box>
+              {[0, 1].includes(+item?.status) && (
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 2 }}>
+                  <CustomIcon icon='icon-park:delivery' />
+
+                  {!!item?.isDelivered ? (
+                    <span style={{ color: theme.palette.success.main }}>{t('Order_has_been_delivery')}</span>
+                  ) : (
+                    <span style={{ color: theme.palette.error.main }}>{t('Order_has_not_been_delivery')}</span>
+                  )}
+                </Box>
+              )}
             </Box>
           </Box>
           <Box>
