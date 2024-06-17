@@ -2,13 +2,49 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Context
-import { RegisterParamsFacebook, RegisterParamsGoogle } from 'src/contexts/types'
+import { RegisterParamsFacebook, RegisterParamsGoogle, TForgotPassword, TResetPassword } from 'src/contexts/types'
 
 // ** Service
-import { changePasswordAuth, registerAuth, registerAuthFacebook, registerAuthGoogle, updateAuthMe } from 'src/services/auth'
+import {
+  changePasswordAuth,
+  forgotPasswordAuth,
+  registerAuth,
+  registerAuthFacebook,
+  registerAuthGoogle,
+  resetPasswordAuth,
+  updateAuthMe
+} from 'src/services/auth'
 
 export const registerAuthSync = createAsyncThunk('auth/register', async (data: any) => {
   const response = await registerAuth(data)
+
+  if (response?.data) {
+    return response
+  }
+
+  return {
+    data: null,
+    message: response?.response?.data?.message,
+    typeError: response?.data?.typeError
+  }
+})
+
+export const forgotPasswordAuthSync = createAsyncThunk('auth/forgot-password', async (data: TForgotPassword) => {
+  const response = await forgotPasswordAuth(data)
+
+  if (response?.data) {
+    return response
+  }
+
+  return {
+    data: null,
+    message: response?.response?.data?.message,
+    typeError: response?.data?.typeError
+  }
+})
+
+export const resetPasswordAuthSync = createAsyncThunk('auth/reset-password', async (data: TResetPassword) => {
+  const response = await resetPasswordAuth(data)
 
   if (response?.data) {
     return response
@@ -35,19 +71,22 @@ export const registerAuthGoogleSync = createAsyncThunk('auth/register-google', a
   }
 })
 
-export const registerAuthFacebookSync = createAsyncThunk('auth/register-facebook', async (data: RegisterParamsFacebook) => {
-  const response = await registerAuthFacebook(data)
+export const registerAuthFacebookSync = createAsyncThunk(
+  'auth/register-facebook',
+  async (data: RegisterParamsFacebook) => {
+    const response = await registerAuthFacebook(data)
 
-  if (response?.data) {
-    return response
-  }
+    if (response?.data) {
+      return response
+    }
 
-  return {
-    data: null,
-    message: response?.response?.data?.message,
-    typeError: response?.data?.typeError
+    return {
+      data: null,
+      message: response?.response?.data?.message,
+      typeError: response?.data?.typeError
+    }
   }
-})
+)
 
 export const updateAuthMeSync = createAsyncThunk('auth/update-me', async (data: any) => {
   const response = await updateAuthMe(data)
