@@ -8,7 +8,7 @@ import instanceAxios from 'src/helpers/axios'
 import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Context
-import { LoginParams, RegisterParams } from 'src/contexts/types'
+import { LoginParams, LoginParamsGoogle, RegisterParams, RegisterParamsGoogle } from 'src/contexts/types'
 
 export const loginAuth = async (data: LoginParams) => {
   const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login`, data)
@@ -57,6 +57,23 @@ export const getAuthMe = async () => {
 export const changePasswordAuth = async (data: any) => {
   try {
     const res = await instanceAxios.patch(`${API_ENDPOINT.AUTH.INDEX}/change-password`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+// Google
+export const loginAuthGoogle = async (data: LoginParamsGoogle) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, data)
+
+  return res.data
+}
+
+export const registerAuthGoogle = async (data: RegisterParamsGoogle) => {
+  try {
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-google`, data)
 
     return res.data
   } catch (error) {

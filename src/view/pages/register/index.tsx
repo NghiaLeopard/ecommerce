@@ -1,5 +1,6 @@
 // ** Next
 import { NextPage } from 'next'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -34,7 +35,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Store
 import { AppDispatch, RootState } from 'src/stores'
-import { registerAuthSync } from 'src/stores/auth/actions'
+import { registerAuthGoogleSync, registerAuthSync } from 'src/stores/auth/actions'
 
 // ** Toast
 import toast from 'react-hot-toast'
@@ -44,6 +45,7 @@ import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** i18n
 import { t } from 'i18next'
+import { clearPreGoogleToken, getPreGoogleToken, setPreGoogleToken } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -73,12 +75,16 @@ const RegisterPage: NextPage<TProps> = () => {
   // ** Selector
   const { isError, isLoading, isSuccess, message } = useSelector((state: RootState) => state.auth)
 
-  // State
+  // ** Hook
+  const { data: session } = useSession()
+
+  // ** State
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
   const handleClickShowPassword = () => setShowPassword(show => !show)
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(show1 => !show1)
+
+  const preGoogleToken = getPreGoogleToken()
 
   const {
     control,
@@ -96,6 +102,18 @@ const RegisterPage: NextPage<TProps> = () => {
   const handleOnSubmit = (data: { email: string; password: string; confirmPassword: string }) => {
     dispatch(registerAuthSync({ email: data.email, password: data.password }))
   }
+
+  const handleClickRegisterGoogle = () => {
+    signIn('google')
+    clearPreGoogleToken()
+  }
+
+  useEffect(() => {
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
+      dispatch(registerAuthGoogleSync({ idToken: (session as any)?.accessToken }))
+      setPreGoogleToken((session as any)?.accessToken)
+    }
+  }, [(session as any)?.accessToken])
 
   useEffect(() => {
     if (message) {
@@ -295,6 +313,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   width='1em'
                   height='1em'
                   viewBox='0 0 24 24'
+                  onClick={handleClickRegisterGoogle}
                 >
                   <path
                     fill='currentColor'

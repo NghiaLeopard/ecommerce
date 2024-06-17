@@ -2,9 +2,10 @@
 import { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 // ** React
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI
 import {
@@ -27,8 +28,8 @@ import CustomTextField from 'src/components/text-field'
 import { Controller, useForm } from 'react-hook-form'
 
 // **Yup
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Regex
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
@@ -48,6 +49,7 @@ import toast from 'react-hot-toast'
 
 // ** i18n
 import { useTranslation } from 'react-i18next'
+import { clearPreGoogleToken, getPreGoogleToken, setPreGoogleToken } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -66,15 +68,16 @@ const LoginPage: NextPage<TProps> = () => {
   // ** Translation
   const { t } = useTranslation()
 
-  // ** Auth
-  const { login } = useAuth()
-
+  // ** Hook
+  const { login, loginGoogle } = useAuth()
+  const { data: session } = useSession()
 
   // ** State
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setRemember] = useState(false)
   const handleClickShowPassword = () => setShowPassword(show => !show)
 
+  const preGoogleToken = getPreGoogleToken()
 
   const {
     control,
@@ -98,6 +101,22 @@ const LoginPage: NextPage<TProps> = () => {
       })
     }
   }
+
+  const handleLoginGoogleToken = () => {
+    signIn('google')
+    clearPreGoogleToken()
+  }
+
+  useEffect(() => {
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
+      loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, error => {
+        const message = error?.response?.data?.message
+
+        if (message) toast.error(message)
+      })
+      setPreGoogleToken((session as any)?.accessToken)
+    }
+  }, [(session as any)?.accessToken])
 
   return (
     <Box
@@ -259,6 +278,7 @@ const LoginPage: NextPage<TProps> = () => {
                   width='1em'
                   height='1em'
                   viewBox='0 0 24 24'
+                  onClick={handleLoginGoogleToken}
                 >
                   <path
                     fill='currentColor'
