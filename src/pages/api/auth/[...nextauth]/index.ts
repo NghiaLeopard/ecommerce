@@ -15,6 +15,7 @@ export const authOptions = {
       name: 'facebook'
     })
   ],
+  secret: process.env.NEXT_AUTH_SECRET,
   callbacks: {
     async jwt({ token, account }: any) {
       if (account) {
