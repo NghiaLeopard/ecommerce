@@ -4,7 +4,8 @@ import {
   AUTH_SOCIAL_TOKEN,
   REFRESH_TOKEN,
   TEMPORARY_TOKEN,
-  USER_DATA
+  USER_DATA,
+  REMEMBER_AUTH
 } from 'src/configs/auth'
 import { TOrderProduct } from 'src/types/order-product'
 
@@ -58,9 +59,9 @@ export const clearTemporaryToken = () => {
   }
 }
 
-export const setAuthSocialToken = (PreGoogleToken: string) => {
+export const setAuthSocialToken = (authSocialToken: string) => {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(AUTH_SOCIAL_TOKEN, PreGoogleToken)
+    window.localStorage.setItem(AUTH_SOCIAL_TOKEN, authSocialToken)
   }
 }
 
@@ -73,6 +74,24 @@ export const getAuthSocialToken = () => {
 export const clearAuthSocialToken = () => {
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(AUTH_SOCIAL_TOKEN)
+  }
+}
+
+export const setRememberAuth = (PreGoogleToken: string) => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(REMEMBER_AUTH, PreGoogleToken)
+  }
+}
+
+export const getRememberAuth = () => {
+  if (typeof window !== 'undefined') {
+    return window.localStorage.getItem(REMEMBER_AUTH)
+  }
+}
+
+export const clearRememberAuth = () => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.removeItem(REMEMBER_AUTH)
   }
 }
 

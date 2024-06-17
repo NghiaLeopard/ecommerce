@@ -26,6 +26,7 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 // ** Helpers
 import {
   clearAuthSocialToken,
+  clearRememberAuth,
   clearTemporaryToken,
   getLocalUserData,
   getTemporaryToken,
@@ -185,6 +186,7 @@ const AuthProvider = ({ children }: Props) => {
       setUser(null)
       removeLocalUserData()
       clearTemporaryToken()
+      clearRememberAuth()
       dispatch(
         updateToCart({
           orderItem: []
