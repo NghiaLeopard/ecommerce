@@ -57,6 +57,7 @@ import {
   setRememberAuth
 } from 'src/helpers/storage'
 import Spinner from 'src/components/spinner'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 type TProps = {}
 
@@ -274,7 +275,7 @@ const LoginPage: NextPage<TProps> = () => {
                   }
                   label={t('Remember_me')}
                 />
-                <Link href='#' style={{ color: '#7367f0' }}>
+                <Link href={CONFIG_ROUTE.FORGOT_PASSWORD} style={{ color: theme.palette.primary.main }}>
                   {`${t('Forgot_password')}`}
                 </Link>
               </Box>
