@@ -5,14 +5,16 @@ import { useRouter } from 'next/router'
 import { ReactNode, createContext, useEffect, useState } from 'react'
 
 // ** Types
-import { AuthValuesType, ErrCallbackType, LoginParams, UserDataType } from './types'
+import { AuthValuesType, ErrCallbackType, LoginParams, LoginParamsGoogle, UserDataType } from './types'
 
 // ** Services
-import { loginAuth, logoutAuth } from 'src/services/auth'
+import { loginAuth, loginAuthGoogle, logoutAuth } from 'src/services/auth'
 
 // ** Configs
 import { LIST_ROUTE_PUBLIC } from 'src/configs/auth'
 import { API_ENDPOINT } from 'src/configs/api'
+
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 // ** Helpers
 import {
@@ -41,7 +43,8 @@ const defaultProvider: AuthValuesType = {
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
-  logout: () => Promise.resolve()
+  logout: () => Promise.resolve(),
+  loginGoogle: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -118,12 +121,36 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
+  const handleLoginGoogle = (params: LoginParamsGoogle, errorCallback?: ErrCallbackType) => {
+    loginAuthGoogle({ idToken: params.idToken })
+      .then(async response => {
+        params.rememberMe
+          ? setLocalUserData(
+              JSON.stringify(response.data.user),
+              response.data.access_token,
+              response.data.refresh_token
+            )
+          : setTemporaryToken(response.data.access_token)
+
+        const returnUrl = router.query.returnUrl
+
+        toast.success(response?.message)
+        setUser({ ...response.data.user })
+
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
+        router.replace(redirectURL as string)
+      })
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+
   const handleLogout = () => {
     logoutAuth().then(res => {
       setUser(null)
       removeLocalUserData()
       clearTemporaryToken()
-
       dispatch(
         updateToCart({
           orderItem: []
@@ -149,7 +176,8 @@ const AuthProvider = ({ children }: Props) => {
     setUser,
     setLoading,
     login: handleLogin,
-    logout: handleLogout
+    logout: handleLogout,
+    loginGoogle: handleLoginGoogle
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

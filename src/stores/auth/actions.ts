@@ -1,8 +1,28 @@
+// ** Redux
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { changePasswordAuth, registerAuth, updateAuthMe } from 'src/services/auth'
+
+// ** Context
+import { RegisterParamsGoogle } from 'src/contexts/types'
+
+// ** Service
+import { changePasswordAuth, registerAuth, registerAuthGoogle, updateAuthMe } from 'src/services/auth'
 
 export const registerAuthSync = createAsyncThunk('auth/register', async (data: any) => {
   const response = await registerAuth(data)
+
+  if (response?.data) {
+    return response
+  }
+
+  return {
+    data: null,
+    message: response?.response?.data?.message,
+    typeError: response?.data?.typeError
+  }
+})
+
+export const registerAuthGoogleSync = createAsyncThunk('auth/register-google', async (data: RegisterParamsGoogle) => {
+  const response = await registerAuthGoogle(data)
 
   if (response?.data) {
     return response
