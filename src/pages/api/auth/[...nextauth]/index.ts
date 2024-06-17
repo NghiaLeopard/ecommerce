@@ -13,10 +13,12 @@ export const authOptions = {
       if (account) {
         token.accessToken = account.access_token
       }
+
       return token
     },
     async session({ session, token, user }: any) {
       session.accessToken = token.accessToken
+
       return session
     }
   }
