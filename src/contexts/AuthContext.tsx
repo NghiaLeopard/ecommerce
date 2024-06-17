@@ -18,6 +18,7 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 
 // ** Helpers
 import {
+  clearPreGoogleToken,
   clearTemporaryToken,
   getLocalUserData,
   getTemporaryToken,

@@ -108,7 +108,8 @@ const LoginPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
+    console.log(typeof (session as any)?.accessToken, preGoogleToken)
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken?.PreGoogleToken) {
       loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, error => {
         const message = error?.response?.data?.message
 

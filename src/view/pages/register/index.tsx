@@ -109,7 +109,9 @@ const RegisterPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
+    console.log((session as any)?.accessToken, preGoogleToken)
+
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken?.PreGoogleToken) {
       dispatch(registerAuthGoogleSync({ idToken: (session as any)?.accessToken }))
       setPreGoogleToken((session as any)?.accessToken)
     }
@@ -121,7 +123,7 @@ const RegisterPage: NextPage<TProps> = () => {
         toast.error(message)
       } else if (isSuccess) {
         toast.success(message)
-        router.push(CONFIG_ROUTE.LOGIN)
+        // router.push(CONFIG_ROUTE.LOGIN)
       }
     }
   }, [isError, isSuccess, message])
