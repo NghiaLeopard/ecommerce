@@ -1,5 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { changePasswordAuthSync, registerAuthFacebookSync, registerAuthGoogleSync, registerAuthSync, updateAuthMeSync } from './actions'
+import {
+  changePasswordAuthSync,
+  forgotPasswordAuthSync,
+  registerAuthFacebookSync,
+  registerAuthGoogleSync,
+  registerAuthSync,
+  resetPasswordAuthSync,
+  updateAuthMeSync
+} from './actions'
 
 // ** Type
 import { UserDataType } from 'src/contexts/types'
@@ -25,9 +33,18 @@ const initialState = {
   isError: false,
   message: '',
   typeError: '',
+  isSuccessForgotPassword: false,
+  isErrorForgotPassword: false,
+  messageForgotPassword: '',
+  
+  isSuccessResetPassword: false,
+  isErrorResetPassword: false,
+  messageResetPassword: '',
+
   isSuccessUpdateMe: true,
   isErrorUpdateMe: false,
   messageUpdateMe: '',
+
   isSuccessChangePassword: false,
   isErrorChangePassword: false,
   messageChangePassword: '',
@@ -47,9 +64,18 @@ export const authSlice = createSlice({
       state.isSuccessUpdateMe = false
       state.isErrorUpdateMe = false
       state.messageUpdateMe = ''
+
       state.isSuccessChangePassword = false
       state.isErrorChangePassword = false
       state.messageChangePassword = ''
+
+      state.isSuccessForgotPassword = false
+      state.isErrorForgotPassword = false
+      state.messageForgotPassword = ''
+
+      state.isSuccessResetPassword = false
+      state.isErrorResetPassword = false
+      state.messageResetPassword = ''
     }
   },
   extraReducers: builder => {
@@ -99,59 +125,55 @@ export const authSlice = createSlice({
     // Update me
     builder.addCase(updateAuthMeSync.pending, (state, actions) => {
       state.isLoading = true
-    }),
-      builder.addCase(updateAuthMeSync.fulfilled, (state, actions) => {
-        state.isLoading = false
-        state.isSuccess = !!actions.payload?.data?.email
-        state.isError = !actions.payload?.data?.email
-        state.message = actions?.payload?.message
-        state.typeError = actions?.payload?.typeError
-        state.isSuccessUpdateMe = !!actions.payload?.data?.email
-        state.isErrorUpdateMe = !actions.payload?.data?.email
-        state.messageUpdateMe = actions?.payload?.message
-        state.userData = { ...actions.payload?.data }
-      }),
-      builder.addCase(updateAuthMeSync.rejected, (state, actions) => {
-        state.isLoading = false
-        state.isSuccess = false
-        state.isError = true
-        state.message = ''
-        state.typeError = ''
-        state.isSuccessUpdateMe = false
-        state.isErrorUpdateMe = false
-        state.messageUpdateMe = ''
-      })
+    })
+
+    builder.addCase(updateAuthMeSync.fulfilled, (state, actions) => {
+      state.isLoading = false
+      state.typeError = actions?.payload?.typeError
+      state.isSuccessUpdateMe = !!actions.payload?.data?.email
+      state.isErrorUpdateMe = !actions.payload?.data?.email
+      state.messageUpdateMe = actions?.payload?.message
+      state.userData = { ...actions.payload?.data }
+    })
 
     // change password
     builder.addCase(changePasswordAuthSync.pending, (state, actions) => {
       state.isLoading = true
-    }),
-      builder.addCase(changePasswordAuthSync.fulfilled, (state, actions) => {
-        state.isLoading = true
-        state.isSuccess = !!actions.payload?.data?.email
-        state.isError = !actions.payload?.data?.email
-        state.message = actions?.payload?.message
-        state.typeError = actions?.payload?.typeError
-        state.isSuccessUpdateMe = !!actions.payload?.data?.email
-        state.isErrorUpdateMe = !actions.payload?.data?.email
-        state.messageUpdateMe = actions?.payload?.message
-        state.isSuccessChangePassword = !!actions.payload?.message
-        state.isErrorChangePassword = !actions.payload?.message
-        state.messageChangePassword = actions?.payload?.message
-      }),
-      builder.addCase(changePasswordAuthSync.rejected, (state, actions) => {
-        state.isLoading = false
-        state.isSuccess = false
-        state.isError = true
-        state.message = ''
-        state.typeError = ''
-        state.isSuccessUpdateMe = false
-        state.isErrorUpdateMe = false
-        state.messageUpdateMe = ''
-        state.isSuccessChangePassword = false
-        state.isErrorChangePassword = false
-        state.messageChangePassword = ''
-      })
+    })
+
+    builder.addCase(changePasswordAuthSync.fulfilled, (state, actions) => {
+      state.isLoading = true
+      state.isSuccessChangePassword = !!actions.payload?.message
+      state.isErrorChangePassword = !actions.payload?.message
+      state.messageChangePassword = actions?.payload?.message
+    })
+
+    // forgot password
+    builder.addCase(forgotPasswordAuthSync.pending, (state, actions) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(forgotPasswordAuthSync.fulfilled, (state, actions) => {
+      state.isLoading = true
+      state.isSuccessForgotPassword = !!actions.payload?.data?.email
+      state.isErrorForgotPassword = !actions.payload?.data?.email
+      state.typeError = actions?.payload?.typeError
+      state.messageForgotPassword = actions?.payload?.message
+    })
+
+    // reset password
+    builder.addCase(resetPasswordAuthSync.pending, (state, actions) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(resetPasswordAuthSync.fulfilled, (state, actions) => {
+      console.log(actions.payload)
+      state.isLoading = true
+      state.isSuccessResetPassword = !!actions.payload?.data?.email
+      state.isErrorResetPassword = !actions.payload?.data?.email
+      state.typeError = actions?.payload?.typeError
+      state.messageResetPassword = actions?.payload?.message
+    })
   }
 })
 

@@ -28,6 +28,14 @@ import ForgotPasswordLight from '/public/images/forgot-password-light.png'
 
 // ** Configs
 import { CONFIG_ROUTE } from 'src/configs/route'
+import { useDispatch, useSelector } from 'react-redux'
+import { forgotPasswordAuthSync } from 'src/stores/auth/actions'
+import { AppDispatch, RootState } from 'src/stores'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import toast from 'react-hot-toast'
+import { resetInitialState } from 'src/stores/auth'
+import { useEffect } from 'react'
+import Spinner from 'src/components/spinner'
 
 type TProps = {}
 
@@ -45,6 +53,12 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
   // ** Router
   const router = useRouter()
 
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
+  const { isLoading, isErrorForgotPassword, isSuccessForgotPassword, messageForgotPassword, typeError } = useSelector(
+    (state: RootState) => state.auth
+  )
+
   const {
     control,
     handleSubmit,
@@ -57,10 +71,35 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
     resolver: yupResolver(schema)
   })
 
-  const handleOnSubmit = (data: any) => {}
+  const handleOnSubmit = (data: { email: string }) => {
+    dispatch(
+      forgotPasswordAuthSync({
+        email: data?.email
+      })
+    )
+  }
+
+  useEffect(() => {
+    if (messageForgotPassword) {
+      if (isSuccessForgotPassword) {
+        toast.success(t('Forgot_password_success'))
+        dispatch(resetInitialState())
+      } else if (isErrorForgotPassword) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Forgot_password_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorForgotPassword, isSuccessForgotPassword])
 
   return (
     <>
+      {isLoading && <Spinner />}
+      
       <Box
         sx={{
           display: 'flex',

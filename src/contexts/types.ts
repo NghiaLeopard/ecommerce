@@ -19,6 +19,15 @@ export type RegisterParamsGoogle = {
   idToken: string
 }
 
+export type TForgotPassword = {
+  email: string
+}
+
+export type TResetPassword = {
+  newPassword: string
+  secretKey: string
+}
+
 export type LoginParamsFacebook = {
   idToken: string
   rememberMe?: boolean
