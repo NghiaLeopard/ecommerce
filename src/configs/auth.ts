@@ -8,6 +8,7 @@ export const REFRESH_TOKEN = 'refreshToken'
 export const USER_DATA = 'userData'
 export const TEMPORARY_TOKEN = 'temporaryToken'
 export const AUTH_SOCIAL_TOKEN = 'authSocialToken'
+export const REMEMBER_AUTH = 'rememberAuth'
 
 export const ORDER_ITEM = 'orderItem'
 

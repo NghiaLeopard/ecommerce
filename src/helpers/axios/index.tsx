@@ -12,6 +12,7 @@ import { API_ENDPOINT, BASE_URL } from 'src/configs/api'
 
 // ** Local storage
 import {
+  clearRememberAuth,
   clearTemporaryToken,
   getLocalUserData,
   getTemporaryToken,
@@ -45,6 +46,7 @@ const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | 
   }
   removeLocalUserData()
   clearTemporaryToken()
+  clearRememberAuth()
   setUser(null)
 }
 
