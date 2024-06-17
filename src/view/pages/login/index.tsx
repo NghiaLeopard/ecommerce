@@ -49,7 +49,7 @@ import toast from 'react-hot-toast'
 
 // ** i18n
 import { useTranslation } from 'react-i18next'
-import { clearPreGoogleToken, getPreGoogleToken, setPreGoogleToken } from 'src/helpers/storage'
+import { clearAuthSocialToken, getAuthSocialToken, setAuthSocialToken } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -69,7 +69,7 @@ const LoginPage: NextPage<TProps> = () => {
   const { t } = useTranslation()
 
   // ** Hook
-  const { login, loginGoogle } = useAuth()
+  const { login, loginGoogle, loginFacebook } = useAuth()
   const { data: session } = useSession()
 
   // ** State
@@ -77,7 +77,7 @@ const LoginPage: NextPage<TProps> = () => {
   const [isRemember, setRemember] = useState(false)
   const handleClickShowPassword = () => setShowPassword(show => !show)
 
-  const preGoogleToken = getPreGoogleToken()
+  const authSocialToken = getAuthSocialToken()
 
   const {
     control,
@@ -104,18 +104,33 @@ const LoginPage: NextPage<TProps> = () => {
 
   const handleLoginGoogleToken = () => {
     signIn('google')
-    clearPreGoogleToken()
+    clearAuthSocialToken()
+  }
+
+  const handleLoginFacebookToken = () => {
+    signIn('facebook')
+    clearAuthSocialToken()
   }
 
   useEffect(() => {
-    console.log(typeof (session as any)?.accessToken, preGoogleToken)
-    if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken?.PreGoogleToken) {
-      loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, error => {
-        const message = error?.response?.data?.message
+    console.log((session as any)?.provider)
 
-        if (message) toast.error(message)
-      })
-      setPreGoogleToken((session as any)?.accessToken)
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== authSocialToken) {
+      if ((session as any)?.provider === 'google') {
+        loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, error => {
+          const message = error?.response?.data?.message
+
+          if (message) toast.error(message)
+        })
+      } else {
+        loginFacebook({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, error => {
+          const message = error?.response?.data?.message
+
+          if (message) toast.error(message)
+        })
+      }
+
+      setAuthSocialToken((session as any)?.accessToken)
     }
   }, [(session as any)?.accessToken])
 
@@ -263,6 +278,7 @@ const LoginPage: NextPage<TProps> = () => {
                   width='1em'
                   height='1em'
                   viewBox='0 0 24 24'
+                  onClick={handleLoginFacebookToken}
                 >
                   <path
                     fill='currentColor'

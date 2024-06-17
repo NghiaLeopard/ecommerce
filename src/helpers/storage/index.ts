@@ -1,4 +1,11 @@
-import { ACCESS_TOKEN, ORDER_ITEM, PRE_GOOGLE_TOKEN, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
+import {
+  ACCESS_TOKEN,
+  ORDER_ITEM,
+  AUTH_SOCIAL_TOKEN,
+  REFRESH_TOKEN,
+  TEMPORARY_TOKEN,
+  USER_DATA
+} from 'src/configs/auth'
 import { TOrderProduct } from 'src/types/order-product'
 
 export const setLocalUserData = (userData: string, accessToken: string, refreshToken: string) => {
@@ -51,21 +58,21 @@ export const clearTemporaryToken = () => {
   }
 }
 
-export const setPreGoogleToken = (PreGoogleToken: string) => {
+export const setAuthSocialToken = (PreGoogleToken: string) => {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(PRE_GOOGLE_TOKEN, PreGoogleToken)
+    window.localStorage.setItem(AUTH_SOCIAL_TOKEN, PreGoogleToken)
   }
 }
 
-export const getPreGoogleToken = () => {
+export const getAuthSocialToken = () => {
   if (typeof window !== 'undefined') {
-    return { PreGoogleToken: window.localStorage.getItem(PRE_GOOGLE_TOKEN) }
+    return window.localStorage.getItem(AUTH_SOCIAL_TOKEN)
   }
 }
 
-export const clearPreGoogleToken = () => {
+export const clearAuthSocialToken = () => {
   if (typeof window !== 'undefined') {
-    window.localStorage.removeItem(PRE_GOOGLE_TOKEN)
+    window.localStorage.removeItem(AUTH_SOCIAL_TOKEN)
   }
 }
 
