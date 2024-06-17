@@ -104,7 +104,7 @@ const ResetPasswordPage: NextPage<TProps> = () => {
   })
 
   const handleOnSubmit = (data: { newPassword: string; confirmNewPassword: string }) => {
-    dispatch(resetPasswordAuthSync({ newPassword: data?.newPassword, secretKey: secretKey as string }))
+    dispatch(resetPasswordAuthSync({ secretKey: secretKey as string, newPassword: data?.newPassword }))
   }
 
   useEffect(() => {
