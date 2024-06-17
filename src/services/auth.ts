@@ -8,7 +8,7 @@ import instanceAxios from 'src/helpers/axios'
 import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Context
-import { LoginParams, LoginParamsGoogle, RegisterParams, RegisterParamsGoogle } from 'src/contexts/types'
+import { LoginParams, LoginParamsFacebook, LoginParamsGoogle, RegisterParams, RegisterParamsFacebook, RegisterParamsGoogle } from 'src/contexts/types'
 
 export const loginAuth = async (data: LoginParams) => {
   const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login`, data)
@@ -74,6 +74,23 @@ export const loginAuthGoogle = async (data: LoginParamsGoogle) => {
 export const registerAuthGoogle = async (data: RegisterParamsGoogle) => {
   try {
     const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-google`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+// Facebook
+export const loginAuthFacebook = async (data: LoginParamsFacebook) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, data)
+
+  return res.data
+}
+
+export const registerAuthFacebook = async (data: RegisterParamsFacebook) => {
+  try {
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-facebook`, data)
 
     return res.data
   } catch (error) {

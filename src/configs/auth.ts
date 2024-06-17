@@ -7,7 +7,7 @@ export const ACCESS_TOKEN = 'accessToKen'
 export const REFRESH_TOKEN = 'refreshToken'
 export const USER_DATA = 'userData'
 export const TEMPORARY_TOKEN = 'temporaryToken'
-export const PRE_GOOGLE_TOKEN = 'preGoogleToken'
+export const AUTH_SOCIAL_TOKEN = 'authSocialToken'
 
 export const ORDER_ITEM = 'orderItem'
 

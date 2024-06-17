@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { changePasswordAuthSync, registerAuthGoogleSync, registerAuthSync, updateAuthMeSync } from './actions'
+import { changePasswordAuthSync, registerAuthFacebookSync, registerAuthGoogleSync, registerAuthSync, updateAuthMeSync } from './actions'
 
 // ** Type
 import { UserDataType } from 'src/contexts/types'
@@ -77,6 +77,18 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(registerAuthGoogleSync.fulfilled, (state, actions) => {
+      state.isLoading = true
+      state.isSuccess = !!actions.payload?.data?.email
+      state.isError = !actions.payload?.data?.email
+      state.message = actions?.payload?.message
+      state.typeError = actions?.payload?.typeError
+    })
+
+    // Register facebook
+    builder.addCase(registerAuthFacebookSync.pending, (state, actions) => {
+      state.isLoading = true
+    })
+    builder.addCase(registerAuthFacebookSync.fulfilled, (state, actions) => {
       state.isLoading = true
       state.isSuccess = !!actions.payload?.data?.email
       state.isError = !actions.payload?.data?.email

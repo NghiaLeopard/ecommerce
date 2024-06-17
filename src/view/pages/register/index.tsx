@@ -35,7 +35,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Store
 import { AppDispatch, RootState } from 'src/stores'
-import { registerAuthGoogleSync, registerAuthSync } from 'src/stores/auth/actions'
+import { registerAuthFacebookSync, registerAuthGoogleSync, registerAuthSync } from 'src/stores/auth/actions'
 
 // ** Toast
 import toast from 'react-hot-toast'
@@ -45,7 +45,7 @@ import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** i18n
 import { t } from 'i18next'
-import { clearPreGoogleToken, getPreGoogleToken, setPreGoogleToken } from 'src/helpers/storage'
+import { clearAuthSocialToken, getAuthSocialToken, setAuthSocialToken } from 'src/helpers/storage'
 
 type TProps = {}
 
@@ -76,7 +76,7 @@ const RegisterPage: NextPage<TProps> = () => {
   const { isError, isLoading, isSuccess, message } = useSelector((state: RootState) => state.auth)
 
   // ** Hook
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
 
   // ** State
   const [showPassword, setShowPassword] = useState(false)
@@ -84,7 +84,7 @@ const RegisterPage: NextPage<TProps> = () => {
   const handleClickShowPassword = () => setShowPassword(show => !show)
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(show1 => !show1)
 
-  const preGoogleToken = getPreGoogleToken()
+  const preGoogleToken = getAuthSocialToken()
 
   const {
     control,
@@ -105,13 +105,25 @@ const RegisterPage: NextPage<TProps> = () => {
 
   const handleClickRegisterGoogle = () => {
     signIn('google')
-    clearPreGoogleToken()
+    clearAuthSocialToken()
+  }
+
+  const handleClickRegisterFacebook = () => {
+    signIn('facebook')
+    clearAuthSocialToken()
   }
 
   useEffect(() => {
+    console.log(session as any)
+
     if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
-      dispatch(registerAuthGoogleSync({ idToken: (session as any)?.accessToken }))
-      setPreGoogleToken((session as any)?.accessToken)
+      if ((session as any)?.provider === 'google') {
+        dispatch(registerAuthGoogleSync({ idToken: (session as any)?.accessToken }))
+        setAuthSocialToken((session as any)?.accessToken)
+      } else {
+        dispatch(registerAuthFacebookSync({ idToken: (session as any)?.accessToken }))
+        setAuthSocialToken((session as any)?.accessToken)
+      }
     }
   }, [(session as any)?.accessToken])
 
@@ -297,6 +309,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   width='1em'
                   height='1em'
                   viewBox='0 0 24 24'
+                  onClick={handleClickRegisterFacebook}
                 >
                   <path
                     fill='currentColor'

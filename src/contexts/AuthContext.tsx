@@ -5,10 +5,17 @@ import { useRouter } from 'next/router'
 import { ReactNode, createContext, useEffect, useState } from 'react'
 
 // ** Types
-import { AuthValuesType, ErrCallbackType, LoginParams, LoginParamsGoogle, UserDataType } from './types'
+import {
+  AuthValuesType,
+  ErrCallbackType,
+  LoginParams,
+  LoginParamsFacebook,
+  LoginParamsGoogle,
+  UserDataType
+} from './types'
 
 // ** Services
-import { loginAuth, loginAuthGoogle, logoutAuth } from 'src/services/auth'
+import { loginAuth, loginAuthFacebook, loginAuthGoogle, logoutAuth } from 'src/services/auth'
 
 // ** Configs
 import { LIST_ROUTE_PUBLIC } from 'src/configs/auth'
@@ -18,6 +25,7 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 
 // ** Helpers
 import {
+  clearAuthSocialToken,
   clearTemporaryToken,
   getLocalUserData,
   getTemporaryToken,
@@ -44,7 +52,8 @@ const defaultProvider: AuthValuesType = {
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  loginGoogle: () => Promise.resolve()
+  loginGoogle: () => Promise.resolve(),
+  loginFacebook: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -146,6 +155,31 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
+  const handleLoginFacebook = (params: LoginParamsFacebook, errorCallback?: ErrCallbackType) => {
+    loginAuthFacebook({ idToken: params.idToken })
+      .then(async response => {
+        params.rememberMe
+          ? setLocalUserData(
+              JSON.stringify(response.data.user),
+              response.data.access_token,
+              response.data.refresh_token
+            )
+          : setTemporaryToken(response.data.access_token)
+
+        const returnUrl = router.query.returnUrl
+
+        toast.success(response?.message)
+        setUser({ ...response.data.user })
+
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
+        router.replace(redirectURL as string)
+      })
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+
   const handleLogout = () => {
     logoutAuth().then(res => {
       setUser(null)
@@ -177,7 +211,8 @@ const AuthProvider = ({ children }: Props) => {
     setLoading,
     login: handleLogin,
     logout: handleLogout,
-    loginGoogle: handleLoginGoogle
+    loginGoogle: handleLoginGoogle,
+    loginFacebook: handleLoginFacebook
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

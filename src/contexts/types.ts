@@ -19,6 +19,15 @@ export type RegisterParamsGoogle = {
   idToken: string
 }
 
+export type LoginParamsFacebook = {
+  idToken: string
+  rememberMe?: boolean
+}
+
+export type RegisterParamsFacebook = {
+  idToken: string
+}
+
 export type UserDataType = {
   id: number
   role: string
@@ -43,4 +52,5 @@ export type AuthValuesType = {
   setUser: (value: UserDataType | null) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
   loginGoogle: (params: LoginParamsGoogle, errorCallback?: ErrCallbackType) => void
+  loginFacebook: (params: LoginParamsGoogle, errorCallback?: ErrCallbackType) => void
 }
