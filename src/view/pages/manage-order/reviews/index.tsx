@@ -46,8 +46,6 @@ import { usePermissions } from 'src/hooks/usePermissions'
 
 type TProps = {}
 
-type TSelectedRow = { id: string; role: { id: string; permissions: string[] } }
-
 const ReviewsPage: NextPage<TProps> = () => {
   // ** Theme
   const theme = useTheme()
@@ -67,18 +65,21 @@ const ReviewsPage: NextPage<TProps> = () => {
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
-  const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
+  const [checkboxRow, setCheckboxRow] = useState<string[]>([])
   const [starSelected, setStarSelected] = useState()
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idReviews: ''
   })
 
+  const dispatch: AppDispatch = useDispatch()
+
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.REVIEW', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
+  const objectStarReview = OBJECT_STAR_REVIEW()
 
   // ** use selector
   const {
@@ -166,54 +167,6 @@ const ReviewsPage: NextPage<TProps> = () => {
     }
   }
 
-  useEffect(() => {
-    getListReviews()
-  }, [sortBy, search, page, pageSize, starSelected])
-
-  useEffect(() => {
-    if (isMessageUpdate) {
-      if (isSuccessUpdate) {
-        toast.success(t('Update_reviews_success'))
-        handleCloseModal()
-        getListReviews()
-        dispatch(resetInitialState())
-      } else if (isErrorUpdate) {
-        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
-        if (errorConfig) {
-          toast.error(t(`${errorConfig}`))
-        } else {
-          toast.error(t('Update_reviews_error'))
-        }
-        dispatch(resetInitialState())
-      }
-    }
-  }, [isErrorUpdate, isSuccessUpdate])
-
-  useEffect(() => {
-    if (isMessageDelete) {
-      if (isSuccessDelete) {
-        toast.success(t('Delete_reviews_success'))
-        getListReviews()
-      } else if (isErrorDelete) {
-        toast.error(t('Delete_reviews_success'))
-      }
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessDelete, isErrorDelete])
-
-  useEffect(() => {
-    if (isMessageMultipleDelete) {
-      if (isSuccessMultipleDelete) {
-        toast.success(t('Delete_multiple_reviews_success'))
-        getListReviews()
-        setCheckboxRow([])
-        dispatch(resetInitialState())
-      } else if (isErrorMultipleDelete) {
-        toast.error(t('Delete_multiple_reviews_error'))
-      }
-    }
-  }, [isErrorMultipleDelete, isSuccessMultipleDelete])
-
   const columns: GridColDef<[number]>[] = [
     {
       field: 'user',
@@ -262,8 +215,8 @@ const ReviewsPage: NextPage<TProps> = () => {
     {
       field: 'star',
       headerName: t('Star'),
-      minWidth: 300,
-      maxWidth: 300,
+      minWidth: 250,
+      maxWidth: 250,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
@@ -307,9 +260,59 @@ const ReviewsPage: NextPage<TProps> = () => {
     }
   ]
 
+  useEffect(() => {
+    if (page && pageSize) {
+      getListReviews()
+    }
+  }, [sortBy, search, page, pageSize, starSelected])
+
+  useEffect(() => {
+    if (isMessageUpdate) {
+      if (isSuccessUpdate) {
+        toast.success(t('Update_reviews_success'))
+        handleCloseModal()
+        getListReviews()
+        dispatch(resetInitialState())
+      } else if (isErrorUpdate) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Update_reviews_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorUpdate, isSuccessUpdate])
+
+  useEffect(() => {
+    if (isMessageDelete) {
+      if (isSuccessDelete) {
+        toast.success(t('Delete_reviews_success'))
+        getListReviews()
+      } else if (isErrorDelete) {
+        toast.error(t('Delete_reviews_success'))
+      }
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessDelete, isErrorDelete])
+
+  useEffect(() => {
+    if (isMessageMultipleDelete) {
+      if (isSuccessMultipleDelete) {
+        toast.success(t('Delete_multiple_reviews_success'))
+        getListReviews()
+        setCheckboxRow([])
+        dispatch(resetInitialState())
+      } else if (isErrorMultipleDelete) {
+        toast.error(t('Delete_multiple_reviews_error'))
+      }
+    }
+  }, [isErrorMultipleDelete, isSuccessMultipleDelete])
+
   return (
     <>
-      {(isLoading || loading) && <Spinner />}
+      {isLoading && <Spinner />}
 
       <EditReviews open={openCreateEdit.open} onClose={handleCloseModal} idReviews={openCreateEdit.idReviews} />
 
@@ -330,8 +333,7 @@ const ReviewsPage: NextPage<TProps> = () => {
         onClose={handleOnCloseDeleteMultipleReviews}
         open={openDeleteMultipleReviews}
         handleConfirm={() => {
-          const data = checkboxRow.map(item => item.id)
-          dispatch(deleteMultipleReviewsAsync({ reviewIds: data }))
+          dispatch(deleteMultipleReviewsAsync({ reviewIds: checkboxRow }))
           handleOnCloseDeleteMultipleReviews()
         }}
       />
@@ -362,7 +364,7 @@ const ReviewsPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px', mt: 1 }}>
                 <CustomSelect
                   value={starSelected}
-                  options={Object.values(OBJECT_STAR_REVIEW())}
+                  options={Object.values(objectStarReview) || []}
                   fullWidth
                   onChange={(data: any) => {
                     setStarSelected(data)
@@ -395,14 +397,9 @@ const ReviewsPage: NextPage<TProps> = () => {
             checkboxSelection
             hideFooterSelectedRowCount
             disableColumnMenu
-            rowSelectionModel={checkboxRow.map(item => item.id)}
+            rowSelectionModel={checkboxRow.map(item => item)}
             onRowSelectionModelChange={(row: GridRowSelectionModel) => {
-              const formatData = row?.map(item => {
-                const findRow: any = reviews?.data.find((itemReviews: any) => itemReviews._id === item)
-
-                return { id: findRow._id, role: { id: findRow?.row?._id, permissions: findRow?.role?.permissions } }
-              })
-              setCheckboxRow(formatData)
+              setCheckboxRow(row as string[])
             }}
             onSortModelChange={handleSort}
             hasPagination={true}

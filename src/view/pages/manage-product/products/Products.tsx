@@ -278,12 +278,12 @@ const ProductsPage: NextPage<TProps> = () => {
     {
       field: 'name',
       headerName: t('Name'),
-      flex: 1,
-      minWidth: 0,
+      minWidth: 360,
+      maxWidth: 360,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.name}</Typography>
+        return <Typography sx={{overflow: 'hidden', textOverflow: 'ellipsis'}}>{row?.name}</Typography>
       }
     },
     {

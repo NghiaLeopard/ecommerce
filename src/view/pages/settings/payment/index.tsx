@@ -236,8 +236,8 @@ const PaymentPage: NextPage<TProps> = () => {
     {
       field: 'name',
       headerName: t('Name'),
-      flex: 1,
-      minWidth: 0,
+      minWidth: 970,
+      maxWidth: 970,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 

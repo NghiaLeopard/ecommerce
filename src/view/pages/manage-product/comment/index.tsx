@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Grid, Tooltip, Typography, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -14,75 +14,69 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/product-types'
-import {
-  deleteMultipleProductTypesAsync,
-  deleteProductTypesAsync,
-  getAllProductTypesAsync
-} from 'src/stores/product-types/actions'
+import { resetInitialState } from 'src/stores/comment'
+import { deleteMultipleCommentsAsync, deleteCommentsAsync, getAllCommentsAsync } from 'src/stores/comment/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import CustomPagination from 'src/components/custom-pagination'
-import CustomGridCreate from 'src/components/grid-create'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
+import { CustomSelect } from 'src/components/custom-select'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
 // ** Toast
 import toast from 'react-hot-toast'
-
-// ** utils
-import { formatDate } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
-
-// ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
-// ** Hooks
+// ** utils
+import { toFullName } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
+
+// ** Hook
 import { usePermissions } from 'src/hooks/usePermissions'
-import { EditComment } from './components/EditComment'
+import { EditComments } from './components/EditComments'
 
 type TProps = {}
 
-type TSelectedRow = { id: string; role: { id: string; permissions: string[] } }
-
-const CommentPage: NextPage<TProps> = () => {
+const CommentsPage: NextPage<TProps> = () => {
   // ** Theme
   const theme = useTheme()
 
   // ** i18n
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   // ** useState
-  const [openDeleteProductTypes, setOpenDeleteProductTypes] = useState({
+  const [openDeleteComments, setOpenDeleteComments] = useState({
     open: false,
-    idProductTypes: ''
+    idComments: ''
   })
 
   // ** State
-  const [openDeleteMultipleProductTypes, setOpenDeleteMultipleProductTypes] = useState(false)
+  const [openDeleteMultipleComments, setOpenDeleteMultipleComments] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
-  const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
+  const [checkboxRow, setCheckboxRow] = useState<string[]>([])
+  const [starSelected, setStarSelected] = useState()
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
-    idProductTypes: ''
+    idComments: ''
   })
+
+  const dispatch: AppDispatch = useDispatch()
 
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_PRODUCT.PRODUCT_TYPE', [
+  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.comment', [
     'CREATE',
     'UPDATE',
     'DELETE',
@@ -91,10 +85,10 @@ const CommentPage: NextPage<TProps> = () => {
 
   // ** use selector
   const {
-    productTypes,
-    isErrorCreateEdit,
-    isMessageCreateEdit,
-    isSuccessCreateEdit,
+    comments,
+    isErrorUpdate,
+    isMessageUpdate,
+    isSuccessUpdate,
     isLoading,
     isErrorDelete,
     isMessageDelete,
@@ -103,16 +97,17 @@ const CommentPage: NextPage<TProps> = () => {
     isMessageMultipleDelete,
     isSuccessMultipleDelete,
     typeError
-  } = useSelector((state: RootState) => state.productTypes)
+  } = useSelector((state: RootState) => state.comments)
 
-  const getListProductTypes = () => {
+  const getListComments = () => {
     dispatch(
-      getAllProductTypesAsync({
+      getAllCommentsAsync({
         params: {
           limit: pageSize,
           page: page,
           search: search,
-          order: sortBy
+          order: sortBy,
+          minStar: starSelected
         }
       })
     )
@@ -121,7 +116,7 @@ const CommentPage: NextPage<TProps> = () => {
   const handleCloseModal = () => {
     setOpenCreateEdit({
       open: false,
-      idProductTypes: ''
+      idComments: ''
     })
   }
 
@@ -132,15 +127,15 @@ const CommentPage: NextPage<TProps> = () => {
     }
   }
 
-  const handleOnCloseDeleteProductTypes = () => {
-    setOpenDeleteProductTypes({
+  const handleOnCloseDeleteComments = () => {
+    setOpenDeleteComments({
       open: false,
-      idProductTypes: ''
+      idComments: ''
     })
   }
 
-  const handleOnCloseDeleteMultipleProductTypes = () => {
-    setOpenDeleteMultipleProductTypes(false)
+  const handleOnCloseDeleteMultipleComments = () => {
+    setOpenDeleteMultipleComments(false)
   }
 
   const handleOnChangeSearch = (value: string) => {
@@ -168,100 +163,55 @@ const CommentPage: NextPage<TProps> = () => {
   const handleActions = (action: string) => {
     switch (action) {
       case 'delete': {
-        setOpenDeleteMultipleProductTypes(true)
+        setOpenDeleteMultipleComments(true)
         break
       }
     }
   }
 
-  useEffect(() => {
-    getListProductTypes()
-  }, [sortBy, search, page, pageSize])
-
-  useEffect(() => {
-    if (isMessageCreateEdit) {
-      if (isSuccessCreateEdit) {
-        if (!openCreateEdit.idProductTypes) {
-          toast.success(t('Create_product_type_success'))
-        } else {
-          toast.success(t('Update_product_type_success'))
-        }
-        handleCloseModal()
-        getListProductTypes()
-        dispatch(resetInitialState())
-      } else if (isErrorCreateEdit) {
-        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
-        if (errorConfig) {
-          toast.error(t(`${errorConfig}`))
-        } else {
-          if (!openCreateEdit.idProductTypes) {
-            toast.error(t('Create_product_type_error'))
-          } else {
-            toast.error(t('Update_product_type_error'))
-          }
-        }
-        dispatch(resetInitialState())
-      }
-    }
-  }, [isErrorCreateEdit, isSuccessCreateEdit])
-
-  useEffect(() => {
-    if (isMessageDelete) {
-      if (isSuccessDelete) {
-        toast.success(t('Delete_product_type_success'))
-        getListProductTypes()
-      } else if (isErrorDelete) {
-        toast.error(t('Delete_product_type_success'))
-      }
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessDelete, isErrorDelete])
-
-  useEffect(() => {
-    if (isMessageMultipleDelete) {
-      if (isSuccessMultipleDelete) {
-        toast.success(t('Delete_multiple_product_type_success'))
-        getListProductTypes()
-        setCheckboxRow([])
-        dispatch(resetInitialState())
-      } else if (isErrorMultipleDelete) {
-        toast.error(t('Delete_multiple_product_type_error'))
-      }
-    }
-  }, [isErrorMultipleDelete, isSuccessMultipleDelete])
-
   const columns: GridColDef<[number]>[] = [
     {
-      field: 'name',
-      headerName: t('Name'),
-      flex: 1,
-      minWidth: 0,
+      field: 'user',
+      minWidth: 300,
+      maxWidth: 300,
+      headerName: t('User'),
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+        const fullName = toFullName(row?.user?.lastName, row?.user?.middleName, row?.user?.firstName, i18n.language)
 
-        return <Typography>{row?.name}</Typography>
+        return <Typography>{fullName}</Typography>
       }
     },
     {
-      field: 'slug',
-      headerName: t('Slug'),
-      minWidth: 200,
-      maxWidth: 200,
+      field: 'nameProduct',
+      headerName: t('Name_product'),
+      minWidth: 450,
+      maxWidth: 450,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.slug}</Typography>
+        return (
+          <Tooltip title={row?.product?.name}>
+            <Typography sx={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {row?.product?.name}
+            </Typography>
+          </Tooltip>
+        )
       }
     },
     {
-      field: 'created_date',
-      headerName: t('Created_date'),
-      minWidth: 200,
-      maxWidth: 200,
+      field: 'comment',
+      headerName: t('Comment'),
+      minWidth: 600,
+      maxWidth: 600,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+        return (
+          <Tooltip title={row?.content}>
+            <Typography sx={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row?.content}</Typography>
+          </Tooltip>
+        )
       }
     },
 
@@ -281,7 +231,7 @@ const CommentPage: NextPage<TProps> = () => {
                 onClick={() =>
                   setOpenCreateEdit({
                     open: true,
-                    idProductTypes: row?._id
+                    idComments: row?._id
                   })
                 }
               />
@@ -289,9 +239,9 @@ const CommentPage: NextPage<TProps> = () => {
             {DELETE && (
               <CustomGridDelete
                 onClick={() => {
-                  setOpenDeleteProductTypes({
+                  setOpenDeleteComments({
                     open: true,
-                    idProductTypes: row?._id
+                    idComments: row?._id
                   })
                 }}
               />
@@ -302,36 +252,81 @@ const CommentPage: NextPage<TProps> = () => {
     }
   ]
 
+  useEffect(() => {
+    if (page && pageSize) {
+      getListComments()
+    }
+  }, [sortBy, search, page, pageSize, starSelected])
+
+  useEffect(() => {
+    if (isMessageUpdate) {
+      if (isSuccessUpdate) {
+        toast.success(t('Update_comment_success'))
+        handleCloseModal()
+        getListComments()
+        dispatch(resetInitialState())
+      } else if (isErrorUpdate) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Update_comment_error'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorUpdate, isSuccessUpdate])
+
+  useEffect(() => {
+    if (isMessageDelete) {
+      if (isSuccessDelete) {
+        toast.success(t('Delete_comment_success'))
+        getListComments()
+      } else if (isErrorDelete) {
+        toast.error(t('Delete_comment_success'))
+      }
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessDelete, isErrorDelete])
+
+  useEffect(() => {
+    if (isMessageMultipleDelete) {
+      if (isSuccessMultipleDelete) {
+        toast.success(t('Delete_multiple_comment_success'))
+        getListComments()
+        setCheckboxRow([])
+        dispatch(resetInitialState())
+      } else if (isErrorMultipleDelete) {
+        toast.error(t('Delete_multiple_comment_error'))
+      }
+    }
+  }, [isErrorMultipleDelete, isSuccessMultipleDelete])
+
   return (
     <>
-      {(isLoading || loading) && <Spinner />}
+      {isLoading && <Spinner />}
 
-      <EditComment
-        open={openCreateEdit.open}
-        onClose={handleCloseModal}
-        idProductTypes={openCreateEdit.idProductTypes}
-      />
+      <EditComments open={openCreateEdit.open} onClose={handleCloseModal} idComment={openCreateEdit.idComments} />
 
       <CustomConfirmDialog
-        title='Title_delete_product_type'
-        content='Confirm_delete_product_type'
-        onClose={handleOnCloseDeleteProductTypes}
-        open={openDeleteProductTypes.open}
+        title={t('Title_delete_comment')}
+        content={t('Confirm_delete_comment')}
+        onClose={handleOnCloseDeleteComments}
+        open={openDeleteComments.open}
         handleConfirm={() => {
-          dispatch(deleteProductTypesAsync(openDeleteProductTypes?.idProductTypes))
-          handleOnCloseDeleteProductTypes()
+          dispatch(deleteCommentsAsync(openDeleteComments?.idComments))
+          handleOnCloseDeleteComments()
         }}
       />
 
       <CustomConfirmDialog
-        title='Title_delete_multiple_product_type'
-        content='Confirm_delete_multiple_product_type'
-        onClose={handleOnCloseDeleteMultipleProductTypes}
-        open={openDeleteMultipleProductTypes}
+        title={t('Title_delete_multiple_comments')}
+        content={t('Confirm_delete_multiple_comments')}
+        onClose={handleOnCloseDeleteMultipleComments}
+        open={openDeleteMultipleComments}
         handleConfirm={() => {
-          const data = checkboxRow.map(item => item.id)
-          dispatch(deleteMultipleProductTypesAsync({ productTypeIds: data }))
-          handleOnCloseDeleteMultipleProductTypes()
+          dispatch(deleteMultipleCommentsAsync({ commentIds: checkboxRow }))
+          handleOnCloseDeleteMultipleComments()
         }}
       />
       <Box
@@ -361,16 +356,6 @@ const CommentPage: NextPage<TProps> = () => {
               <Box sx={{ width: '200px' }}>
                 <InputSearch onChange={handleOnChangeSearch} />
               </Box>
-              {CREATE && (
-                <CustomGridCreate
-                  onClick={() =>
-                    setOpenCreateEdit(x => ({
-                      open: true,
-                      idProductTypes: ''
-                    }))
-                  }
-                />
-              )}
             </Box>
           )}
           {checkboxRow.length > 0 && (
@@ -382,7 +367,7 @@ const CommentPage: NextPage<TProps> = () => {
             />
           )}
           <CustomDataGrid
-            rows={productTypes.data || {}}
+            rows={comments.data || {}}
             columns={columns}
             getRowId={row => row._id}
             sortingMode='server'
@@ -393,14 +378,9 @@ const CommentPage: NextPage<TProps> = () => {
             checkboxSelection
             hideFooterSelectedRowCount
             disableColumnMenu
-            rowSelectionModel={checkboxRow.map(item => item.id)}
+            rowSelectionModel={checkboxRow.map(item => item)}
             onRowSelectionModelChange={(row: GridRowSelectionModel) => {
-              const formatData = row?.map(item => {
-                const findRow: any = productTypes?.data.find((itemProductTypes: any) => itemProductTypes._id === item)
-
-                return { id: findRow._id, role: { id: findRow?.row?._id, permissions: findRow?.role?.permissions } }
-              })
-              setCheckboxRow(formatData)
+              setCheckboxRow(row as string[])
             }}
             onSortModelChange={handleSort}
             hasPagination={true}
@@ -420,4 +400,4 @@ const CommentPage: NextPage<TProps> = () => {
   )
 }
 
-export default CommentPage
+export default CommentsPage

@@ -233,9 +233,9 @@ const ProductTypesPage: NextPage<TProps> = () => {
   const columns: GridColDef<[number]>[] = [
     {
       field: 'name',
+      minWidth: 920,
+      maxWidth: 920,
       headerName: t('Name'),
-      flex: 1,
-      minWidth: 0,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
