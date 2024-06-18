@@ -17,7 +17,7 @@ import CustomPagination from 'src/components/custom-pagination'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import CardProduct from '../home/components/CardProduct'
-import NoData from 'src/components/no-data'
+import CardSkeleton from '../home/components/CardSkeleton'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
@@ -35,7 +35,6 @@ import { TProduct } from 'src/types/products'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/products'
 import { getListProductsLikedAsync, getListProductsViewedAsync } from 'src/stores/products/actions'
-import CardSkeleton from '../home/components/cardSkeleton'
 
 interface TProps {}
 
