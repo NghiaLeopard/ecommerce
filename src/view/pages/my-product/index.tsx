@@ -35,6 +35,7 @@ import { TProduct } from 'src/types/products'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/products'
 import { getListProductsLikedAsync, getListProductsViewedAsync } from 'src/stores/products/actions'
+import CardSkeleton from '../home/components/cardSkeleton'
 
 interface TProps {}
 
@@ -205,38 +206,42 @@ const MyProductPage: NextPage<TProps> = () => {
           <Grid item md={12}>
             <Grid container spacing={5}>
               {tabSelected === 'PRODUCT_LIKED' &&
-                (productsLiked.data ? (
-                  productsLiked?.data.map((item: TProduct) => {
-                    return (
-                      <>
-                        <Grid item key={item?._id} xs={12} sm={6} md={3}>
-                          <CardProduct item={item} key={item?._id} />
+                (productsLiked.data.length > 0
+                  ? productsLiked?.data.map((item: TProduct) => {
+                      return (
+                        <>
+                          <Grid item key={item?._id} xs={12} sm={6} md={3}>
+                            <CardProduct item={item} key={item?._id} />
+                          </Grid>
+                        </>
+                      )
+                    })
+                  : Array.from({ length: 8 }).map((_, index) => {
+                      return (
+                        <Grid item key={index} xs={12} sm={6} md={3}>
+                          <CardSkeleton />
                         </Grid>
-                      </>
-                    )
-                  })
-                ) : (
-                  <Box sx={{ padding: '30px' }}>
-                    <NoData widthImage={80} heightImage={80} textImage='No_data' />
-                  </Box>
-                ))}
+                      )
+                    }))}
 
               {tabSelected === 'PRODUCT_VIEWED' &&
-                (productsViewed.data ? (
-                  productsViewed?.data.map((item: TProduct) => {
-                    return (
-                      <>
-                        <Grid item key={item?._id} xs={12} sm={6} md={3}>
-                          <CardProduct item={item} key={item?._id} />
+                (productsViewed.data.length > 0
+                  ? productsViewed?.data.map((item: TProduct) => {
+                      return (
+                        <>
+                          <Grid item key={item?._id} xs={12} sm={6} md={3}>
+                            <CardProduct item={item} key={item?._id} />
+                          </Grid>
+                        </>
+                      )
+                    })
+                  : Array.from({ length: 8 }).map((_, index) => {
+                      return (
+                        <Grid item key={index} xs={12} sm={6} md={3}>
+                          <CardSkeleton />
                         </Grid>
-                      </>
-                    )
-                  })
-                ) : (
-                  <Box sx={{ padding: '30px' }}>
-                    <NoData widthImage={80} heightImage={80} textImage='No_data' />
-                  </Box>
-                ))}
+                      )
+                    }))}
             </Grid>
           </Grid>
         </Grid>

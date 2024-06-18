@@ -51,6 +51,7 @@ import { TReviewsProduct } from 'src/types/reviews'
 import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { resetInitialState } from 'src/stores/reviews'
+import CardSkeletonRelated from '../home/components/CardSkeletonRelated'
 
 type TProps = {}
 
@@ -505,15 +506,13 @@ const ProductDetail: NextPage<TProps> = () => {
                 {t('Product_same')}
               </Box>
 
-              {dataProductRelated.length > 0 ? (
-                dataProductRelated.map((item: TProduct, index) => {
-                  return <CardProductRelated item={item} key={item?._id} />
-                })
-              ) : (
-                <Box sx={{ padding: '30px' }}>
-                  <NoData widthImage={80} heightImage={80} textImage='No_data' />
-                </Box>
-              )}
+              {dataProductRelated.length > 0
+                ? dataProductRelated.map((item: TProduct, index) => {
+                    return <CardProductRelated item={item} key={item?._id} />
+                  })
+                : Array.from({ length: 3 }).map(() => {
+                    return <CardSkeletonRelated />
+                  })}
             </Box>
           </Grid>
         </Grid>
