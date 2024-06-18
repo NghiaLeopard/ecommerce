@@ -24,6 +24,7 @@ import { createRolesAsync, editRolesAsync } from 'src/stores/roles/actions'
 
 // ** i18next
 import { t } from 'i18next'
+import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 
 interface TCreateEditRole {
   open: boolean
@@ -56,7 +57,7 @@ export const CreateEditRole = ({ open, onClose, idRole }: TCreateEditRole) => {
 
   const handleOnSubmit = (data: { name: string }) => {
     if (!idRole) {
-      dispatch(createRolesAsync({ name: data?.name, permissions: [] }))
+      dispatch(createRolesAsync({ name: data?.name, permissions: [CONFIG_PERMISSIONS.DASHBOARD] }))
     } else {
       dispatch(editRolesAsync({ name: data?.name, permissions: [], idRole: idRole }))
     }

@@ -80,7 +80,7 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
           handleSelectItem(data?.path)
         }}
         sx={{
-          padding: ` 8px 20px 8px ${level === 0 ? 13 : level * 25}px`,
+          padding: ` 8px 20px 8px ${level === 0 ? 10 : level * 22}px`,
           my: '1px',
           backgroundColor:
             router.pathname === data.path || (fatherActive && data.children) || (open && data.children)
@@ -110,7 +110,7 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
             >
               <CustomIcon icon={data.icon} />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1.5 }}>
               <StyledListItemText
                 primary={data.title}
                 active={

@@ -136,12 +136,13 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+        console.log(row)
 
         return (
           <>
             {!row.isHideView && !row.isParent && (
               <Checkbox
-                disabled={disabled}
+                disabled={disabled || row?.value === 'DASHBOARD'}
                 value={getPermissionsValue(row.value, 'VIEW', row.parentValue)}
                 onChange={e => handleChangeCheckBox(e.target.value)}
                 checked={permissionSelected.includes(getPermissionsValue(row.value, 'VIEW', row.parentValue))}
