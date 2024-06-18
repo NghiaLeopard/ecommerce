@@ -90,8 +90,9 @@ export default function CardReviewProduct({ item }: TCardReviewProduct) {
 
       <Card
         sx={{
-          mt: '15px',
+          mt: '25px',
           p: 5,
+          mr: '10px',
           position: 'relative',
           boxShadow: theme.shadows[4],
           backgroundColor: theme.palette.background.default

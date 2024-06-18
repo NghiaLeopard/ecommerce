@@ -30,6 +30,9 @@ export const API_ENDPOINT = {
     },
     PRODUCTS: {
       INDEX: `${BASE_URL}/products`
+    },
+    COMMENTS: {
+      INDEX: `${BASE_URL}/comments`
     }
   },
 

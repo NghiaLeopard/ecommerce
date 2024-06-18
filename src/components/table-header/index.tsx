@@ -36,20 +36,26 @@ const TableHeader = (props: TTableHeader) => {
     <StyledTableHeader>
       <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px' }}>
         <Typography>{t('Rows_selected')}</Typography>
-        <Typography
+        <Box
           sx={{
             width: '20px',
             height: '20px',
             backgroundColor: theme.palette.primary.main,
-            borderRadius: '50%',
-            color: theme.palette.customColors.lightPaperBg,
+            borderRadius: '999px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
           }}
         >
-          {number}
-        </Typography>
+          <Typography
+            sx={{
+              color: theme.palette.customColors.lightPaperBg,
+              ml: '-1px'
+            }}
+          >
+            {number}
+          </Typography>
+        </Box>
       </Box>
       <Box>
         {actions.map(item => (

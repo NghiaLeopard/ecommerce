@@ -6,14 +6,14 @@ import { ReactNode } from 'react'
 
 // **Layout
 import UserLayout from 'src/view/layout/UserLayout'
-import CommentPage from 'src/view/pages/manage-product/comment'
 
 // ** Page
+import CommentsPage from 'src/view/pages/manage-product/comment'
 
 type TProps = {}
 
 const Index: NextPage<TProps> = () => {
-  return <CommentPage />
+  return <CommentsPage />
 }
 
 export default Index

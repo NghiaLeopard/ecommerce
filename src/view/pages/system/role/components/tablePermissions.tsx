@@ -47,7 +47,7 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
     const valuePermissions = parent
       ? getValuePermissions(CONFIG_PERMISSIONS?.[parent]?.[value], [])
       : getValuePermissions(CONFIG_PERMISSIONS?.[value], [])
-    const isChecked = valuePermissions.every(item => permissionSelected.includes(item))
+    const isChecked = valuePermissions.every(item => permissionSelected?.includes(item))
 
     return {
       isChecked,
