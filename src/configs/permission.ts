@@ -155,7 +155,17 @@ export const LIST_DATA_PERMISSIONS: any = [
     id: 3,
     name: 'Product_type',
     isParent: false,
+    isHideView: true,
     value: 'PRODUCT_TYPE',
+    parentValue: 'MANAGE_PRODUCT'
+  },
+  {
+    id: 15,
+    name: 'Comment',
+    isParent: false,
+    isHideView: true,
+    isHideCreate: true,
+    value: 'COMMENT',
     parentValue: 'MANAGE_PRODUCT'
   },
   {

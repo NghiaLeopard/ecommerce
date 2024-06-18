@@ -17,7 +17,8 @@ export const CONFIG_ROUTE = {
 
   MANAGE_PRODUCT: {
     PRODUCT: '/manage-product/product',
-    TYPE_PRODUCT: '/manage-product/product-types'
+    TYPE_PRODUCT: '/manage-product/product-types',
+    COMMENT: '/manage-product/comment',
   },
 
   MANAGE_ORDER: {

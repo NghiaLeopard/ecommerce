@@ -119,6 +119,8 @@ const UserDropDown: NextPage<TProps> = () => {
     }
   }, [userData])
 
+  console.log(user)
+
   return (
     <Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -210,13 +212,15 @@ const UserDropDown: NextPage<TProps> = () => {
           </Box>
         </Box>
         <Divider />
-        <MenuItem onClick={handleNavigateManageSystem}>
-          <Avatar>
-            <CustomIcon icon='arcticons:nextdns-manager' />
-          </Avatar>
+        {user?.role?.permissions?.length > 0 && (
+          <MenuItem onClick={handleNavigateManageSystem}>
+            <Avatar>
+              <CustomIcon icon='arcticons:nextdns-manager' />
+            </Avatar>
 
-          {t('Manage_system')}
-        </MenuItem>
+            {t('Manage_system')}
+          </MenuItem>
+        )}
         <MenuItem onClick={handleNavigateMyProfile}>
           <Avatar>
             <CustomIcon icon='healthicons:ui-user-profile' />
