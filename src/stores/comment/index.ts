@@ -3,12 +3,9 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // ** Action
 import {
-  // createCommentsAsync,
   deleteMultipleCommentsAsync,
   deleteCommentsAsync,
-  // deleteCommentsMeAsync,
   editCommentsAsync,
-  // editCommentsMeAsync,
   getAllCommentsAsync,
   serviceName
 } from './actions'
@@ -70,18 +67,6 @@ export const commentsSlice = createSlice({
       state.comments.total = actions?.payload?.data?.totalCount
     })
 
-    // // create Comments
-    // builder.addCase(createCommentsAsync.pending, (state, actions) => {
-    //   state.isLoading = true
-    // }),
-    // builder.addCase(createCommentsAsync.fulfilled, (state, actions) => {
-    //   state.isLoading = false
-    //   state.isSuccessCreate = !!actions.payload?.data?._id
-    //   state.isErrorCreate = !actions.payload?.data?._id
-    //   state.isMessageCreate = actions.payload?.message
-    //   state.typeError = actions.payload?.typeError
-    // })
-
     // edit Comments
     builder.addCase(editCommentsAsync.pending, (state, actions) => {
       state.isLoading = true
@@ -106,30 +91,6 @@ export const commentsSlice = createSlice({
       state.isMessageDelete = actions.payload?.message
       state.typeError = actions.payload?.typeError
     })
-
-    // // edit Comments Me
-    // builder.addCase(editCommentsMeAsync.pending, (state, actions) => {
-    //   state.isLoading = true
-    // }),
-    //   builder.addCase(editCommentsMeAsync.fulfilled, (state, actions) => {
-    //     state.isLoading = false
-    //     state.isSuccessUpdate = !!actions.payload?.data?._id
-    //     state.isErrorUpdate = !actions.payload?.data?._id
-    //     state.isMessageUpdate = actions.payload?.message
-    //     state.typeError = actions.payload?.typeError
-    //   })
-
-    // // Delete Comments Me
-    // builder.addCase(deleteCommentsMeAsync.pending, (state, actions) => {
-    //   state.isLoading = true
-    // }),
-    //   builder.addCase(deleteCommentsMeAsync.fulfilled, (state, actions) => {
-    //     state.isLoading = false
-    //     state.isSuccessDelete = !!actions.payload?.data?._id
-    //     state.isErrorDelete = !actions.payload?.data?._id
-    //     state.isMessageDelete = actions.payload?.message
-    //     state.typeError = actions.payload?.typeError
-    //   })
 
     // Delete multiple Comments
     builder.addCase(deleteMultipleCommentsAsync.pending, (state, actions) => {

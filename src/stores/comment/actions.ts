@@ -2,24 +2,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Comments
-import {
-  // createComments,
-  deleteMultipleComments,
-  deleteComments,
-  // deleteCommentsMe,
-  editComments,
-  // editCommentsMe,
-  getAllComments
-} from 'src/services/comments'
-import {
-  // TParamsCreateComments,
-  TParamsDeleteManyComments,
-  TParamsEditComments,
-  TParamsEditCommentsMe,
-  TParamsGetComments
-} from 'src/types/comments'
+import { deleteMultipleComments, deleteComments, editComments, getAllComments } from 'src/services/comments'
 
-// ** Type
+// ** Types
+import { TParamsDeleteManyComments, TParamsEditComments, TParamsGetComments } from 'src/types/comments'
 
 export const serviceName = 'Comments'
 
@@ -31,22 +17,6 @@ export const getAllCommentsAsync = createAsyncThunk(
     return response
   }
 )
-
-// export const createCommentsAsync = createAsyncThunk(`${serviceName}/create`, async (data: TParamsCreateComments) => {
-//   const response = await createComments(data)
-
-//   if (response?.data) {
-//     return response
-//   }
-
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
 
 export const editCommentsAsync = createAsyncThunk(`${serviceName}/edit`, async (data: TParamsEditComments) => {
   const response = await editComments(data)
@@ -98,35 +68,3 @@ export const deleteMultipleCommentsAsync = createAsyncThunk(
     }
   }
 )
-
-// export const editCommentsMeAsync = createAsyncThunk(`${serviceName}/edit-me`, async (data: TParamsEditCommentsMe) => {
-//   const response = await editCommentsMe(data)
-
-//   if (response?.data) {
-//     return response
-//   }
-
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
-
-// export const deleteCommentsMeAsync = createAsyncThunk(`${serviceName}/delete-me`, async (commentId: string) => {
-//   const response = await deleteCommentsMe(commentId)
-
-//   if (response?.data) {
-//     return response
-//   }
-
-//   return {
-//     data: {
-//       _id: null
-//     },
-//     message: response?.response?.data?.message,
-//     typeError: response?.response?.data?.typeError
-//   }
-// })
