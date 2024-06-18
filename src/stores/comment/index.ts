@@ -97,14 +97,15 @@ export const commentsSlice = createSlice({
     // Delete Comments
     builder.addCase(deleteCommentsAsync.pending, (state, actions) => {
       state.isLoading = true
-    }),
-      builder.addCase(deleteCommentsAsync.fulfilled, (state, actions) => {
-        state.isLoading = false
-        state.isSuccessDelete = !!actions.payload?.data?._id
-        state.isErrorDelete = !actions.payload?.data?._id
-        state.isMessageDelete = actions.payload?.message
-        state.typeError = actions.payload?.typeError
-      })
+    })
+
+    builder.addCase(deleteCommentsAsync.fulfilled, (state, actions) => {
+      state.isLoading = false
+      state.isSuccessDelete = !!actions.payload?.data?._id
+      state.isErrorDelete = !actions.payload?.data?._id
+      state.isMessageDelete = actions.payload?.message
+      state.typeError = actions.payload?.typeError
+    })
 
     // // edit Comments Me
     // builder.addCase(editCommentsMeAsync.pending, (state, actions) => {
@@ -133,14 +134,15 @@ export const commentsSlice = createSlice({
     // Delete multiple Comments
     builder.addCase(deleteMultipleCommentsAsync.pending, (state, actions) => {
       state.isLoading = true
-    }),
-      builder.addCase(deleteMultipleCommentsAsync.fulfilled, (state, actions) => {
-        state.isLoading = false
-        state.isSuccessMultipleDelete = !actions.payload?.typeError
-        state.isErrorMultipleDelete = !!actions.payload?.typeError
-        state.isMessageMultipleDelete = actions.payload?.message
-        state.typeError = actions.payload?.typeError
-      })
+    })
+
+    builder.addCase(deleteMultipleCommentsAsync.fulfilled, (state, actions) => {
+      state.isLoading = false
+      state.isSuccessMultipleDelete = !actions.payload?.typeError
+      state.isErrorMultipleDelete = !!actions.payload?.typeError
+      state.isMessageMultipleDelete = actions.payload?.message
+      state.typeError = actions.payload?.typeError
+    })
   }
 })
 
