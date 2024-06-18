@@ -88,7 +88,7 @@ export default function CardReviewProduct({ item }: TCardReviewProduct) {
 
       <ModalUpdateReviews open={openModalReview.open} onClose={handleCloseModalReview} item={item} />
 
-      <Card sx={{ mt: '15px', p: 5, minWidth: { md: '30%', xs: '100%' }, maxWidth: '30%' }}>
+      <Card sx={{ mt: '15px', p: 5 }}>
         <Box sx={{ display: 'flex', gap: 3 }}>
           <Avatar src={item?.user?.avatar} alt='Image' />
           <Box>

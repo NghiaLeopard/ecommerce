@@ -17,6 +17,7 @@ import CustomPagination from 'src/components/custom-pagination'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import CardProduct from './components/CardProduct'
+import CardSkeleton from './components/CardSkeleton'
 import FilterProduct from './components/FilterProduct'
 
 // ** Configs
@@ -87,6 +88,7 @@ const HomePage: NextPage<TProps> = () => {
 
   const getListProductsPublic = async (review: string, search: string, tabSelected: string, city: string) => {
     setLoading(true)
+
     const params = {
       limit: 10,
       page: 1,
@@ -97,8 +99,8 @@ const HomePage: NextPage<TProps> = () => {
     }
 
     try {
-      setLoading(false)
       const res = await getAllProductsPublic({ params: params })
+      setLoading(false)
 
       if (res?.data?.products) {
         setListProductPublic(res?.data?.products)
@@ -132,9 +134,9 @@ const HomePage: NextPage<TProps> = () => {
   const fetchAllProductTypes = async () => {
     setLoading(true)
     try {
+      const response = await getAllProductTypes({ params: { limit: -1, page: -1 } })
       setLoading(false)
 
-      const response = await getAllProductTypes({ params: { limit: -1, page: -1 } })
       const productTypesArr = response?.data?.productTypes.map((item: any) => ({
         label: item.name,
         value: item._id
@@ -155,9 +157,8 @@ const HomePage: NextPage<TProps> = () => {
   const fetchAllCities = async () => {
     setLoading(true)
     try {
-      setLoading(false)
-
       const response = await getAllCity({ params: { limit: -1, page: -1 } })
+      setLoading(false)
 
       const productTypesArr = response?.data?.cities.map((item: any) => ({
         label: item.name,
@@ -220,6 +221,8 @@ const HomePage: NextPage<TProps> = () => {
     }
   }, [isErrorLikeProduct, isSuccessLikeProduct])
 
+  console.log(loading)
+
   return (
     <>
       {(loading || isLoading) && <Spinner />}
@@ -267,14 +270,22 @@ const HomePage: NextPage<TProps> = () => {
           </Box>
         </Grid>
         <Grid item md={9}>
-          <Grid container spacing={1}>
-            {listProductPublic.map((item: TProduct) => {
-              return (
-                <Grid item key={item?._id} xs={12} sm={6} md={4}>
-                  <CardProduct item={item} key={item?._id} />
-                </Grid>
-              )
-            })}
+          <Grid container spacing={5}>
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => {
+                  return (
+                    <Grid item key={index} xs={12} sm={6} md={4}>
+                      <CardSkeleton />
+                    </Grid>
+                  )
+                })
+              : listProductPublic.map((item: TProduct) => {
+                  return (
+                    <Grid item key={item?._id} xs={12} sm={6} md={4}>
+                      <CardProduct item={item} />
+                    </Grid>
+                  )
+                })}
           </Grid>
         </Grid>
       </Grid>

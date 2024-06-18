@@ -51,6 +51,8 @@ import { TReviewsProduct } from 'src/types/reviews'
 import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { resetInitialState } from 'src/stores/reviews'
+import CardSkeletonRelated from '../home/components/CardSkeletonRelated'
+import { CustomCarousel } from 'src/components/custom-carousel'
 
 type TProps = {}
 
@@ -89,6 +91,24 @@ const ProductDetail: NextPage<TProps> = () => {
     isMessageUpdate,
     typeError
   } = useSelector((state: RootState) => state.reviews)
+
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+      slidesToSlide: 3 // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+      slidesToSlide: 2 // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+      slidesToSlide: 1 // optional, default to 1.
+    }
+  }
 
   const { productSlug } = router?.query
 
@@ -423,8 +443,8 @@ const ProductDetail: NextPage<TProps> = () => {
       </Grid>
 
       <Grid container mt={{ md: 5, xs: 0 }} width='100%'>
-        <Grid container item md={9} xs={12}>
-          <Box>
+        <Grid container item md={9} xs={12} width='100%'>
+          <Box width='100%'>
             <Box sx={{ width: '100%', background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5 }}>
               <Box
                 sx={{
@@ -463,17 +483,22 @@ const ProductDetail: NextPage<TProps> = () => {
                 >
                   {t('Review')}
                 </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: 8,
-                    justifyContent: 'flex-start',
-                    flexDirection: { md: 'row', xs: 'column' }
-                  }}
-                >
-                  {listReviewsProduct?.map((item: TReviewsProduct) => {
-                    return <CardReviewProduct key={item._id} item={item} />
-                  })}
+                <Box width='100%' height='auto'>
+                  <CustomCarousel
+                    swipeable={false}
+                    draggable={false}
+                    customTransition='all .5'
+                    transitionDuration={500}
+                    ssr={true}
+                    keyBoardControl={true}
+                    showDots={true}
+                    removeArrowOnDeviceType={['tablet', 'mobile']}
+                    responsive={responsive}
+                  >
+                    {listReviewsProduct?.map((item: TReviewsProduct) => {
+                      return <CardReviewProduct key={item._id} item={item} />
+                    })}
+                  </CustomCarousel>
                 </Box>
               </Box>
             )}
@@ -505,15 +530,13 @@ const ProductDetail: NextPage<TProps> = () => {
                 {t('Product_same')}
               </Box>
 
-              {dataProductRelated.length > 0 ? (
-                dataProductRelated.map((item: TProduct, index) => {
-                  return <CardProductRelated item={item} key={item?._id} />
-                })
-              ) : (
-                <Box sx={{ padding: '30px' }}>
-                  <NoData widthImage={80} heightImage={80} textImage='No_data' />
-                </Box>
-              )}
+              {dataProductRelated.length > 0
+                ? dataProductRelated.map((item: TProduct, index) => {
+                    return <CardProductRelated item={item} key={item?._id} />
+                  })
+                : Array.from({ length: 3 }).map((_, index) => {
+                    return <CardSkeletonRelated key={index} />
+                  })}
             </Box>
           </Grid>
         </Grid>

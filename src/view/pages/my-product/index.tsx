@@ -17,7 +17,7 @@ import CustomPagination from 'src/components/custom-pagination'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import CardProduct from '../home/components/CardProduct'
-import NoData from 'src/components/no-data'
+import CardSkeleton from '../home/components/CardSkeleton'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
@@ -205,38 +205,42 @@ const MyProductPage: NextPage<TProps> = () => {
           <Grid item md={12}>
             <Grid container spacing={5}>
               {tabSelected === 'PRODUCT_LIKED' &&
-                (productsLiked.data ? (
-                  productsLiked?.data.map((item: TProduct) => {
-                    return (
-                      <>
-                        <Grid item key={item?._id} xs={12} sm={6} md={3}>
-                          <CardProduct item={item} key={item?._id} />
+                (productsLiked.data.length > 0
+                  ? productsLiked?.data.map((item: TProduct) => {
+                      return (
+                        <>
+                          <Grid item key={item?._id} xs={12} sm={6} md={3}>
+                            <CardProduct item={item} key={item?._id} />
+                          </Grid>
+                        </>
+                      )
+                    })
+                  : Array.from({ length: 8 }).map((_, index) => {
+                      return (
+                        <Grid item key={index} xs={12} sm={6} md={3}>
+                          <CardSkeleton />
                         </Grid>
-                      </>
-                    )
-                  })
-                ) : (
-                  <Box sx={{ padding: '30px' }}>
-                    <NoData widthImage={80} heightImage={80} textImage='No_data' />
-                  </Box>
-                ))}
+                      )
+                    }))}
 
               {tabSelected === 'PRODUCT_VIEWED' &&
-                (productsViewed.data ? (
-                  productsViewed?.data.map((item: TProduct) => {
-                    return (
-                      <>
-                        <Grid item key={item?._id} xs={12} sm={6} md={3}>
-                          <CardProduct item={item} key={item?._id} />
+                (productsViewed.data.length > 0
+                  ? productsViewed?.data.map((item: TProduct) => {
+                      return (
+                        <>
+                          <Grid item key={item?._id} xs={12} sm={6} md={3}>
+                            <CardProduct item={item} key={item?._id} />
+                          </Grid>
+                        </>
+                      )
+                    })
+                  : Array.from({ length: 8 }).map((_, index) => {
+                      return (
+                        <Grid item key={index} xs={12} sm={6} md={3}>
+                          <CardSkeleton />
                         </Grid>
-                      </>
-                    )
-                  })
-                ) : (
-                  <Box sx={{ padding: '30px' }}>
-                    <NoData widthImage={80} heightImage={80} textImage='No_data' />
-                  </Box>
-                ))}
+                      )
+                    }))}
             </Grid>
           </Grid>
         </Grid>
