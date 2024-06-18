@@ -17,6 +17,7 @@ import CustomPagination from 'src/components/custom-pagination'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import CardProduct from './components/CardProduct'
+import CardSkeleton from './components/CardSkeleton'
 import FilterProduct from './components/FilterProduct'
 
 // ** Configs
@@ -37,7 +38,6 @@ import { getAllCity } from 'src/services/city'
 // ** Store
 import { resetInitialState } from 'src/stores/products'
 import { RootState } from 'src/stores'
-import CardSkeleton from './components/cardSkeleton'
 
 interface TProps {}
 

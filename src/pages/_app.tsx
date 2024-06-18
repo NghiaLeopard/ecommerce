@@ -29,6 +29,7 @@ import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext
 
 // ** Global css styles
 import 'src/styles/globals.scss'
+import 'react-multi-carousel/lib/styles.css'
 
 // Components
 import AuthGuard from 'src/components/auth/AuthGuard'
