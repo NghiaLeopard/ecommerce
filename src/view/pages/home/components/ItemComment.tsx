@@ -1,7 +1,11 @@
-// ** MUI
-import { Avatar, Box, Typography, useTheme } from '@mui/material'
+// ** React
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+// ** MUI
+import { Avatar, Box, Typography, useTheme } from '@mui/material'
+
+// ** Component
 import { CustomInputComment } from 'src/components/custom-input-comment'
 
 // ** Types

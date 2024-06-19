@@ -106,8 +106,7 @@ const CommentsPage: NextPage<TProps> = () => {
           limit: pageSize,
           page: page,
           search: search,
-          order: sortBy,
-          minStar: starSelected
+          order: sortBy
         }
       })
     )

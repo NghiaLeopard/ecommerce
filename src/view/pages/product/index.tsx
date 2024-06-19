@@ -204,6 +204,7 @@ const ProductDetail: NextPage<TProps> = () => {
   }
 
   const fetchListCommentPublic = async () => {
+    setLoading(true)
     const params = {
       limit: -1,
       page: -1,
@@ -211,8 +212,11 @@ const ProductDetail: NextPage<TProps> = () => {
     }
     try {
       const res = await getAllCommentsPublic({ params: params })
+      setLoading(false)
       setListComment(res?.data?.comments)
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false)
+    }
   }
 
   const handleSubmitComment = () => {}
@@ -277,7 +281,7 @@ const ProductDetail: NextPage<TProps> = () => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {(loading || isLoading) && <Spinner />}
       <Grid container>
         <Grid
           container
