@@ -108,6 +108,12 @@ const ProductDetail: NextPage<TProps> = () => {
     isErrorCreate: isErrorCreateComment,
     isSuccessCreate: isSuccessCreateComment,
     isMessageCreate: isMessageCreateComment,
+    isMessageDeleteMe,
+    isSuccessDeleteMe,
+    isErrorDeleteMe,
+    isErrorUpdateMe,
+    isMessageUpdateMe,
+    isSuccessUpdateMe,
     typeError: typeErrorComment
   } = useSelector((state: RootState) => state.comments)
 
@@ -260,7 +266,7 @@ const ProductDetail: NextPage<TProps> = () => {
     if (dataDetailProduct._id) {
       fetchListCommentPublic()
     }
-  }, [isSuccessCreateComment, dataDetailProduct?._id])
+  }, [dataDetailProduct?._id])
 
   useEffect(() => {
     if (dataDetailProduct?._id) {
@@ -319,6 +325,7 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessCreateComment) {
         toast.success(t('Create_comment_success'))
         dispatch(resetInitialStateComment())
+        fetchListCommentPublic()
       } else if (isErrorCreateComment) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
         if (errorConfig) {
@@ -330,6 +337,42 @@ const ProductDetail: NextPage<TProps> = () => {
       }
     }
   }, [isErrorCreateComment, isSuccessCreateComment])
+
+  useEffect(() => {
+    if (isMessageDeleteMe) {
+      if (isSuccessDeleteMe) {
+        toast.success(t('Delete_comment_success'))
+        dispatch(resetInitialStateComment())
+        fetchListCommentPublic()
+      } else if (isErrorDeleteMe) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Delete_comment_error'))
+        }
+        dispatch(resetInitialStateComment())
+      }
+    }
+  }, [isErrorDeleteMe, isSuccessDeleteMe])
+
+  useEffect(() => {
+    if (isMessageUpdateMe) {
+      if (isSuccessUpdateMe) {
+        toast.success(t('Update_comment_success'))
+        dispatch(resetInitialStateComment())
+        fetchListCommentPublic()
+      } else if (isErrorUpdateMe) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Update_comment_error'))
+        }
+        dispatch(resetInitialStateComment())
+      }
+    }
+  }, [isErrorUpdateMe, isSuccessUpdateMe])
 
   return (
     <>

@@ -25,19 +25,21 @@ const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 type TInputComment = {
   onCancel?: () => void
   onSubmit: (data: { content: string }) => void
+  isEdit?: boolean
+  contentFather?: string
 }
 
-export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
+export const CustomInputComment = ({ isEdit, contentFather, onCancel, onSubmit }: TInputComment) => {
   // ** State
   const [isFocus, setIsFocus] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [valueInput, setValueInput] = useState<string>('')
+  const [valueInput, setValueInput] = useState<string>(contentFather || '')
 
   // ** Translation
   const { t } = useTranslation()
 
   // ** User
-  const {user} = useAuth()
+  const { user } = useAuth()
 
   const handleVisibleEmoji = () => {
     setIsVisible(prev => !prev)
@@ -58,10 +60,10 @@ export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
   }
 
   return (
-    <StyleWrapper>
+    <StyleWrapper mb={isEdit && isFocus ? '15px' : '0px'}>
       <Box sx={{ display: 'flex', width: '100%', gap: 3, alignItems: 'center' }}>
-        <Avatar src={user?.Avatar}/>
-        <Box width='100%' height='50px'>
+        {!isEdit && <Avatar src={user?.avatar} />}
+        <Box width='100%' height='60px'>
           <CustomTextField
             fullWidth
             value={valueInput}
@@ -91,7 +93,7 @@ export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
                   {t('Cancel')}
                 </Button>
                 <Button variant='contained' onClick={handleSubmit}>
-                  {t('Submit')}
+                  {isEdit ? t('Edit_comment') : t('Comment')}
                 </Button>
               </Box>
             </Box>

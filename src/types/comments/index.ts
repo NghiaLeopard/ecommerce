@@ -52,7 +52,6 @@ export type TParamsDeleteManyComments = {
 export type TParamsEditCommentsMe = {
   commentId: string
   content: string
-  star: number
   product: string
   user: string
 }

@@ -8,7 +8,9 @@ import {
   editComments,
   getAllComments,
   createComments,
-  createCommentsReply
+  createCommentsReply,
+  deleteCommentsMe,
+  editCommentsMe
 } from 'src/services/comments'
 
 // ** Types
@@ -71,6 +73,41 @@ export const createCommentsReplyAsync = createAsyncThunk(
 
 export const editCommentsAsync = createAsyncThunk(`${serviceName}/edit`, async (data: TParamsEditComments) => {
   const response = await editComments(data)
+
+  if (response?.data) {
+    return response
+  }
+
+  return {
+    data: {
+      _id: null
+    },
+    message: response?.response?.data?.message,
+    typeError: response?.response?.data?.typeError
+  }
+})
+
+export const editCommentsMeAsync = createAsyncThunk(
+  `${serviceName}/edit-comment-me`,
+  async (data: TParamsEditComments) => {
+    const response = await editCommentsMe(data)
+
+    if (response?.data) {
+      return response
+    }
+
+    return {
+      data: {
+        _id: null
+      },
+      message: response?.response?.data?.message,
+      typeError: response?.response?.data?.typeError
+    }
+  }
+)
+
+export const deleteCommentsMeAsync = createAsyncThunk(`${serviceName}/delete-comment-me`, async (commentId: string) => {
+  const response = await deleteCommentsMe(commentId)
 
   if (response?.data) {
     return response
