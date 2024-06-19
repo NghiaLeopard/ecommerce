@@ -1,5 +1,5 @@
 // ** React
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
@@ -10,6 +10,8 @@ import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
 import CustomIcon from '../Icon'
 import CustomTextField from '../text-field'
 import { useAuth } from 'src/hooks/useAuth'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/stores'
 
 const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -41,6 +43,9 @@ export const CustomInputComment = ({ isEdit, contentFather, onCancel, onSubmit }
   // ** User
   const { user } = useAuth()
 
+  // ** Redux
+  const { isSuccessCreate } = useSelector((state: RootState) => state.comments)
+
   const handleVisibleEmoji = () => {
     setIsVisible(prev => !prev)
   }
@@ -58,6 +63,13 @@ export const CustomInputComment = ({ isEdit, contentFather, onCancel, onSubmit }
       onSubmit({ content: valueInput })
     }
   }
+
+  useEffect(() => {
+    if (isSuccessCreate) {
+      setValueInput('')
+      setIsFocus(false)
+    }
+  }, [isSuccessCreate])
 
   return (
     <StyleWrapper mb={isEdit && isFocus ? '15px' : '0px'}>
