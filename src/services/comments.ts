@@ -97,23 +97,23 @@ export const deleteMultipleComments = async (data: TParamsDeleteManyComments) =>
   }
 }
 
-// export const editCommentsMe = async (data: TParamsEditCommentsMe) => {
-//   const { reviewId, ...rests } = data
-//   try {
-//     const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/me/${data.reviewId}`, rests)
+export const editCommentsMe = async (data: TParamsEditCommentsMe) => {
+  const { commentId, ...rests } = data
+  try {
+    const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/me/${data.commentId}`, rests)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
-// export const deleteCommentsMe = async (idComments: string) => {
-//   try {
-//     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/me/${idComments}`)
+export const deleteCommentsMe = async (commentId: string) => {
+  try {
+    const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/me/${commentId}`)
 
-//     return res.data
-//   } catch (error) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error) {
+    return error
+  }
+}

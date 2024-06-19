@@ -9,7 +9,9 @@ import {
   getAllCommentsAsync,
   serviceName,
   createCommentsAsync,
-  createCommentsReplyAsync
+  createCommentsReplyAsync,
+  editCommentsMeAsync,
+  deleteCommentsMeAsync
 } from './actions'
 
 const initialState = {
@@ -28,6 +30,12 @@ const initialState = {
   isSuccessDelete: false,
   isErrorDelete: false,
   isMessageDelete: '',
+  isSuccessUpdateMe: false,
+  isErrorUpdateMe: false,
+  isMessageUpdateMe: '',
+  isSuccessDeleteMe: false,
+  isErrorDeleteMe: false,
+  isMessageDeleteMe: '',
   isSuccessMultipleDelete: false,
   isErrorMultipleDelete: false,
   isMessageMultipleDelete: ''
@@ -48,6 +56,12 @@ export const commentsSlice = createSlice({
       state.isSuccessDelete = false
       state.isErrorDelete = false
       state.isMessageDelete = ''
+      state.isSuccessUpdateMe = false
+      state.isErrorUpdateMe = false
+      state.isMessageUpdateMe = ''
+      state.isSuccessDeleteMe = false
+      state.isErrorDeleteMe = false
+      state.isMessageDeleteMe = ''
       state.isSuccessMultipleDelete = false
       state.isErrorMultipleDelete = false
       state.isMessageMultipleDelete = ''
@@ -128,6 +142,31 @@ export const commentsSlice = createSlice({
       state.isSuccessMultipleDelete = !actions.payload?.typeError
       state.isErrorMultipleDelete = !!actions.payload?.typeError
       state.isMessageMultipleDelete = actions.payload?.message
+      state.typeError = actions.payload?.typeError
+    })
+
+    // edit Comments me
+    builder.addCase(editCommentsMeAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(editCommentsMeAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.isSuccessUpdateMe = !!actions.payload?.data?._id
+        state.isErrorUpdateMe = !actions.payload?.data?._id
+        state.isMessageUpdateMe = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
+
+    // Delete Comments
+    builder.addCase(deleteCommentsMeAsync.pending, (state, actions) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(deleteCommentsMeAsync.fulfilled, (state, actions) => {
+      state.isLoading = false
+      state.isSuccessDeleteMe = !!actions.payload?.data?._id
+      state.isErrorDeleteMe = !actions.payload?.data?._id
+      state.isMessageDeleteMe = actions.payload?.message
       state.typeError = actions.payload?.typeError
     })
   }
