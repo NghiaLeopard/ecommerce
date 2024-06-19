@@ -6,6 +6,7 @@ import { CustomInputComment } from 'src/components/custom-input-comment'
 
 // ** Types
 import { TComment } from 'src/types/comments'
+
 // ** Utils
 import { toFullName } from 'src/utils'
 
@@ -22,12 +23,12 @@ export const ItemComment = ({ item }: TItemComment) => {
   // State
   const [isVisibleInputComment, setIsVisibleComment] = useState(false)
 
-  const handleCancel = () => {
+  const handleCancelReply = () => {
     setIsVisibleComment(false)
     console.log('hah')
   }
 
-  const handleSubmit = () => {}
+  const handleSubmitReply = () => {}
 
   return (
     <Box sx={{ display: 'flex', gap: 3 }}>
@@ -44,7 +45,7 @@ export const ItemComment = ({ item }: TItemComment) => {
         >
           {t('Reply')}
         </Typography>
-        {isVisibleInputComment && <CustomInputComment onCancel={handleCancel} onSubmit={handleSubmit} />}
+        {isVisibleInputComment && <CustomInputComment onCancel={handleCancelReply} onSubmit={handleSubmitReply} />}
       </Box>
     </Box>
   )
