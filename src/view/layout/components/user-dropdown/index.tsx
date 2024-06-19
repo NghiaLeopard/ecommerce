@@ -119,7 +119,6 @@ const UserDropDown: NextPage<TProps> = () => {
     }
   }, [userData])
 
-  console.log(user)
 
   return (
     <Fragment>

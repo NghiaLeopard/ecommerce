@@ -3,7 +3,17 @@ export type TParamsGetComments = {
   page?: number
   search?: string
   order?: string
-  minStar?: number
+  productId?: string
+  userId?: string
+}
+
+export type TParamsGetCommentsPublic = {
+  limit?: number
+  page?: number
+  search?: string
+  order?: string
+  productId?: string
+  userId?: string
 }
 
 export type TParamsEditComments = {

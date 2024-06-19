@@ -7,7 +7,8 @@ import {
   TParamsDeleteManyComments,
   TParamsEditComments,
   TParamsEditCommentsMe,
-  TParamsGetComments
+  TParamsGetComments,
+  TParamsGetCommentsPublic
 } from 'src/types/comments'
 
 // ** Type
@@ -15,6 +16,16 @@ import {
 export const getAllComments = async (data: { params: TParamsGetComments }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getAllCommentsPublic = async (data: { params: TParamsGetCommentsPublic }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/public`, data)
 
     return res.data
   } catch (error) {

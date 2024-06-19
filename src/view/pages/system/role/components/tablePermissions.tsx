@@ -136,7 +136,6 @@ export const TablePermissions = ({ permissionSelected, setPermissionSelected, di
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-        console.log(row)
 
         return (
           <>

@@ -53,6 +53,10 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { resetInitialState } from 'src/stores/reviews'
 import CardSkeletonRelated from '../home/components/CardSkeletonRelated'
 import { CustomCarousel } from 'src/components/custom-carousel'
+import { CustomInputComment } from 'src/components/custom-input-comment'
+import { getAllCommentsPublic } from 'src/services/comments'
+import { TComment } from 'src/types/comments'
+import { ItemComment } from '../home/components/ItemComment'
 
 type TProps = {}
 
@@ -69,6 +73,7 @@ const ProductDetail: NextPage<TProps> = () => {
   // ** State
   const [loading, setLoading] = useState(false)
   const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>({})
+  const [listComment, setListComment] = useState<TComment[]>([])
   const [dataProductRelated, setDataProductRelated] = useState<TProduct[]>([])
   const [listReviewsProduct, setListReviewsProduct] = useState<TReviewsProduct[]>([])
   const [amountCart, setAmountCart] = useState(1)
@@ -198,6 +203,28 @@ const ProductDetail: NextPage<TProps> = () => {
     } catch (error) {}
   }
 
+  const fetchListCommentPublic = async () => {
+    setLoading(true)
+    const params = {
+      limit: -1,
+      page: -1,
+      productId: dataDetailProduct._id
+    }
+    try {
+      const res = await getAllCommentsPublic({ params: params })
+      setLoading(false)
+      setListComment(res?.data?.comments)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmitComment = () => {}
+
+  useEffect(() => {
+    fetchListCommentPublic()
+  }, [])
+
   useEffect(() => {
     if (dataDetailProduct?._id) {
       fetchAllReviewsProduct()
@@ -254,7 +281,7 @@ const ProductDetail: NextPage<TProps> = () => {
 
   return (
     <>
-      {loading && <Spinner />}
+      {(loading || isLoading) && <Spinner />}
       <Grid container>
         <Grid
           container
@@ -446,22 +473,28 @@ const ProductDetail: NextPage<TProps> = () => {
       <Grid container mt={{ md: 5, xs: 0 }} width='100%'>
         <Grid container item md={9} xs={12} width='100%'>
           <Box width='100%'>
-            <Box sx={{ width: '100%', background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5 }}>
+            {dataDetailProduct?.description && (
               <Box
-                sx={{
-                  backgroundColor: theme.palette.customColors.bodyBg,
-                  width: '100%',
-                  padding: 2,
-                  borderRadius: '10px'
-                }}
+                sx={{ width: '100%', background: theme.palette.background.paper, borderRadius: '15px', px: 4, py: 5 }}
               >
-                {t('Description_product')}
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.customColors.bodyBg,
+                    width: '100%',
+                    padding: 2,
+                    borderRadius: '10px'
+                  }}
+                >
+                  <Typography fontSize='20px' fontWeight='bold' color={theme.palette.primary.main}>
+                    {t('Description_product')}
+                  </Typography>
+                </Box>
+                <div
+                  dangerouslySetInnerHTML={{ __html: dataDetailProduct?.description }}
+                  style={{ marginTop: '10px' }}
+                ></div>
               </Box>
-              <div
-                dangerouslySetInnerHTML={{ __html: dataDetailProduct?.description }}
-                style={{ marginTop: '10px' }}
-              ></div>
-            </Box>
+            )}
 
             {listReviewsProduct.length > 0 && (
               <Box
@@ -482,7 +515,9 @@ const ProductDetail: NextPage<TProps> = () => {
                     borderRadius: '10px'
                   }}
                 >
-                  {t('Review')}
+                  <Typography fontSize='20px' fontWeight='bold' color={theme.palette.primary.main}>
+                    {t('Review_product')}: {listReviewsProduct.length} {t('Ratings')}
+                  </Typography>
                 </Box>
                 <Box width='100%' height='auto'>
                   <CustomCarousel ssr={true} keyBoardControl={true} showDots={true} responsive={responsive}>
@@ -493,6 +528,37 @@ const ProductDetail: NextPage<TProps> = () => {
                 </Box>
               </Box>
             )}
+
+            <Box
+              sx={{
+                width: '100%',
+                background: theme.palette.background.paper,
+                borderRadius: '15px',
+                px: 4,
+                py: 5,
+                mt: 5
+              }}
+            >
+              <Box
+                sx={{
+                  backgroundColor: theme.palette.customColors.bodyBg,
+                  width: '100%',
+                  padding: 2,
+                  borderRadius: '10px',
+                  mb: 5
+                }}
+              >
+                <Typography fontSize='20px' fontWeight='bold' color={theme.palette.primary.main}>
+                  {t('Comment')}
+                </Typography>
+              </Box>
+
+              <CustomInputComment onSubmit={handleSubmitComment} />
+
+              <Box sx={{ mt: 7 }}>
+                <ItemComment item={listComment[0]} />
+              </Box>
+            </Box>
           </Box>
         </Grid>
 
