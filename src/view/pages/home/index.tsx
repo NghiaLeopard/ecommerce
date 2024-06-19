@@ -221,7 +221,6 @@ const HomePage: NextPage<TProps> = () => {
     }
   }, [isErrorLikeProduct, isSuccessLikeProduct])
 
-  console.log(loading)
 
   return (
     <>

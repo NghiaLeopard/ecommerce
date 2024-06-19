@@ -149,7 +149,6 @@ const LoginPage: NextPage<TProps> = () => {
     }
   }, [(session as any)?.accessToken])
 
-  console.log(status === 'loading')
 
   return (
     <>

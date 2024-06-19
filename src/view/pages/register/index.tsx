@@ -115,7 +115,6 @@ const RegisterPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    console.log(session as any)
 
     if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
       if ((session as any)?.provider === 'google') {

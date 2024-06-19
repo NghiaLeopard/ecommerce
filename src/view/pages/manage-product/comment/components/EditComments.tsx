@@ -78,7 +78,6 @@ export const EditComments = ({ open, onClose, idComment }: TEditComments) => {
     resolver: yupResolver(schema)
   })
 
-  console.log(detailCommentData)
 
   const handleOnSubmit = (data: TDefaultValue) => {
     dispatch(

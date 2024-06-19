@@ -179,7 +179,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   }
 
   const handleClickPayment = async (type: string, orderId: string, totalPrice: number) => {
-    console.log(type)
     try {
       switch (type) {
         case 'VN Pay': {
@@ -221,7 +220,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           totalPrice: totalPrice
         })
       ).then(res => {
-        console.log(res)
 
         const orderPayment = listPaymentType.find(
           (item: { value: string; label: string }) => item.value === res?.payload?.data?.paymentMethod

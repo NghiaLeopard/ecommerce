@@ -167,7 +167,6 @@ export const authSlice = createSlice({
     })
 
     builder.addCase(resetPasswordAuthSync.fulfilled, (state, actions) => {
-      console.log(actions.payload)
       state.isLoading = true
       state.isSuccessResetPassword = !!actions.payload?.data?.email
       state.isErrorResetPassword = !actions.payload?.data?.email
