@@ -2,10 +2,23 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Comments
-import { deleteMultipleComments, deleteComments, editComments, getAllComments } from 'src/services/comments'
+import {
+  deleteMultipleComments,
+  deleteComments,
+  editComments,
+  getAllComments,
+  createComments,
+  createCommentsReply
+} from 'src/services/comments'
 
 // ** Types
-import { TParamsDeleteManyComments, TParamsEditComments, TParamsGetComments } from 'src/types/comments'
+import {
+  TCreateCommentsProduct,
+  TCreateCommentsReply,
+  TParamsDeleteManyComments,
+  TParamsEditComments,
+  TParamsGetComments
+} from 'src/types/comments'
 
 export const serviceName = 'Comments'
 
@@ -15,6 +28,44 @@ export const getAllCommentsAsync = createAsyncThunk(
     const response = await getAllComments(data)
 
     return response
+  }
+)
+
+export const createCommentsAsync = createAsyncThunk(
+  `${serviceName}/create-comment`,
+  async (data: TCreateCommentsProduct) => {
+    const response = await createComments(data)
+
+    if (response?.data) {
+      return response
+    }
+
+    return {
+      data: {
+        _id: null
+      },
+      message: response?.response?.data?.message,
+      typeError: response?.response?.data?.typeError
+    }
+  }
+)
+
+export const createCommentsReplyAsync = createAsyncThunk(
+  `${serviceName}/create-comment-reply`,
+  async (data: TCreateCommentsReply) => {
+    const response = await createCommentsReply(data)
+
+    if (response?.data) {
+      return response
+    }
+
+    return {
+      data: {
+        _id: null
+      },
+      message: response?.response?.data?.message,
+      typeError: response?.response?.data?.typeError
+    }
   }
 )
 

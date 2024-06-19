@@ -9,6 +9,7 @@ import { Avatar, Box, BoxProps, Button, IconButton, styled } from '@mui/material
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
 import CustomIcon from '../Icon'
 import CustomTextField from '../text-field'
+import { useAuth } from 'src/hooks/useAuth'
 
 const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -16,23 +17,27 @@ const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   '.epr-main': {
     position: 'absolute',
     top: '68px',
-    left: '70px'
+    left: '70px',
+    zIndex: 2
   }
 }))
 
 type TInputComment = {
   onCancel?: () => void
-  onSubmit: () => void
+  onSubmit: (data: { content: string }) => void
 }
 
 export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
   // ** State
   const [isFocus, setIsFocus] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [valueInput, setValueInput] = useState('')
+  const [valueInput, setValueInput] = useState<string>('')
 
   // ** Translation
   const { t } = useTranslation()
+
+  // ** User
+  const {user} = useAuth()
 
   const handleVisibleEmoji = () => {
     setIsVisible(prev => !prev)
@@ -48,14 +53,14 @@ export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
 
   const handleSubmit = () => {
     if (onSubmit) {
-      onSubmit()
+      onSubmit({ content: valueInput })
     }
   }
 
   return (
     <StyleWrapper>
       <Box sx={{ display: 'flex', width: '100%', gap: 3, alignItems: 'center' }}>
-        <Avatar />
+        <Avatar src={user?.Avatar}/>
         <Box width='100%' height='50px'>
           <CustomTextField
             fullWidth

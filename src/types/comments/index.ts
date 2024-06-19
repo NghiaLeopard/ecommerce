@@ -1,3 +1,12 @@
+export type TComment = {
+  content: string
+  parent?: string
+  product: { id: string; name: string }
+  replies: TComment[]
+  user: { id: string; firstName: string; middleName: string; lastName: string; avatar: string }
+  _id: string
+}
+
 export type TParamsGetComments = {
   limit?: number
   page?: number
@@ -29,12 +38,11 @@ export type TCreateCommentsProduct = {
   user: string
 }
 
-export type TComment = {
+export type TCreateCommentsReply = {
+  parent: string
   content: string
-  product: { id: string; name: string }
-  replies: []
-  user: { id: string; firstName: string; middleName: string; lastName: string }
-  _id: string
+  product: string
+  user: string
 }
 
 export type TParamsDeleteManyComments = {

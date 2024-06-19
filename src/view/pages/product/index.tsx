@@ -4,8 +4,9 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 // ** MUI
 import { Box, Button, Grid, IconButton, Rating, Tooltip, Typography, useTheme } from '@mui/material'
@@ -15,18 +16,22 @@ import { TProduct } from 'src/types/products'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
-import NoData from 'src/components/no-data'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
-import CardReviewProduct from '../home/components/CardReviewProduct'
 import CardProductRelated from '../home/components/CardProductRelated'
+import CardReviewProduct from '../home/components/CardReviewProduct'
+import CardSkeletonRelated from '../home/components/CardSkeletonRelated'
+import { ItemComment } from '../home/components/ItemComment'
+import { CustomCarousel } from 'src/components/custom-carousel'
+import { CustomInputComment } from 'src/components/custom-input-comment'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Service
-import { getAllReviews } from 'src/services/reviews'
 import { getAllProductsRelevant, getDetailProductsPublic } from 'src/services/products'
+import { getAllReviews } from 'src/services/reviews'
+import { getAllCommentsPublic } from 'src/services/comments'
 
 // ** Utils
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
@@ -34,7 +39,9 @@ import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 // ** Redux
 
 // ** Store
-import { RootState } from 'src/stores'
+import { AppDispatch, RootState } from 'src/stores'
+import { resetInitialState } from 'src/stores/reviews'
+import { resetInitialState as resetInitialStateComment } from 'src/stores/comment'
 import { updateToCart } from 'src/stores/order-product'
 
 // ** utils
@@ -45,18 +52,13 @@ import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
 // ** Type
-import { TReviewsProduct } from 'src/types/reviews'
-import toast from 'react-hot-toast'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
-import { resetInitialState } from 'src/stores/reviews'
-import CardSkeletonRelated from '../home/components/CardSkeletonRelated'
-import { CustomCarousel } from 'src/components/custom-carousel'
-import { CustomInputComment } from 'src/components/custom-input-comment'
-import { getAllCommentsPublic } from 'src/services/comments'
+
 import { TComment } from 'src/types/comments'
-import { ItemComment } from '../home/components/ItemComment'
+import { TReviewsProduct } from 'src/types/reviews'
+import { createCommentsAsync } from 'src/stores/comment/actions'
 
 type TProps = {}
 
@@ -72,20 +74,24 @@ const ProductDetail: NextPage<TProps> = () => {
 
   // ** State
   const [loading, setLoading] = useState(false)
-  const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>({})
+  const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>({} as any)
   const [listComment, setListComment] = useState<TComment[]>([])
   const [dataProductRelated, setDataProductRelated] = useState<TProduct[]>([])
   const [listReviewsProduct, setListReviewsProduct] = useState<TReviewsProduct[]>([])
   const [amountCart, setAmountCart] = useState(1)
 
+  // ** Ref
+  const refFetchReview = useRef(false)
+
   // ** Dispatch
-  const dispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
 
   // ** Auth
   const { user } = useAuth()
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
+
   const {
     isLoading,
     isErrorDelete,
@@ -96,6 +102,14 @@ const ProductDetail: NextPage<TProps> = () => {
     isMessageUpdate,
     typeError
   } = useSelector((state: RootState) => state.reviews)
+
+  const {
+    isLoading: isLoadingComment,
+    isErrorCreate: isErrorCreateComment,
+    isSuccessCreate: isSuccessCreateComment,
+    isMessageCreate: isMessageCreateComment,
+    typeError: typeErrorComment
+  } = useSelector((state: RootState) => state.comments)
 
   const responsive = {
     superLargeDesktop: {
@@ -219,11 +233,34 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }
 
-  const handleSubmitComment = () => {}
+  const handleSubmitComment = (data: { content: string }) => {
+    if (user) {
+      if (data?.content) {
+        dispatch(
+          createCommentsAsync({
+            content: data?.content,
+            user: user?._id,
+            product: dataDetailProduct?._id
+          })
+        )
+      }
+    } else {
+      if (router.asPath !== '/') {
+        router.replace({
+          pathname: '/login',
+          query: { returnUrl: router.asPath }
+        })
+      } else {
+        router.replace('/login')
+      }
+    }
+  }
 
   useEffect(() => {
-    fetchListCommentPublic()
-  }, [])
+    if (dataDetailProduct._id) {
+      fetchListCommentPublic()
+    }
+  }, [isSuccessCreateComment, dataDetailProduct?._id])
 
   useEffect(() => {
     if (dataDetailProduct?._id) {
@@ -235,7 +272,7 @@ const ProductDetail: NextPage<TProps> = () => {
     if (productSlug) {
       fetchDetailProduct(productSlug as string)
     }
-  }, [i18n.language, productSlug, isSuccessUpdate, isSuccessDelete])
+  }, [i18n.language, productSlug])
 
   useEffect(() => {
     if (productSlug) {
@@ -248,7 +285,6 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessDelete) {
         toast.success(t('Delete_reviews_product_success'))
         dispatch(resetInitialState())
-        fetchAllReviewsProduct()
       } else if (isErrorDelete) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -259,14 +295,13 @@ const ProductDetail: NextPage<TProps> = () => {
         dispatch(resetInitialState())
       }
     }
-  }, [isErrorUpdate, isSuccessDelete])
+  }, [isErrorDelete, isSuccessDelete])
 
   useEffect(() => {
     if (isMessageUpdate) {
       if (isSuccessUpdate) {
         toast.success(t('Update_reviews_product_success'))
         dispatch(resetInitialState())
-        fetchAllReviewsProduct()
       } else if (isErrorUpdate) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -277,11 +312,28 @@ const ProductDetail: NextPage<TProps> = () => {
         dispatch(resetInitialState())
       }
     }
-  }, [isErrorDelete, isSuccessUpdate])
+  }, [isErrorUpdate, isSuccessUpdate])
+
+  useEffect(() => {
+    if (isMessageCreateComment) {
+      if (isSuccessCreateComment) {
+        toast.success(t('Create_comment_success'))
+        dispatch(resetInitialStateComment())
+      } else if (isErrorCreateComment) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Create_comment_error'))
+        }
+        dispatch(resetInitialStateComment())
+      }
+    }
+  }, [isErrorCreateComment, isSuccessCreateComment])
 
   return (
     <>
-      {(loading || isLoading) && <Spinner />}
+      {(loading || isLoading || isLoadingComment) && <Spinner />}
       <Grid container>
         <Grid
           container
@@ -410,6 +462,7 @@ const ProductDetail: NextPage<TProps> = () => {
             <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2, mt: '5px' }}>
               <Tooltip title='Delete'>
                 <IconButton
+                  disabled={amountCart === 1}
                   sx={{
                     backgroundColor: `${theme.palette.primary.main} !important`,
                     color: theme.palette.common.white
@@ -556,7 +609,10 @@ const ProductDetail: NextPage<TProps> = () => {
               <CustomInputComment onSubmit={handleSubmitComment} />
 
               <Box sx={{ mt: 7 }}>
-                <ItemComment item={listComment[0]} />
+                {listComment.length > 0 &&
+                  listComment.map(item => {
+                    return <ItemComment key={item?._id} item={item} />
+                  })}
               </Box>
             </Box>
           </Box>

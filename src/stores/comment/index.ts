@@ -7,7 +7,9 @@ import {
   deleteCommentsAsync,
   editCommentsAsync,
   getAllCommentsAsync,
-  serviceName
+  serviceName,
+  createCommentsAsync,
+  createCommentsReplyAsync
 } from './actions'
 
 const initialState = {
@@ -66,6 +68,30 @@ export const commentsSlice = createSlice({
       state.comments.data = actions?.payload?.data?.comments
       state.comments.total = actions?.payload?.data?.totalCount
     })
+
+    // create comments
+    builder.addCase(createCommentsAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(createCommentsAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.isSuccessCreate = !!actions.payload?.data?._id
+        state.isErrorCreate = !actions.payload?.data?._id
+        state.isMessageCreate = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
+
+    // create comments reply
+    builder.addCase(createCommentsReplyAsync.pending, (state, actions) => {
+      state.isLoading = true
+    }),
+      builder.addCase(createCommentsReplyAsync.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.isSuccessCreate = !!actions.payload?.data?._id
+        state.isErrorCreate = !actions.payload?.data?._id
+        state.isMessageCreate = actions.payload?.message
+        state.typeError = actions.payload?.typeError
+      })
 
     // edit Comments
     builder.addCase(editCommentsAsync.pending, (state, actions) => {

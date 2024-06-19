@@ -346,6 +346,8 @@
   "Sort_by": "Sắp xếp theo",
   "Comment": "Bình luận",
   "Edit_comment": "Chỉnh sửa bình luận",
+  "Create_comment_success": "Tạo bình luận thành công",
+  "Create_comment_error": "Tạo bình luận thất bại",
   "Title_delete_comment": "Xác nhận xóa bình luận",
   "Confirm_delete_comment": "Xác nhận xóa bình luận",
   "Title_delete_multiple_comments": "Xác nhận xóa nhiều bình luận",
