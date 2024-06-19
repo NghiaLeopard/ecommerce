@@ -611,7 +611,7 @@ const ProductDetail: NextPage<TProps> = () => {
               <Box sx={{ mt: 7 }}>
                 {listComment.length > 0 &&
                   listComment.map(item => {
-                    return <ItemComment item={item} />
+                    return <ItemComment key={item?._id} item={item} />
                   })}
               </Box>
             </Box>

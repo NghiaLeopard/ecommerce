@@ -9,6 +9,7 @@ import { Avatar, Box, BoxProps, Button, IconButton, styled } from '@mui/material
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
 import CustomIcon from '../Icon'
 import CustomTextField from '../text-field'
+import { useAuth } from 'src/hooks/useAuth'
 
 const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -35,6 +36,9 @@ export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
   // ** Translation
   const { t } = useTranslation()
 
+  // ** User
+  const {user} = useAuth()
+
   const handleVisibleEmoji = () => {
     setIsVisible(prev => !prev)
   }
@@ -56,7 +60,7 @@ export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
   return (
     <StyleWrapper>
       <Box sx={{ display: 'flex', width: '100%', gap: 3, alignItems: 'center' }}>
-        <Avatar />
+        <Avatar src={user?.Avatar}/>
         <Box width='100%' height='50px'>
           <CustomTextField
             fullWidth
