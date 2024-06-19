@@ -66,14 +66,16 @@ export const ItemComment = ({ item }: TItemComment) => {
 
   const handleSubmitReply = (data: { content: string }) => {
     if (user) {
-      dispatch(
-        createCommentsReplyAsync({
-          content: data?.content,
-          parent: item?.parent ? item?.parent : item?._id,
-          product: item?.product?.id,
-          user: user?._id
-        })
-      )
+      if (data?.content) {
+        dispatch(
+          createCommentsReplyAsync({
+            content: data?.content,
+            parent: item?.parent ? item?.parent : item?._id,
+            product: item?.product?.id,
+            user: user?._id
+          })
+        )
+      }
     } else {
       if (router.asPath !== '/') {
         router.replace({
@@ -93,15 +95,16 @@ export const ItemComment = ({ item }: TItemComment) => {
   }
 
   const handleEditComment = (data: { content: string }) => {
-    console.log(data?.content)
-    dispatch(
-      editCommentsMeAsync({
-        content: data?.content,
-        user: item?.user?.id,
-        product: item?.product?.id,
-        commentId: item?._id
-      })
-    )
+    if (data?.content) {
+      dispatch(
+        editCommentsMeAsync({
+          content: data?.content,
+          user: item?.user?.id,
+          product: item?.product?.id,
+          commentId: item?._id
+        })
+      )
+    }
   }
 
   useEffect(() => {
