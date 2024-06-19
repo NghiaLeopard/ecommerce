@@ -167,7 +167,6 @@ const ProductDetail: NextPage<TProps> = () => {
   }
 
   const handleUpdateToCart = (item: TProduct, amount: number) => {
-    if (amount === -1 && amountCart <= 1) return
     const dataCart = getOrderItem()
     const dataCartParse = dataCart ? JSON.parse(dataCart) : {}
 
@@ -186,8 +185,6 @@ const ProductDetail: NextPage<TProps> = () => {
     // This page is public then when adjust amount cart , you must log in
 
     if (user?._id) {
-      setAmountCart(prev => (prev += amount))
-
       dispatch(
         updateToCart({
           orderItem: arrCart
