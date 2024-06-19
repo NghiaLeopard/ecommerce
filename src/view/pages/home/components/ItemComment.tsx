@@ -13,6 +13,11 @@ import { TComment } from 'src/types/comments'
 
 // ** Utils
 import { toFullName } from 'src/utils'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/stores'
+import { createCommentsReplyAsync } from 'src/stores/comment/actions'
+import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
 
 type TItemComment = {
   item: TComment
@@ -24,7 +29,14 @@ export const ItemComment = ({ item }: TItemComment) => {
   // ** Theme
   const theme = useTheme()
 
-  console.log(item)
+  // ** user
+  const { user } = useAuth()
+
+  // ** Router
+  const router = useRouter()
+
+  // ** Dispatch
+  const dispatch: AppDispatch = useDispatch()
 
   // State
   const [isVisibleInputComment, setIsVisibleComment] = useState(false)
@@ -33,7 +45,29 @@ export const ItemComment = ({ item }: TItemComment) => {
     setIsVisibleComment(false)
   }
 
-  const handleSubmitReply = () => {}
+  const handleSubmitReply = (data: { content: string }) => {
+    if (user) {
+      dispatch(
+        createCommentsReplyAsync({
+          content: data?.content,
+          parent: item?.parent ? item?.parent : item?._id,
+          product: item?.product?.id,
+          user: user?._id
+        })
+      )
+    } else {
+      if (router.asPath !== '/') {
+        router.replace({
+          pathname: '/login',
+          query: { returnUrl: router.asPath }
+        })
+      } else {
+        router.replace('/login')
+      }
+    }
+
+    setIsVisibleComment(false)
+  }
 
   return (
     <Box sx={{ display: 'flex', gap: 3 }}>
@@ -60,7 +94,7 @@ export const ItemComment = ({ item }: TItemComment) => {
           </Box>
         )}
         {item?.replies?.map((itemReply: TComment) => {
-          return <ItemComment item={itemReply} />
+          return <ItemComment key={itemReply._id} item={itemReply} />
         })}
       </Box>
     </Box>

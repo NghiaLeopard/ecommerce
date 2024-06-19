@@ -23,14 +23,14 @@ const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 
 type TInputComment = {
   onCancel?: () => void
-  onSubmit: () => void
+  onSubmit: (data: { content: string }) => void
 }
 
 export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
   // ** State
   const [isFocus, setIsFocus] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [valueInput, setValueInput] = useState('')
+  const [valueInput, setValueInput] = useState<string>('')
 
   // ** Translation
   const { t } = useTranslation()
@@ -49,7 +49,7 @@ export const CustomInputComment = ({ onCancel, onSubmit }: TInputComment) => {
 
   const handleSubmit = () => {
     if (onSubmit) {
-      onSubmit()
+      onSubmit({ content: valueInput })
     }
   }
 

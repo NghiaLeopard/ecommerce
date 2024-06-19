@@ -4,12 +4,15 @@ import instanceAxios from 'src/helpers/axios'
 // ** Configs
 import { API_ENDPOINT } from 'src/configs/api'
 import {
+  TCreateCommentsProduct,
+  TCreateCommentsReply,
   TParamsDeleteManyComments,
   TParamsEditComments,
   TParamsEditCommentsMe,
   TParamsGetComments,
   TParamsGetCommentsPublic
 } from 'src/types/comments'
+import axios from 'axios'
 
 // ** Type
 
@@ -25,7 +28,7 @@ export const getAllComments = async (data: { params: TParamsGetComments }) => {
 
 export const getAllCommentsPublic = async (data: { params: TParamsGetCommentsPublic }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/public`, data)
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/public`, data)
 
     return res.data
   } catch (error) {
@@ -43,15 +46,25 @@ export const getDetailComments = async (idComments: string) => {
   }
 }
 
-// export const createComments = async (data: TCreateCommentsProduct) => {
-//   try {
-//     const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}`, data)
+export const createComments = async (data: TCreateCommentsProduct) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}`, data)
 
-//     return res.data
-//   } catch (error: any) {
-//     return error
-//   }
-// }
+    return res.data
+  } catch (error: any) {
+    return error
+  }
+}
+
+export const createCommentsReply = async (data: TCreateCommentsReply) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENTS.INDEX}/reply`, data)
+
+    return res.data
+  } catch (error: any) {
+    return error
+  }
+}
 
 export const editComments = async (data: TParamsEditComments) => {
   const { commentId, ...rests } = data

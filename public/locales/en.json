@@ -321,6 +321,8 @@
   "Sort_by": "Sort by",
   "Comment": "Comment",
   "Edit_comment": "Edit comment",
+  "Create_comment_success": "Create comment success",
+  "Create_comment_error": "Create comment error",
   "Title_delete_comment": "Confirm delete comment",
   "Confirm_delete_comment": "Confirm delete comment",
   "Title_delete_multiple_comments": "Confirm delete multiple comment",
