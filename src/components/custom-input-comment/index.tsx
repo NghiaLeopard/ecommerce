@@ -16,7 +16,8 @@ const StyleWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   '.epr-main': {
     position: 'absolute',
     top: '68px',
-    left: '70px'
+    left: '70px',
+    zIndex: 2
   }
 }))
 

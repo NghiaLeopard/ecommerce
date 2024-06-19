@@ -32,8 +32,8 @@ export type TCreateCommentsProduct = {
 export type TComment = {
   content: string
   product: { id: string; name: string }
-  replies: []
-  user: { id: string; firstName: string; middleName: string; lastName: string }
+  replies: TComment[]
+  user: { id: string; firstName: string; middleName: string; lastName: string,avatar: string }
   _id: string
 }
 
