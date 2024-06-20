@@ -5,8 +5,8 @@ import { useRouter } from 'next/router'
 
 // ** React
 import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import { Box, Button, Grid, IconButton, Rating, Tooltip, Typography, useTheme } from '@mui/material'
@@ -16,33 +16,34 @@ import { TProduct } from 'src/types/products'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
+import { CustomCarousel } from 'src/components/custom-carousel'
+import { CustomInputComment } from 'src/components/custom-input-comment'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 import CardProductRelated from '../home/components/CardProductRelated'
 import CardReviewProduct from '../home/components/CardReviewProduct'
 import CardSkeletonRelated from '../home/components/CardSkeletonRelated'
 import { ItemComment } from '../home/components/ItemComment'
-import { CustomCarousel } from 'src/components/custom-carousel'
-import { CustomInputComment } from 'src/components/custom-input-comment'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Service
+import { getAllCommentsPublic } from 'src/services/comments'
 import { getAllProductsRelevant, getDetailProductsPublic } from 'src/services/products'
 import { getAllReviews } from 'src/services/reviews'
-import { getAllCommentsPublic } from 'src/services/comments'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+import { cloneDeep, editDeleteSocketComment, executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 // ** Redux
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/reviews'
 import { resetInitialState as resetInitialStateComment } from 'src/stores/comment'
 import { updateToCart } from 'src/stores/order-product'
+import { resetInitialState } from 'src/stores/reviews'
+import { createCommentsAsync } from 'src/stores/comment/actions'
 
 // ** utils
 import { useDispatch, useSelector } from 'react-redux'
@@ -51,14 +52,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Config
-import { CONFIG_ROUTE } from 'src/configs/route'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** Type
-
 import { TComment } from 'src/types/comments'
 import { TReviewsProduct } from 'src/types/reviews'
-import { createCommentsAsync } from 'src/stores/comment/actions'
+import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
+import connectSocketIo from 'src/helpers/socket/socketIo'
 
 type TProps = {}
 
@@ -200,7 +201,7 @@ const ProductDetail: NextPage<TProps> = () => {
   }
 
   const handleBuyProduct = (item: TProduct) => {
-    handleUpdateToCart(item, 1)
+    handleUpdateToCart(item, amountCart)
     router.push({
       pathname: CONFIG_ROUTE.MY_CART,
       query: { selected: JSON.stringify(item._id) }
@@ -260,16 +261,11 @@ const ProductDetail: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    if (dataDetailProduct._id) {
+    if (dataDetailProduct?._id) {
+      fetchAllReviewsProduct()
       fetchListCommentPublic()
     }
   }, [dataDetailProduct?._id])
-
-  useEffect(() => {
-    if (dataDetailProduct?._id) {
-      fetchAllReviewsProduct()
-    }
-  }, [dataDetailProduct?._id, isSuccessUpdate, isSuccessDelete])
 
   useEffect(() => {
     if (productSlug) {
@@ -288,6 +284,7 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessDelete) {
         toast.success(t('Delete_reviews_product_success'))
         dispatch(resetInitialState())
+        fetchAllReviewsProduct()
       } else if (isErrorDelete) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -305,6 +302,7 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessUpdate) {
         toast.success(t('Update_reviews_product_success'))
         dispatch(resetInitialState())
+        fetchAllReviewsProduct()
       } else if (isErrorUpdate) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -322,7 +320,6 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessCreateComment) {
         toast.success(t('Create_comment_success'))
         dispatch(resetInitialStateComment())
-        fetchListCommentPublic()
       } else if (isErrorCreateComment) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
         if (errorConfig) {
@@ -340,7 +337,6 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessDeleteMe) {
         toast.success(t('Delete_comment_success'))
         dispatch(resetInitialStateComment())
-        fetchListCommentPublic()
       } else if (isErrorDeleteMe) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
         if (errorConfig) {
@@ -358,7 +354,6 @@ const ProductDetail: NextPage<TProps> = () => {
       if (isSuccessUpdateMe) {
         toast.success(t('Update_comment_success'))
         dispatch(resetInitialStateComment())
-        fetchListCommentPublic()
       } else if (isErrorUpdateMe) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeErrorComment]
         if (errorConfig) {
@@ -370,6 +365,39 @@ const ProductDetail: NextPage<TProps> = () => {
       }
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe])
+
+  useEffect(() => {
+    const socketIo = connectSocketIo()
+    socketIo.on(ACTION_SOCKET_COMMENT.CREATE_COMMENT, (data: TComment) => {
+      const cloneListComment = [...listComment]
+      cloneListComment.unshift({ ...data })
+      setListComment([...cloneListComment])
+    })
+
+    socketIo.on(ACTION_SOCKET_COMMENT.UPDATE_COMMENT, (data: TComment) => {
+      const resultArr = editDeleteSocketComment(listComment, data, 'update')
+      setListComment([...resultArr])
+    })
+
+    socketIo.on(ACTION_SOCKET_COMMENT.DELETE_COMMENT, (data: TComment) => {
+      const resultArr = editDeleteSocketComment(listComment, data, 'delete')
+      setListComment([...resultArr])
+    })
+
+    socketIo.on(ACTION_SOCKET_COMMENT.REPLY_COMMENT, (data: TComment) => {
+      const cloneListComment = cloneDeep(listComment as any)
+      cloneListComment.forEach((element: TComment) => {
+        if (element._id === data.parent) {
+          element.replies.unshift({ ...data })
+        }
+      })
+      setListComment([...cloneListComment])
+    })
+
+    return () => {
+      socketIo.disconnect()
+    }
+  }, [listComment])
 
   return (
     <>
