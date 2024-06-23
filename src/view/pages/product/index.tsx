@@ -34,16 +34,16 @@ import { getAllProductsRelevant, getDetailProductsPublic } from 'src/services/pr
 import { getAllReviews } from 'src/services/reviews'
 
 // ** Utils
-import { cloneDeep, editDeleteSocketComment, executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+import { cloneDeep, executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 // ** Redux
 
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState as resetInitialStateComment } from 'src/stores/comment'
+import { createCommentsAsync } from 'src/stores/comment/actions'
 import { updateToCart } from 'src/stores/order-product'
 import { resetInitialState } from 'src/stores/reviews'
-import { createCommentsAsync } from 'src/stores/comment/actions'
 
 // ** utils
 import { useDispatch, useSelector } from 'react-redux'
@@ -56,10 +56,10 @@ import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** Type
-import { TComment } from 'src/types/comments'
-import { TReviewsProduct } from 'src/types/reviews'
 import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
 import connectSocketIo from 'src/helpers/socket/socketIo'
+import { TComment } from 'src/types/comments'
+import { TReviewsProduct } from 'src/types/reviews'
 
 type TProps = {}
 
@@ -92,6 +92,10 @@ const ProductDetail: NextPage<TProps> = () => {
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
+
+  const { productSlug } = router?.query
+
+  const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
 
   const {
     isLoading,
@@ -136,10 +140,6 @@ const ProductDetail: NextPage<TProps> = () => {
       items: 1
     }
   }
-
-  const { productSlug } = router?.query
-
-  const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
 
   const fetchDetailProduct = async (slug: string) => {
     setLoading(true)
@@ -258,6 +258,56 @@ const ProductDetail: NextPage<TProps> = () => {
         router.replace('/login')
       }
     }
+  }
+
+  const editDeleteSocketComment = (listComment: TComment[], comment: TComment, type: string) => {
+    let cloneListComment = cloneDeep(listComment as any)
+
+    cloneListComment.forEach((element: TComment) => {
+      if (comment.parent === element?._id && element?.replies?.length > 0) {
+        const result = editDeleteSocketComment(element.replies, comment, type)
+        if (type === 'delete') {
+          element.replies = result
+        }
+      } else {
+        if (type === 'update') {
+          const findItemReplies = listComment.find((itemReplies: TComment) => itemReplies._id === comment._id)
+          if (findItemReplies) {
+            findItemReplies.content = comment.content
+          }
+        } else if (type === 'delete') {
+          cloneListComment = cloneListComment.filter((itemReplies: TComment) => {
+            return itemReplies._id !== comment._id
+          })
+
+          return cloneListComment
+        }
+      }
+    })
+
+    return [...cloneListComment]
+  }
+
+  const handleFilterDeleteMany = (listComment: TComment[], listIdComment: string[]) => {
+    return listComment.filter((itemClone: TComment) => !listIdComment.includes(itemClone._id))
+  }
+
+  const deleteMultipleSocketComment = (listComment: TComment[], listIdComment: string[]) => {
+    let cloneListComment = cloneDeep(listComment as any)
+    cloneListComment = handleFilterDeleteMany(cloneListComment, listIdComment)
+    
+    cloneListComment.forEach((item: TComment) => {
+      // if (listIdComment.includes(item._id)) {
+      //   cloneListComment = handleFilterDeleteMany(listComment, listIdComment)
+      // } else if (item.replies) {
+      //   item.replies = deleteMultipleSocketComment(item.replies, listIdComment)
+      // }
+      if (item.replies.length > 0) {
+        item.replies = handleFilterDeleteMany(item.replies, listIdComment)
+      }
+    })
+
+    return [...cloneListComment]
   }
 
   useEffect(() => {
@@ -384,6 +434,11 @@ const ProductDetail: NextPage<TProps> = () => {
       setListComment([...resultArr])
     })
 
+    socketIo.on(ACTION_SOCKET_COMMENT.DELETE_MULTIPLE_COMMENT, (data: string[]) => {
+      const resultArr = deleteMultipleSocketComment(listComment, data)
+      setListComment(resultArr)
+    })
+
     socketIo.on(ACTION_SOCKET_COMMENT.REPLY_COMMENT, (data: TComment) => {
       const cloneListComment = cloneDeep(listComment as any)
       cloneListComment.forEach((element: TComment) => {
@@ -402,6 +457,7 @@ const ProductDetail: NextPage<TProps> = () => {
   return (
     <>
       {(loading || isLoading || isLoadingComment) && <Spinner />}
+
       <Grid container>
         <Grid
           container
@@ -670,7 +726,7 @@ const ProductDetail: NextPage<TProps> = () => {
                 }}
               >
                 <Typography fontSize='20px' fontWeight='bold' color={theme.palette.primary.main}>
-                  {t('Comment')}
+                  {t('Comment_product')}: {listComment?.length} {t('comment')}
                 </Typography>
               </Box>
 

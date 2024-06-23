@@ -57,8 +57,6 @@ const CommentsPage: NextPage<TProps> = () => {
     open: false,
     idComments: ''
   })
-
-  // ** State
   const [openDeleteMultipleComments, setOpenDeleteMultipleComments] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')

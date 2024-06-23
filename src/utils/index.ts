@@ -154,33 +154,3 @@ export const isExpiry = (startDiscount: Date | null, endDiscount: Date | null) =
 
   return false
 }
-
-export const editDeleteSocketComment = (listComment: TComment[], comment: TComment, type: string) => {
-  let cloneListComment = cloneDeep(listComment as any)
-
-  cloneListComment.forEach((element: TComment) => {
-    if (comment.parent === element?._id && element?.replies?.length > 0) {
-      const result = editDeleteSocketComment(element.replies, comment, type)
-      if(type === 'delete') {
-        element.replies = result
-      }
-
-    } else {
-      if (type === 'update') {
-        const findItemReplies = listComment.find((itemReplies: TComment) => itemReplies._id === comment._id)
-        if (findItemReplies) {
-          findItemReplies.content = comment.content
-        }
-      } else if (type === 'delete') {
-        console.log(cloneListComment, comment)
-        cloneListComment = cloneListComment.filter((itemReplies: TComment) => {
-          return itemReplies._id !== comment._id
-        })
-
-        return cloneListComment
-      }
-    }
-  })
-
-  return [...cloneListComment]
-}

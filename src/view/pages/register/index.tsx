@@ -115,7 +115,6 @@ const RegisterPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-
     if ((session as any)?.accessToken && (session as any)?.accessToken !== preGoogleToken) {
       if ((session as any)?.provider === 'google') {
         dispatch(registerAuthGoogleSync({ idToken: (session as any)?.accessToken }))
