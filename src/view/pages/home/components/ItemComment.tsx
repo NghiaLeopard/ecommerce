@@ -25,6 +25,7 @@ import { createCommentsReplyAsync, deleteCommentsMeAsync, editCommentsMeAsync } 
 
 // ** Hook
 import { useAuth } from 'src/hooks/useAuth'
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 
 type TItemComment = {
   item: TComment
@@ -53,6 +54,11 @@ export const ItemComment = ({ item }: TItemComment) => {
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+  const [openDeleteComments, setOpenDeleteComments] = useState(false)
+
+  const handleOnCloseDeleteComments = () => {
+    setOpenDeleteComments(false)
   }
 
   const handleClose = () => {
@@ -121,72 +127,85 @@ export const ItemComment = ({ item }: TItemComment) => {
   }, [isSuccessUpdateMe])
 
   return (
-    <Box sx={{ display: 'flex', gap: 3, width: '100%' }}>
-      <Avatar src={item?.user?.avatar} alt='image avatar' />
-      <Box width='100%'>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box width='100%'>
-            <Typography fontWeight='bold'>
-              {toFullName(item?.user?.lastName, item?.user?.middleName, item?.user?.firstName, i18n.language)}
-            </Typography>
-            {isEdit ? (
-              <CustomInputComment
-                contentFather={item?.content}
-                isEdit={isEdit}
-                onSubmit={handleEditComment}
-                onCancel={handleCancelReply}
-              />
-            ) : (
-              <Typography>{item?.content}</Typography>
+    <>
+      <CustomConfirmDialog
+        title={t('Title_delete_comment')}
+        content={t('Confirm_delete_comment')}
+        onClose={handleOnCloseDeleteComments}
+        open={openDeleteComments}
+        handleConfirm={() => {
+          handleDeleteComment()
+          handleOnCloseDeleteComments()
+        }}
+      />
+
+      <Box sx={{ display: 'flex', gap: 3, width: '100%' }}>
+        <Avatar src={item?.user?.avatar} alt='image avatar' />
+        <Box width='100%'>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box width='100%'>
+              <Typography fontWeight='bold'>
+                {toFullName(item?.user?.lastName, item?.user?.middleName, item?.user?.firstName, i18n.language)}
+              </Typography>
+              {isEdit ? (
+                <CustomInputComment
+                  contentFather={item?.content}
+                  isEdit={isEdit}
+                  onSubmit={handleEditComment}
+                  onCancel={handleCancelReply}
+                />
+              ) : (
+                <Typography>{item?.content}</Typography>
+              )}
+            </Box>
+            {item?.user?.id === user?._id && (
+              <IconButton onClick={handleClick}>
+                <CustomIcon icon='mage:dots' />
+              </IconButton>
             )}
-          </Box>
-          {item?.user?.id === user?._id && (
-            <IconButton onClick={handleClick}>
-              <CustomIcon icon='mage:dots' />
-            </IconButton>
-          )}
-          <Menu
-            id='basic-menu'
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button'
-            }}
-          >
-            <MenuItem
-              onClick={() => {
-                setIsEdit(true), setAnchorEl(null)
+            <Menu
+              id='basic-menu'
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button'
               }}
             >
-              <CustomIcon icon='carbon:edit' />
-              <Typography ml={2}>{t('Edit')}</Typography>
-            </MenuItem>
-            <MenuItem onClick={handleDeleteComment}>
-              <CustomIcon icon='fluent:comment-dismiss-24-regular' />
-              <Typography ml={2}>{t('Delete')}</Typography>
-            </MenuItem>
-          </Menu>
+              <MenuItem
+                onClick={() => {
+                  setIsEdit(true), setAnchorEl(null)
+                }}
+              >
+                <CustomIcon icon='carbon:edit' />
+                <Typography ml={2}>{t('Edit')}</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => setOpenDeleteComments(true)}>
+                <CustomIcon icon='fluent:comment-dismiss-24-regular' />
+                <Typography ml={2}>{t('Delete')}</Typography>
+              </MenuItem>
+            </Menu>
+          </Box>
+          {!isEdit && (
+            <Box sx={{ ml: 8, mb: 2 }}>
+              <Button
+                sx={{ cursor: 'pointer', color: theme.palette.primary.main }}
+                onClick={() => setIsVisibleComment(prev => !prev)}
+              >
+                {t('Reply')}
+              </Button>
+            </Box>
+          )}
+          {isVisibleInputComment && (
+            <Box sx={{ my: 2 }}>
+              <CustomInputComment onCancel={handleCancelReply} onSubmit={handleSubmitReply} />
+            </Box>
+          )}
+          {item?.replies?.map((itemReply: TComment) => {
+            return <ItemComment key={itemReply._id} item={itemReply} />
+          })}
         </Box>
-        {!isEdit && (
-          <Box sx={{ ml: 8, mb: 2 }}>
-            <Button
-              sx={{ cursor: 'pointer', color: theme.palette.primary.main }}
-              onClick={() => setIsVisibleComment(prev => !prev)}
-            >
-              {t('Reply')}
-            </Button>
-          </Box>
-        )}
-        {isVisibleInputComment && (
-          <Box sx={{ my: 2 }}>
-            <CustomInputComment onCancel={handleCancelReply} onSubmit={handleSubmitReply} />
-          </Box>
-        )}
-        {item?.replies?.map((itemReply: TComment) => {
-          return <ItemComment key={itemReply._id} item={itemReply} />
-        })}
       </Box>
-    </Box>
+    </>
   )
 }
