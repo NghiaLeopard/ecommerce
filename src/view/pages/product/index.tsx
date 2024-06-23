@@ -295,13 +295,8 @@ const ProductDetail: NextPage<TProps> = () => {
   const deleteMultipleSocketComment = (listComment: TComment[], listIdComment: string[]) => {
     let cloneListComment = cloneDeep(listComment as any)
     cloneListComment = handleFilterDeleteMany(cloneListComment, listIdComment)
-    
+
     cloneListComment.forEach((item: TComment) => {
-      // if (listIdComment.includes(item._id)) {
-      //   cloneListComment = handleFilterDeleteMany(listComment, listIdComment)
-      // } else if (item.replies) {
-      //   item.replies = deleteMultipleSocketComment(item.replies, listIdComment)
-      // }
       if (item.replies.length > 0) {
         item.replies = handleFilterDeleteMany(item.replies, listIdComment)
       }
@@ -454,10 +449,16 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }, [listComment])
 
+  console.log(dataDetailProduct)
+
   return (
     <>
       {(loading || isLoading || isLoadingComment) && <Spinner />}
-
+      <Box>
+        <Typography sx={{ color: theme.palette.primary.main }} fontWeight='500' fontSize='18px'>
+          {t('Product_details')} {'>'} {t(`${dataDetailProduct?.type?.name}`)} {'>'} {t(`${dataDetailProduct?.name}`)}
+        </Typography>
+      </Box>
       <Grid container>
         <Grid
           container

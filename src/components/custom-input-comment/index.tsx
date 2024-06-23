@@ -78,6 +78,7 @@ export const CustomInputComment = ({ isEdit, contentFather, onCancel, onSubmit }
         <Box width='100%' height='60px'>
           <CustomTextField
             fullWidth
+            placeholder='Comment...'
             value={valueInput}
             onChange={e => {
               setValueInput(e.target.value)
