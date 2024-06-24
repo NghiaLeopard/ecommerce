@@ -43,3 +43,13 @@ export const getReportCardProductType = async () => {
     return error
   }
 }
+
+export const getReportRevenueTotal = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/revenue-total`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
