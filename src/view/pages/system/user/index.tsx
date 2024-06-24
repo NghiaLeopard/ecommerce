@@ -470,7 +470,7 @@ const UserPage: NextPage<TProps> = () => {
 
       <Box sx={{ display: 'flex', mb: 5, gap: 3 }}>
         {listUserType.map(item => {
-          return <CardCountUser item={item} />
+          return <CardCountUser item={item} key={item?.type} />
         })}
       </Box>
 
