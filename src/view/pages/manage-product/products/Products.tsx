@@ -467,7 +467,6 @@ const ProductsPage: NextPage<TProps> = () => {
           padding: '20px',
           backgroundColor: theme.palette.background.paper,
           borderRadius: '15px',
-          height: '100%',
           width: '100%'
         }}
       >
