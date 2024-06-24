@@ -366,7 +366,6 @@ const UserPage: NextPage<TProps> = () => {
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
-        console.log(row)
 
         return row.status === 1 ? <ActiveChip label={t('Active')} /> : <BlockChip label={t('Blocking')} />
       }

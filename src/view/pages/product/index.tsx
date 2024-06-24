@@ -449,8 +449,6 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }, [listComment])
 
-  console.log(dataDetailProduct)
-
   return (
     <>
       {(loading || isLoading || isLoadingComment) && <Spinner />}

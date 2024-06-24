@@ -19,7 +19,6 @@ const CardRevenueTotal = ({ listRevenueTotal }: TCardRevenueTotal) => {
   const memoValueRevenueTotal = useMemo(() => {
     return listRevenueTotal?.map(item => item.total)
   }, [listRevenueTotal])
-  console.log(listRevenueTotal)
   const memoLabelsRevenueTotal = useMemo(() => {
     return listRevenueTotal?.map(item => `${item.month}/${item.year}`)
   }, [listRevenueTotal])

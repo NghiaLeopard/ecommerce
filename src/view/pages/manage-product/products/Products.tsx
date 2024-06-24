@@ -239,7 +239,6 @@ const ProductsPage: NextPage<TProps> = () => {
     try {
       const response = await getReportProductStatus()
       setLoading(false)
-      console.log(response)
       setReportProductStatus({
         data: response?.data?.data,
         totalUser: response?.data?.total
