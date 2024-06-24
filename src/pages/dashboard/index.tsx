@@ -6,15 +6,16 @@ import { ReactNode } from 'react'
 
 //** Layout
 import UserLayout from 'src/view/layout/UserLayout'
+import DashboardPage from 'src/view/pages/dashboard'
 
 // **
 
 type TProps = {}
 
-const Dashboard: NextPage<TProps> = () => {
-  return <h1>This is dashboard</h1>
+const Index: NextPage<TProps> = () => {
+  return <DashboardPage />
 }
 
-export default Dashboard
+export default Index
 
-Dashboard.getLayout = (page: ReactNode) => <UserLayout>{page}</UserLayout>
+Index.getLayout = (page: ReactNode) => <UserLayout>{page}</UserLayout>
