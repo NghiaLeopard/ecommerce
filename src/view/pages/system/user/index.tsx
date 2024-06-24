@@ -47,7 +47,11 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 // ** Service
 import { getAllRoles } from 'src/services/role'
 import { getAllCity } from 'src/services/city'
+
+// ** Hook
 import { usePermissions } from 'src/hooks/usePermissions'
+import { CardCountUser } from './components/CardCountUser'
+import { getReportUserType } from 'src/services/report'
 
 type TProps = {}
 
@@ -79,13 +83,11 @@ const UserPage: NextPage<TProps> = () => {
     open: false,
     idUsers: ''
   })
-
   const [openDeleteMultipleUser, setOpenDeleteMultipleUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const dispatch: AppDispatch = useDispatch()
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [allRole, setAllRole] = useState([])
   const [allCity, setAllCity] = useState([])
@@ -93,18 +95,14 @@ const UserPage: NextPage<TProps> = () => {
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
+  const [reportUserType, setReportUserType] = useState<{ data: Record<number, number>; totalUser: number }>({} as any)
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     idUsers: ''
   })
 
-  const tableActions = [{ label: t('Delete'), value: 'delete' }]
-
-  const OBJECT_STATUS = OBJECT_STATUS_USER()
-
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('SYSTEM.USER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
-
-  // ** use selector
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
   const {
     users,
     isErrorCreateEdit,
@@ -119,6 +117,31 @@ const UserPage: NextPage<TProps> = () => {
     isSuccessMultipleDelete,
     typeError
   } = useSelector((state: RootState) => state.users)
+
+  const tableActions = [{ label: t('Delete'), value: 'delete' }]
+
+  const OBJECT_STATUS = OBJECT_STATUS_USER()
+
+  const { CREATE, UPDATE, DELETE } = usePermissions('SYSTEM.USER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
+  const listUserType = [
+    {
+      countUser: reportUserType?.totalUser || 0,
+      type: 4
+    },
+    {
+      countUser: reportUserType?.data?.[1] || 0,
+      type: 1
+    },
+    {
+      countUser: reportUserType?.data?.[2] || 0,
+      type: 2
+    },
+    {
+      countUser: reportUserType?.data?.[3] || 0,
+      type: 3
+    }
+  ]
 
   const getListUsers = () => {
     dispatch(
@@ -366,9 +389,8 @@ const UserPage: NextPage<TProps> = () => {
   const fetchAllRole = async () => {
     setLoading(true)
     try {
-      setLoading(false)
-
       const response = await getAllRoles({ params: { limit: -1, page: -1 } })
+      setLoading(false)
       const roleArr = response?.data?.roles.map((item: any) => ({
         label: item.name,
         value: item._id
@@ -383,9 +405,9 @@ const UserPage: NextPage<TProps> = () => {
   const fetchAllCity = async () => {
     setLoading(true)
     try {
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
       setLoading(false)
 
-      const response = await getAllCity({ params: { limit: -1, page: -1 } })
       const CityArr = response?.data?.cities.map((item: any) => ({
         label: item.name,
         value: item._id
@@ -397,12 +419,24 @@ const UserPage: NextPage<TProps> = () => {
     }
   }
 
-  useEffect(() => {
-    fetchAllCity()
-  }, [])
+  const fetchReportUserType = async () => {
+    setLoading(true)
+    try {
+      const response = await getReportUserType()
+      setLoading(false)
+      setReportUserType({
+        data: response?.data?.data,
+        totalUser: response?.data?.total
+      })
+    } catch (error) {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
+    fetchAllCity()
     fetchAllRole()
+    fetchReportUserType()
   }, [])
 
   return (
@@ -433,6 +467,13 @@ const UserPage: NextPage<TProps> = () => {
           handleOnCloseDeleteMultipleUser()
         }}
       />
+
+      <Box sx={{ display: 'flex', mb: 5, gap: 3 }}>
+        {listUserType.map(item => {
+          return <CardCountUser item={item} key={item?.type} />
+        })}
+      </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -441,7 +482,6 @@ const UserPage: NextPage<TProps> = () => {
           padding: '20px',
           backgroundColor: theme.palette.background.paper,
           borderRadius: '15px',
-          height: '100%',
           maxHeight: '100%'
         }}
       >
