@@ -35,7 +35,7 @@ import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { CONFIG_PERMISSIONS } from 'src/configs/permission'
 import i18n from 'src/configs/i18n'
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
-import { OBJECT_STATUS_USER } from 'src/configs/user'
+import { OBJECT_STATUS_USER, OBJECT_TYPE_USER } from 'src/configs/user'
 
 // ** Toast
 import toast from 'react-hot-toast'
@@ -52,6 +52,7 @@ import { getAllCity } from 'src/services/city'
 import { usePermissions } from 'src/hooks/usePermissions'
 import { CardCountUser } from './components/CardCountUser'
 import { getReportUserType } from 'src/services/report'
+import CustomIcon from 'src/components/Icon'
 
 type TProps = {}
 
@@ -92,6 +93,7 @@ const UserPage: NextPage<TProps> = () => {
   const [allRole, setAllRole] = useState([])
   const [allCity, setAllCity] = useState([])
   const [roleSelected, setRoleSelected] = useState('')
+  const [userTypeSelected, setUserTypeSelected] = useState('')
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
@@ -121,6 +123,7 @@ const UserPage: NextPage<TProps> = () => {
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   const OBJECT_STATUS = OBJECT_STATUS_USER()
+  const OBJECT_TYPE = OBJECT_TYPE_USER()
 
   const { CREATE, UPDATE, DELETE } = usePermissions('SYSTEM.USER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
@@ -143,6 +146,18 @@ const UserPage: NextPage<TProps> = () => {
     }
   ]
 
+  const configUser: Record<number, Record<string, string>> = {
+    1: {
+      icon: 'logos:facebook'
+    },
+    2: {
+      icon: 'logos:google-icon'
+    },
+    3: {
+      icon: 'logos:google-gmail'
+    }
+  }
+
   const getListUsers = () => {
     dispatch(
       getAllUsersAsync({
@@ -153,7 +168,8 @@ const UserPage: NextPage<TProps> = () => {
           order: sortBy,
           roleId: roleSelected,
           cityId: citySelected.join('|'),
-          status: statusSelected === '' ? '' : Number(statusSelected)
+          status: statusSelected === '' ? '' : Number(statusSelected),
+          userType: userTypeSelected
         }
       })
     )
@@ -221,7 +237,7 @@ const UserPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     getListUsers()
-  }, [sortBy, search, page, pageSize, roleSelected, citySelected, statusSelected])
+  }, [sortBy, search, page, pageSize, roleSelected, citySelected, statusSelected, userTypeSelected])
 
   useEffect(() => {
     if (isMessageCreateEdit) {
@@ -339,6 +355,18 @@ const UserPage: NextPage<TProps> = () => {
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
+
+        return row.userType && <CustomIcon icon={configUser[row?.userType].icon} />
+      }
+    },
+    {
+      field: 'userType',
+      headerName: t('User type'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+        console.log(row)
 
         return row.status === 1 ? <ActiveChip label={t('Active')} /> : <BlockChip label={t('Blocking')} />
       }
@@ -501,6 +529,28 @@ const UserPage: NextPage<TProps> = () => {
                   />
                 </Box>
                 <Box sx={{ width: '200px', mt: 1 }}>
+                  <CustomSelect
+                    value={userTypeSelected}
+                    options={Object.values(OBJECT_TYPE)}
+                    fullWidth
+                    onChange={(data: any) => {
+                      setUserTypeSelected(data)
+                    }}
+                    placeholder={t('User type')}
+                  />
+                </Box>
+                <Box sx={{ width: '200px', mt: 1 }}>
+                  <CustomSelect
+                    value={statusSelected}
+                    options={Object.values(OBJECT_STATUS)}
+                    fullWidth
+                    onChange={(data: any) => {
+                      setStatusSelected(data)
+                    }}
+                    placeholder={t('Status')}
+                  />
+                </Box>
+                <Box sx={{ width: '200px', mt: 1 }}>
                   {CREATE && (
                     <CustomSelect
                       value={citySelected}
@@ -513,17 +563,6 @@ const UserPage: NextPage<TProps> = () => {
                       placeholder={t('City')}
                     />
                   )}
-                </Box>
-                <Box sx={{ width: '200px', mt: 1 }}>
-                  <CustomSelect
-                    value={statusSelected}
-                    options={Object.values(OBJECT_STATUS)}
-                    fullWidth
-                    onChange={(data: any) => {
-                      setStatusSelected(data)
-                    }}
-                    placeholder={t('Status')}
-                  />
                 </Box>
                 <Box sx={{ width: '200px' }}>
                   <InputSearch onChange={handleOnChangeSearch} />
