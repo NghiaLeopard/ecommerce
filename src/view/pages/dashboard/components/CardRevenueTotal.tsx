@@ -8,21 +8,21 @@ import { useMemo } from 'react'
 
 // ** Utils
 
-type TCardProductType = {
-  listProductType: Record<string, string>[]
+type TCardRevenueTotal = {
+  listRevenueTotal: Record<string, string>[]
 }
 
-const CardProductType = ({ listProductType }: TCardProductType) => {
+const CardRevenueTotal = ({ listRevenueTotal }: TCardRevenueTotal) => {
   // ** Theme
   const theme = useTheme()
 
-  const memoValueProductType = useMemo(() => {
-    return listProductType?.map(item => item.total)
-  }, [listProductType])
-
-  const memoLabelsProductType = useMemo(() => {
-    return listProductType?.map(item => item.typeName)
-  }, [listProductType])
+  const memoValueRevenueTotal = useMemo(() => {
+    return listRevenueTotal?.map(item => item.total)
+  }, [listRevenueTotal])
+  console.log(listRevenueTotal)
+  const memoLabelsRevenueTotal = useMemo(() => {
+    return listRevenueTotal?.map(item => `${item.month}/${item.year}`)
+  }, [listRevenueTotal])
 
   return (
     <>
@@ -37,10 +37,10 @@ const CardProductType = ({ listProductType }: TCardProductType) => {
       >
         <Bar
           data={{
-            labels: memoLabelsProductType,
+            labels: memoLabelsRevenueTotal,
             datasets: [
               {
-                label: 'Số lượng',
+                label: `Doanh thu`,
                 backgroundColor: [
                   `${theme.palette.primary.main}`,
                   `${theme.palette.success.main}`,
@@ -49,14 +49,14 @@ const CardProductType = ({ listProductType }: TCardProductType) => {
                   `${theme.palette.info.main}`,
                   `${theme.palette.secondary.main}`
                 ],
-                data: memoValueProductType
+                data: memoValueRevenueTotal
               }
             ]
           }}
           options={{
             plugins: {
               legend: { display: false },
-              title: { display: true, text: `Số lượng sản phẩm theo từng loại` }
+              title: { display: true, text: `Doanh thu theo từng tháng` }
             }
           }}
         />
@@ -65,4 +65,4 @@ const CardProductType = ({ listProductType }: TCardProductType) => {
   )
 }
 
-export default CardProductType
+export default CardRevenueTotal
