@@ -1,6 +1,11 @@
+// ** React
+import 'chart.js/auto'
+
 // ** MUI
-import { Avatar, Box, Grid, Icon, Typography, useTheme } from '@mui/material'
+import { Avatar, Box, Grid, Typography, useTheme } from '@mui/material'
 import CustomIcon from 'src/components/Icon'
+
+// ** Utils
 import { formatPriceToLocal } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
@@ -46,49 +51,51 @@ const CardCountAllRecord = ({ listRecords }: TCardCountAllRecord) => {
   }
 
   return (
-    <Box
-      sx={{
-        padding: '20px',
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: '15px',
-        width: '100%'
-      }}
-    >
-      <Typography fontSize='30px' fontWeight='bold'>
-        Statistics
-      </Typography>
-      <Grid container>
-        {Object.keys(configRecords).map(itemObject => {
-          return (
-            <Grid key={itemObject} md={3} mt={5}>
-              <Box sx={{ display: 'flex', gap: 2, justifyItems: 'center' }}>
-                <Avatar
-                  sx={{
-                    backgroundColor: hexToRGBA(configRecords?.[itemObject]?.theme, 0.2),
-                    height: '50px',
-                    width: '50px'
-                  }}
-                >
-                  <CustomIcon
-                    icon={configRecords[itemObject].icon}
-                    color={configRecords?.[itemObject]?.theme}
-                    fontSize={'28px'}
-                  />
-                </Avatar>
-                <Box>
-                  <Typography fontSize='22px'>
-                    {itemObject === 'revenue'
-                      ? `${formatPriceToLocal(listRecords?.[itemObject])} VNĐ`
-                      : listRecords?.[itemObject]}
-                  </Typography>
-                  <Typography>{configRecords[itemObject].title}</Typography>
+    <>
+      <Box
+        sx={{
+          padding: '20px',
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: '15px',
+          width: '100%'
+        }}
+      >
+        <Typography fontSize='30px' fontWeight='bold'>
+          Statistics
+        </Typography>
+        <Grid container>
+          {Object.keys(configRecords).map(itemObject => {
+            return (
+              <Grid key={itemObject} md={3} xs={12} sm={6} mt={8}>
+                <Box sx={{ display: 'flex', gap: 2, justifyItems: 'center' }}>
+                  <Avatar
+                    sx={{
+                      backgroundColor: hexToRGBA(configRecords?.[itemObject]?.theme, 0.2),
+                      height: '50px',
+                      width: '50px'
+                    }}
+                  >
+                    <CustomIcon
+                      icon={configRecords[itemObject].icon}
+                      color={configRecords?.[itemObject]?.theme}
+                      fontSize={'28px'}
+                    />
+                  </Avatar>
+                  <Box>
+                    <Typography fontSize='22px'>
+                      {itemObject === 'revenue'
+                        ? `${formatPriceToLocal(listRecords?.[itemObject])} VNĐ`
+                        : listRecords?.[itemObject]}
+                    </Typography>
+                    <Typography>{configRecords[itemObject].title}</Typography>
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
-          )
-        })}
-      </Grid>
-    </Box>
+              </Grid>
+            )
+          })}
+        </Grid>
+      </Box>
+    </>
   )
 }
 
