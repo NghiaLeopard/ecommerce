@@ -23,7 +23,7 @@ export const CardProductStatusCount = ({ item }: TCardProductStatusCount) => {
     },
     1: {
       title: 'Product public',
-      bgColor: theme.palette.info.main,
+      bgColor: theme.palette.success.main,
       icon: 'ic:round-public'
     },
     2: {

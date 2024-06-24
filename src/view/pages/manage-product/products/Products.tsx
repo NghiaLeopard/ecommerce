@@ -268,6 +268,7 @@ const ProductsPage: NextPage<TProps> = () => {
         }
         handleCloseModal()
         getListProducts()
+        fetchReportProductStatus()
         dispatch(resetInitialState())
       } else if (isErrorCreateEdit) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
@@ -290,6 +291,7 @@ const ProductsPage: NextPage<TProps> = () => {
       if (isSuccessDelete) {
         toast.success(isMessageDelete)
         getListProducts()
+        fetchReportProductStatus()
       } else if (isErrorDelete) {
         toast.error(isMessageDelete)
       }
@@ -303,6 +305,8 @@ const ProductsPage: NextPage<TProps> = () => {
         toast.success(isMessageMultipleDelete)
         getListProducts()
         setCheckboxRow([])
+        fetchReportProductStatus()
+
         dispatch(resetInitialState())
       } else if (isErrorMultipleDelete) {
         toast.error(isMessageMultipleDelete)
