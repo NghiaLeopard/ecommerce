@@ -1,10 +1,9 @@
 // ** React
-import 'chart.js/auto'
+import { useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
 
 // ** MUI
 import { Box, useTheme } from '@mui/material'
-import { useMemo } from 'react'
 
 // ** Utils
 
@@ -19,7 +18,6 @@ const CardRevenueTotal = ({ listRevenueTotal }: TCardRevenueTotal) => {
   const memoValueRevenueTotal = useMemo(() => {
     return listRevenueTotal?.map(item => item.total)
   }, [listRevenueTotal])
-  console.log(listRevenueTotal)
   const memoLabelsRevenueTotal = useMemo(() => {
     return listRevenueTotal?.map(item => `${item.month}/${item.year}`)
   }, [listRevenueTotal])
