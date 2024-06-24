@@ -49,6 +49,8 @@ import { usePermissions } from 'src/hooks/usePermissions'
 
 // ** Services
 import { getAllProductTypes } from 'src/services/product-types'
+import { getReportProductStatus } from 'src/services/report'
+import { CardProductStatusCount } from './components/CardProductStatusCount'
 
 type TProps = {}
 
@@ -86,6 +88,9 @@ const ProductsPage: NextPage<TProps> = () => {
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [allProductTypes, setAllProductTypes] = useState([])
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
+  const [reportProductStatus, setReportProductStatus] = useState<{ data: Record<number, number>; totalUser: number }>(
+    {} as any
+  )
   const [openDeleteProducts, setOpenDeleteProducts] = useState({
     open: false,
     idProducts: ''
@@ -109,6 +114,21 @@ const ProductsPage: NextPage<TProps> = () => {
   const tableActions = [{ label: t('Delete'), value: 'delete' }]
 
   const OBJECT_STATUS_PRODUCTS_PAGE = OBJECT_STATUS_PRODUCTS()
+
+  const listProductStatus = [
+    {
+      countUser: reportProductStatus?.totalUser || 0,
+      type: 2
+    },
+    {
+      countUser: reportProductStatus?.data?.[1] || 0,
+      type: 1
+    },
+    {
+      countUser: reportProductStatus?.data?.[0] || 0,
+      type: 0
+    }
+  ]
 
   // ** use selector
   const {
@@ -214,8 +234,24 @@ const ProductsPage: NextPage<TProps> = () => {
     }
   }
 
+  const fetchReportProductStatus = async () => {
+    setLoading(true)
+    try {
+      const response = await getReportProductStatus()
+      setLoading(false)
+      console.log(response)
+      setReportProductStatus({
+        data: response?.data?.data,
+        totalUser: response?.data?.total
+      })
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchAllProductTypes()
+    fetchReportProductStatus()
   }, [])
 
   useEffect(() => {
@@ -283,7 +319,7 @@ const ProductsPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography sx={{overflow: 'hidden', textOverflow: 'ellipsis'}}>{row?.name}</Typography>
+        return <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{row?.name}</Typography>
       }
     },
     {
@@ -412,6 +448,13 @@ const ProductsPage: NextPage<TProps> = () => {
           handleOnCloseDeleteMultipleProducts()
         }}
       />
+
+      <Box sx={{ display: 'flex', mb: 5, gap: 3 }}>
+        {listProductStatus.map(item => {
+          return <CardProductStatusCount item={item} key={item?.type} />
+        })}
+      </Box>
+
       <Box
         sx={{
           display: 'flex',
