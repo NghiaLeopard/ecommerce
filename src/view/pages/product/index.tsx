@@ -49,15 +49,15 @@ import { resetInitialState } from 'src/stores/reviews'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Helper
+import connectSocketIo from 'src/helpers/socket/socketIo'
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Config
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
 import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** Type
-import { ACTION_SOCKET_COMMENT } from 'src/configs/socketIo'
-import connectSocketIo from 'src/helpers/socket/socketIo'
 import { TComment } from 'src/types/comments'
 import { TReviewsProduct } from 'src/types/reviews'
 

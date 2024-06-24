@@ -11,6 +11,7 @@ import { Avatar, Box, Button, IconButton, Menu, MenuItem, Typography, useTheme }
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
+import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import { CustomInputComment } from 'src/components/custom-input-comment'
 
 // ** Types
@@ -25,7 +26,6 @@ import { createCommentsReplyAsync, deleteCommentsMeAsync, editCommentsMeAsync } 
 
 // ** Hook
 import { useAuth } from 'src/hooks/useAuth'
-import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 
 type TItemComment = {
   item: TComment

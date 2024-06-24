@@ -7,8 +7,8 @@ import { Box, Button, IconButton, Rating, Typography, useTheme } from '@mui/mate
 
 // ** Components
 import CustomIcon from 'src/components/Icon'
-import { CustomTextArea } from 'src/components/text-area'
 import CustomModal from 'src/components/custom-modal'
+import { CustomTextArea } from 'src/components/text-area'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -27,7 +27,7 @@ import { AppDispatch } from 'src/stores'
 import Spinner from 'src/components/spinner'
 
 // ** Services
-import { createReviewsAsync, editReviewsMeAsync } from 'src/stores/reviews/actions'
+import { editReviewsMeAsync } from 'src/stores/reviews/actions'
 
 // ** Type
 import { TReviewsProduct } from 'src/types/reviews'
