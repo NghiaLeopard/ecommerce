@@ -80,10 +80,6 @@ const UserPage: NextPage<TProps> = () => {
   const { t } = useTranslation()
 
   // ** useState
-  const [openDeleteUser, setOpenDeleteUser] = useState({
-    open: false,
-    idUsers: ''
-  })
   const [openDeleteMultipleUser, setOpenDeleteMultipleUser] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
@@ -99,6 +95,10 @@ const UserPage: NextPage<TProps> = () => {
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
   const [reportUserType, setReportUserType] = useState<{ data: Record<number, number>; totalUser: number }>({} as any)
   const [openCreateEdit, setOpenCreateEdit] = useState({
+    open: false,
+    idUsers: ''
+  })
+  const [openDeleteUser, setOpenDeleteUser] = useState({
     open: false,
     idUsers: ''
   })
@@ -361,7 +361,7 @@ const UserPage: NextPage<TProps> = () => {
     },
     {
       field: 'userType',
-      headerName: t('User type'),
+      headerName: t('User_type'),
       minWidth: 215,
       maxWidth: 215,
       renderCell: (params: GridRenderCellParams) => {
@@ -536,7 +536,7 @@ const UserPage: NextPage<TProps> = () => {
                     onChange={(data: any) => {
                       setUserTypeSelected(data)
                     }}
-                    placeholder={t('User type')}
+                    placeholder={t('User_type')}
                   />
                 </Box>
                 <Box sx={{ width: '200px', mt: 1 }}>
