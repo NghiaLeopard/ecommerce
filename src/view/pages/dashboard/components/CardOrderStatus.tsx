@@ -1,5 +1,7 @@
 // ** React
+import { useMemo } from 'react'
 import { Pie } from 'react-chartjs-2'
+import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import { Box, useTheme } from '@mui/material'
@@ -9,8 +11,6 @@ import { OBJECT_ACTION_STATUS } from 'src/configs/order'
 
 // ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type TCardOrderStatus = {
   item: Record<number, number>

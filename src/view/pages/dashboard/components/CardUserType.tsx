@@ -2,13 +2,12 @@
 import { useMemo } from 'react'
 import { Pie } from 'react-chartjs-2'
 import { useTranslation } from 'react-i18next'
-import { Chart, Title, plugins } from 'chart.js'
 
 // ** MUI
 import { Box, useTheme } from '@mui/material'
 
-import { OBJECT_TYPE_USER } from 'src/configs/user'
 // ** Config
+import { OBJECT_TYPE_USER } from 'src/configs/user'
 
 // ** Utils
 import { hexToRGBA } from 'src/utils/hex-to-rgba'

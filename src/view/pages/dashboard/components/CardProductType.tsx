@@ -1,10 +1,10 @@
 // ** React
 import 'chart.js/auto'
+import { useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
 
 // ** MUI
 import { Box, useTheme } from '@mui/material'
-import { useMemo } from 'react'
 
 // ** Utils
 
