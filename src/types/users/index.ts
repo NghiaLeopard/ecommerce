@@ -6,6 +6,7 @@ export type TParamsGetUsers = {
   roleId?: string
   cityId?: string
   status?: number | string
+  userType?: string
 }
 
 export type TParamsEditUsers = {

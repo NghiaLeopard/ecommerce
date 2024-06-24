@@ -14,3 +14,22 @@ export const OBJECT_STATUS_USER = () => {
     }
   }
 }
+
+export const OBJECT_TYPE_USER = () => {
+  const { t } = useTranslation()
+
+  return {
+    '0': {
+      label: t('Facebook'),
+      value: 1
+    },
+    '1': {
+      label: t('Google'),
+      value: 2
+    },
+    '2': {
+      label: t('Gmail'),
+      value: 3
+    }
+  }
+}

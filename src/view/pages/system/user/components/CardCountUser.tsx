@@ -18,7 +18,7 @@ export const CardCountUser = ({ item }: TCardCountUser) => {
   const configUser: Record<number, Record<string, string>> = {
     1: {
       title: 'Facebook user',
-      bgColor: theme.palette.primary.main,
+      bgColor: theme.palette.info.main,
       icon: 'logos:facebook'
     },
     2: {
@@ -33,7 +33,7 @@ export const CardCountUser = ({ item }: TCardCountUser) => {
     },
     4: {
       title: 'Total user',
-      bgColor: theme.palette.info.main,
+      bgColor: theme.palette.primary.main,
       icon: 'lets-icons:user-fill'
     }
   }
