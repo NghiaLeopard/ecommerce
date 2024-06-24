@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { AvatarGroup, Box, Chip, ChipProps, Typography, styled, useTheme } from '@mui/material'
+import { AvatarGroup, Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -49,6 +49,8 @@ import { Avatar } from '@mui/material'
 
 // ** Hooks
 import { usePermissions } from 'src/hooks/usePermissions'
+import { getReportOrderStatus } from 'src/services/report'
+import { CardOrderStatus } from './components/CardOrderStatus'
 
 type TProps = {}
 
@@ -73,10 +75,7 @@ const OrderPage: NextPage<TProps> = () => {
   const { t } = useTranslation()
 
   // ** useState
-  const [openDeleteUser, setOpenDeleteUser] = useState({
-    open: false,
-    orderId: ''
-  })
+
   const [loading, setLoading] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [search, setSearch] = useState('')
@@ -86,17 +85,20 @@ const OrderPage: NextPage<TProps> = () => {
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState('')
   const [checkboxRow, setCheckboxRow] = useState<TSelectedRow[]>([])
+  const [reportOrderStatus, setReportOrderStatus] = useState<{ data: Record<number, number>; totalOrder: number }>(
+    {} as any
+  )
+  const [openDeleteUser, setOpenDeleteUser] = useState({
+    open: false,
+    orderId: ''
+  })
   const [openEdit, setOpenEdit] = useState({
     open: false,
     orderId: ''
   })
 
-  // ** Dispatch
+  // ** Redux
   const dispatch: AppDispatch = useDispatch()
-
-  const { CREATE, UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.ORDER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
-
-  //** use selector
   const {
     isLoading,
     orderItemProduct,
@@ -108,6 +110,38 @@ const OrderPage: NextPage<TProps> = () => {
     isErrorUpdateOrderProduct,
     isMessageUpdateOrderProduct
   } = useSelector((state: RootState) => state.orderProduct)
+
+  const { UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.ORDER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+
+  const OBJECT_ACTION_STATUS_STYLE: any = {
+    0: { label: 'Wait_payment', background: theme.palette.warning.main },
+    1: { label: 'Wait_delivery', background: theme.palette.info.main },
+    2: { label: 'Done', background: theme.palette.success.main },
+    3: { label: 'Cancel', background: theme.palette.error.main }
+  }
+
+  const listOrderStatus = [
+    {
+      countUser: reportOrderStatus?.totalOrder || 0,
+      type: 4
+    },
+    {
+      countUser: reportOrderStatus?.data?.[3] || 0,
+      type: 3
+    },
+    {
+      countUser: reportOrderStatus?.data?.[0] || 0,
+      type: 0
+    },
+    {
+      countUser: reportOrderStatus?.data?.[1] || 0,
+      type: 1
+    },
+    {
+      countUser: reportOrderStatus?.data?.[2] || 0,
+      type: 2
+    }
+  ]
 
   const getListOrderProduct = () => {
     dispatch(
@@ -122,13 +156,6 @@ const OrderPage: NextPage<TProps> = () => {
         }
       })
     )
-  }
-
-  const OBJECT_ACTION_STATUS_STYLE: any = {
-    0: { label: 'Wait_payment', background: theme.palette.warning.main },
-    1: { label: 'Wait_delivery', background: theme.palette.secondary.main },
-    2: { label: 'Done', background: theme.palette.success.main },
-    3: { label: 'Cancel', background: theme.palette.error.main }
   }
 
   const handleCloseModal = () => {
@@ -174,14 +201,51 @@ const OrderPage: NextPage<TProps> = () => {
     )
   }
 
+  const fetchAllCity = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+
+      const response = await getAllCity({ params: { limit: -1, page: -1 } })
+      const CityArr = response?.data?.cities.map((item: any) => ({
+        label: item.name,
+        value: item._id
+      }))
+
+      setAllCity(CityArr)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     getListOrderProduct()
   }, [sortBy, search, page, pageSize, citySelected, statusSelected])
+
+  const fetchReportOrderStatus = async () => {
+    setLoading(true)
+    try {
+      const response = await getReportOrderStatus()
+      setLoading(false)
+      setReportOrderStatus({
+        data: response?.data?.data,
+        totalOrder: response?.data?.total
+      })
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllCity()
+    fetchReportOrderStatus()
+  }, [])
 
   useEffect(() => {
     if (isMessageUpdateOrderProduct) {
       if (isSuccessUpdateOrderProduct) {
         toast.success(t('Update_order_product_success'))
+        getListOrderProduct()
         handleCloseModal()
       } else if (isErrorUpdateOrderProduct) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
@@ -191,7 +255,6 @@ const OrderPage: NextPage<TProps> = () => {
           toast.error(t('Update_order_product_error'))
         }
       }
-      getListOrderProduct()
       dispatch(resetInitialState())
     }
   }, [isSuccessUpdateOrderProduct, isErrorUpdateOrderProduct])
@@ -326,27 +389,6 @@ const OrderPage: NextPage<TProps> = () => {
     }
   ]
 
-  const fetchAllCity = async () => {
-    setLoading(true)
-    try {
-      setLoading(false)
-
-      const response = await getAllCity({ params: { limit: -1, page: -1 } })
-      const CityArr = response?.data?.cities.map((item: any) => ({
-        label: item.name,
-        value: item._id
-      }))
-
-      setAllCity(CityArr)
-    } catch (error) {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchAllCity()
-  }, [])
-
   return (
     <>
       {(loading || isLoading) && <Spinner />}
@@ -363,6 +405,16 @@ const OrderPage: NextPage<TProps> = () => {
           handleOnCloseDeleteUser()
         }}
       />
+
+      <Grid container spacing={3} sx={{ display: 'flex', mb: 5 }}>
+        {listOrderStatus.map(item => {
+          return (
+            <Grid item xs={12} sm={6} md={4} key={item?.type}>
+              <CardOrderStatus item={item} />
+            </Grid>
+          )
+        })}
+      </Grid>
 
       <Box
         sx={{

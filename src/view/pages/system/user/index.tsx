@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Box, Chip, Typography, styled, useTheme } from '@mui/material'
+import { Box, Chip, Grid, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -496,11 +496,15 @@ const UserPage: NextPage<TProps> = () => {
         }}
       />
 
-      <Box sx={{ display: 'flex', mb: 5, gap: 3 }}>
+      <Grid container spacing={3} sx={{ display: 'flex', mb: 5 }}>
         {listUserType.map(item => {
-          return <CardCountUser item={item} key={item?.type} />
+          return (
+            <Grid item xs={12} sm={6} md={3} key={item?.type}>
+              <CardCountUser item={item} />
+            </Grid>
+          )
         })}
-      </Box>
+      </Grid>
 
       <Box
         sx={{

@@ -453,11 +453,15 @@ const ProductsPage: NextPage<TProps> = () => {
         }}
       />
 
-      <Box sx={{ display: 'flex', mb: 5, gap: 3 }}>
+      <Grid container spacing={3} sx={{ display: 'flex', mb: 5 }}>
         {listProductStatus.map(item => {
-          return <CardProductStatusCount item={item} key={item?.type} />
+          return (
+            <Grid item xs={12} sm={6} md={4} key={item?.type}>
+              <CardProductStatusCount item={item} />
+            </Grid>
+          )
         })}
-      </Box>
+      </Grid>
 
       <Box
         sx={{
