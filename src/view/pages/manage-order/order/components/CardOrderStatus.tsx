@@ -1,5 +1,6 @@
 // ** MUI
 import { Box, Typography, useTheme } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
@@ -7,34 +8,42 @@ import CustomIcon from 'src/components/Icon'
 // ** Other
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
-type TCardCountUser = {
+type TCardOrderStatus = {
   item: { countUser: number; type: number }
 }
 
-export const CardCountUser = ({ item }: TCardCountUser) => {
+export const CardOrderStatus = ({ item }: TCardOrderStatus) => {
   // ** Theme
   const theme = useTheme()
 
-  const configUser: Record<number, Record<string, string>> = {
+  // Translation
+  const { t } = useTranslation()
+
+  const configOrderStatus: Record<number, Record<string, string>> = {
+    0: {
+      title: 'Wait_payment',
+      bgColor: theme.palette.warning.main,
+      icon: 'mdi:payment-clock'
+    },
     1: {
-      title: 'Facebook user',
+      title: 'Wait_delivery',
       bgColor: theme.palette.info.main,
-      icon: 'logos:facebook'
+      icon: 'icon-park-twotone:delivery'
     },
     2: {
-      title: 'Google user',
+      title: 'Done',
       bgColor: theme.palette.success.main,
-      icon: 'logos:google-icon'
+      icon: 'marketeq:invoice-dollar-done-left'
     },
     3: {
-      title: 'Gmail user',
-      bgColor: theme.palette.warning.main,
-      icon: 'logos:google-gmail'
+      title: 'Cancel',
+      bgColor: theme.palette.error.main,
+      icon: 'carbon:rule-cancelled'
     },
     4: {
-      title: 'Total user',
+      title: 'Total order',
       bgColor: theme.palette.primary.main,
-      icon: 'lets-icons:user-fill'
+      icon: 'material-symbols:orders-outline'
     }
   }
 
@@ -42,17 +51,18 @@ export const CardCountUser = ({ item }: TCardCountUser) => {
     <Box
       sx={{
         display: 'flex',
+        flexBasis: '25%',
         alignItems: 'center',
         height: '15vh',
         justifyContent: 'space-between',
         padding: '30px',
         borderRadius: '20px',
-        backgroundColor: hexToRGBA(configUser?.[item.type].bgColor, 0.8)
+        backgroundColor: hexToRGBA(configOrderStatus?.[item.type].bgColor, 0.8)
       }}
     >
       <Box>
         <Typography sx={{ color: theme.palette.customColors.lightPaperBg, fontSize: '18px' }}>
-          {configUser?.[item.type].title}
+          {t(`${configOrderStatus?.[item.type].title}`)}
         </Typography>
         <Typography sx={{ color: theme.palette.customColors.lightPaperBg, fontSize: '23px', fontWeight: 'bold' }}>
           {item.countUser}
@@ -64,7 +74,7 @@ export const CardCountUser = ({ item }: TCardCountUser) => {
         borderRadius='10px'
         sx={{ display: 'flex', alignItems: 'center' }}
       >
-        <CustomIcon icon={configUser[item.type].icon} />
+        <CustomIcon icon={configOrderStatus[item.type].icon} />
       </Box>
     </Box>
   )

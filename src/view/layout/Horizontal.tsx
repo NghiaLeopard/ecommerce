@@ -17,12 +17,9 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Components
 import CustomIcon from 'src/components/Icon'
 import UserDropDown from 'src/view/layout/components/user-dropdown'
+import CartProduct from './components/cart-product'
 import LanguageDropDown from './components/language-dropdown'
 import ModeToggle from './components/mode-toggle'
-import CartProduct from './components/cart-product'
-
-// ** Config
-import { CONFIG_ROUTE } from 'src/configs/route'
 
 // ** React
 import { useTranslation } from 'react-i18next'

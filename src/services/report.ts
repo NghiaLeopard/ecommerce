@@ -53,3 +53,13 @@ export const getReportRevenueTotal = async () => {
     return error
   }
 }
+
+export const getReportOrderStatus = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/order-status/count`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
