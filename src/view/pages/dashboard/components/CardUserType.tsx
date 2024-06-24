@@ -23,8 +23,6 @@ export const CardUserType = ({ item }: TCardUserType) => {
   //   ** Translation
   const { t } = useTranslation()
 
-  console.log(item)
-
   const objectTypeUser: Record<string, Record<string, any>> = OBJECT_TYPE_USER()
 
   const memoLabelStatusOrder = useMemo(() => {

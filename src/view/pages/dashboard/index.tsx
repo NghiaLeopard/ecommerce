@@ -20,6 +20,9 @@ import CardProductType from './components/CardProductType'
 import { Grid } from '@mui/material'
 import { CardOrderStatus } from './components/CardOrderStatus'
 import { CardUserType } from './components/CardUserType'
+import { getAllProducts } from 'src/services/products'
+import { TProduct } from 'src/types/products'
+import CardPopularProduct from './components/CardPopularProduct'
 
 const DashboardPage = () => {
   const [loading, setLoading] = useState(false)
@@ -28,6 +31,7 @@ const DashboardPage = () => {
   const [reportRevenueTotal, setReportRevenueTotal] = useState<Record<string, string>[]>([])
   const [reportUserType, setReportUserType] = useState<Record<number, number>>({} as any)
   const [reportOrderStatus, setReportOrderStatus] = useState<Record<number, number>>({} as any)
+  const [listDataSold, setListDataSold] = useState<TProduct[]>([])
 
   const fetchReportAllRecordCount = async () => {
     setLoading(true)
@@ -84,10 +88,27 @@ const DashboardPage = () => {
     }
   }
 
+  const fetchListProduct = async () => {
+    setLoading(true)
+    try {
+      const res = await getAllProducts({
+        params: {
+          limit: 5,
+          page: 1,
+          order: 'sold desc'
+        }
+      })
+      setLoading(false)
+      setListDataSold(res?.data?.products)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchReportOrderStatus()
-
     fetchReportAllRecordCount()
+    fetchListProduct()
     fetchReportProductType()
     fetchReportRevenueTotal()
     fetchReportUserType()
@@ -104,6 +125,9 @@ const DashboardPage = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <CardRevenueTotal listRevenueTotal={reportRevenueTotal} />
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <CardPopularProduct listData={listDataSold} />
         </Grid>
         <Grid item md={4} xs={12}>
           <CardOrderStatus item={reportOrderStatus} />
