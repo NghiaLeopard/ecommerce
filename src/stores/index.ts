@@ -13,6 +13,7 @@ import products from 'src/stores/products'
 import orderProduct from 'src/stores/order-product'
 import reviews from 'src/stores/reviews'
 import comments from 'src/stores/comment'
+import notification from 'src/stores/notification'
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +27,8 @@ export const store = configureStore({
     products,
     reviews,
     comments,
-    orderProduct
+    orderProduct,
+    notification
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

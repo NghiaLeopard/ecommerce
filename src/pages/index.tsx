@@ -23,6 +23,8 @@ type TProps = {}
 const Home: NextPage<TProps> = () => {
   const { fcmToken } = useFcmToken()
 
+  console.log(fcmToken)
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
