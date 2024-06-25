@@ -30,6 +30,7 @@ const Home: NextPage<TProps> = () => {
       const unsubscribe = onMessage(messaging, payload => {
         console.log('Foreground push notification received:', payload)
       })
+
       return () => {
         unsubscribe()
       }
