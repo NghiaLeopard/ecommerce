@@ -52,12 +52,14 @@ import { useTranslation } from 'react-i18next'
 import {
   clearAuthSocialToken,
   getAuthSocialToken,
+  getDeviceToken,
   getRememberAuth,
   setAuthSocialToken,
   setRememberAuth
 } from 'src/helpers/storage'
 import Spinner from 'src/components/spinner'
 import { CONFIG_ROUTE } from 'src/configs/route'
+import useFcmToken from 'src/hooks/useFcmToken'
 
 type TProps = {}
 
@@ -79,6 +81,7 @@ const LoginPage: NextPage<TProps> = () => {
   // ** Hook
   const { login, loginGoogle, loginFacebook } = useAuth()
   const { data: session, status } = useSession()
+  const { fcmToken } = useFcmToken()
 
   // ** State
   const [showPassword, setShowPassword] = useState(false)
@@ -89,6 +92,7 @@ const LoginPage: NextPage<TProps> = () => {
   // ** localStorage
   const authSocialToken = getAuthSocialToken()
   const rememberAuth = getRememberAuth()
+  const deviceToken = getDeviceToken() || ''
 
   const {
     control,
@@ -105,7 +109,7 @@ const LoginPage: NextPage<TProps> = () => {
 
   const handleOnSubmit = (data: LoginParams) => {
     if (!Object.keys(errors)?.length) {
-      login({ ...data, rememberMe: isRemember }, error => {
+      login({ ...data, rememberMe: isRemember, deviceToken: deviceToken }, error => {
         const message = error?.response?.data?.message
 
         if (message) toast.error(message)
@@ -127,7 +131,11 @@ const LoginPage: NextPage<TProps> = () => {
     if ((session as any)?.accessToken && (session as any)?.accessToken !== authSocialToken) {
       if ((session as any)?.provider === 'google') {
         loginGoogle(
-          { idToken: (session as any)?.accessToken, rememberMe: rememberAuth ? rememberAuth === 'true' : isRemember },
+          {
+            idToken: (session as any)?.accessToken,
+            rememberMe: rememberAuth ? rememberAuth === 'true' : isRemember,
+            deviceToken: deviceToken
+          },
           error => {
             const message = error?.response?.data?.message
 
@@ -136,7 +144,11 @@ const LoginPage: NextPage<TProps> = () => {
         )
       } else {
         loginFacebook(
-          { idToken: (session as any)?.accessToken, rememberMe: rememberAuth ? rememberAuth === 'true' : isRemember },
+          {
+            idToken: (session as any)?.accessToken,
+            rememberMe: rememberAuth ? rememberAuth === 'true' : isRemember,
+            deviceToken: deviceToken
+          },
           error => {
             const message = error?.response?.data?.message
 
@@ -148,7 +160,6 @@ const LoginPage: NextPage<TProps> = () => {
       setAuthSocialToken((session as any)?.accessToken)
     }
   }, [(session as any)?.accessToken])
-
 
   return (
     <>

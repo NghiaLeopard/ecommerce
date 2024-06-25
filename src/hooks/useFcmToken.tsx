@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { firebaseApp } from 'src/configs/firebase'
+import { clearDeviceToken, getDeviceToken, setDeviceToken } from 'src/helpers/storage'
 
 const useFcmToken = () => {
   const [token, setToken] = useState('')
@@ -31,6 +32,13 @@ const useFcmToken = () => {
       } catch (error) {
         console.log('An error occurred while retrieving token:', error)
       }
+    }
+
+    console.log(token)
+
+    if (token && token !== getDeviceToken()) {
+      clearDeviceToken()
+      setDeviceToken(token)
     }
 
     retrieveToken()

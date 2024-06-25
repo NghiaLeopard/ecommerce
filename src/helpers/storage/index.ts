@@ -5,7 +5,8 @@ import {
   REFRESH_TOKEN,
   TEMPORARY_TOKEN,
   USER_DATA,
-  REMEMBER_AUTH
+  REMEMBER_AUTH,
+  DEVICE_TOKEN
 } from 'src/configs/auth'
 import { TOrderProduct } from 'src/types/order-product'
 
@@ -92,6 +93,24 @@ export const getRememberAuth = () => {
 export const clearRememberAuth = () => {
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(REMEMBER_AUTH)
+  }
+}
+
+export const setDeviceToken = (deviceToken: string) => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(DEVICE_TOKEN, deviceToken)
+  }
+}
+
+export const getDeviceToken = () => {
+  if (typeof window !== 'undefined') {
+    return window.localStorage.getItem(DEVICE_TOKEN)
+  }
+}
+
+export const clearDeviceToken = () => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.removeItem(DEVICE_TOKEN)
   }
 }
 

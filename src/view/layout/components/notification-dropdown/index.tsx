@@ -20,9 +20,9 @@ import Tooltip from '@mui/material/Tooltip'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Components
+import Spinner from 'src/components/spinner'
 import CustomIcon from '../../../../components/Icon'
 import { MessageNotification } from './components/messageNotification'
-import Spinner from 'src/components/spinner'
 
 // ** i18n
 import { useTranslation } from 'react-i18next'
@@ -34,10 +34,12 @@ import { getAllNotificationAsync, markReadAllNotificationAsync } from 'src/store
 
 // ** Config
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
+import { firebaseApp } from 'src/configs/firebase'
+import { CONTEXT_NOTIFICATION } from 'src/configs/permission'
 
 // ** Other
+import { getMessaging, onMessage } from 'firebase/messaging'
 import toast from 'react-hot-toast'
-import { CONTEXT_NOTIFICATION } from 'src/configs/permission'
 
 interface TProps {}
 
@@ -126,6 +128,20 @@ const NotificationDropdown: NextPage<TProps> = () => {
     )
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const messaging = getMessaging(firebaseApp)
+      const unsubscribe = onMessage(messaging, payload => {
+        getListNotification()
+      })
+
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [])
+
   useEffect(() => {
     getListNotification()
   }, [limit])
@@ -191,7 +207,7 @@ const NotificationDropdown: NextPage<TProps> = () => {
         <Tooltip title={t('Cart')}>
           {user?._id ? (
             <IconButton onClick={handleClick}>
-              <Badge color='primary' badgeContent={notification?.total}>
+              <Badge color='primary' badgeContent={notification?.totalNew}>
                 <CustomIcon icon='mdi:bell' />
               </Badge>
             </IconButton>
