@@ -35,9 +35,16 @@ const CardPopularProduct = ({ listData }: TCardPopularProduct) => {
               <Box>
                 <Image src={item?.image} height={80} width={110} alt='Image product' objectFit='cover' />
               </Box>
-              <Box sx={{ width: '100%' }}>
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignContent: 'space-between'
+                }}
+              >
                 <Typography fontWeight='bold'>{item?.name}</Typography>
-                <Typography mt={3}>{item?.type?.name}</Typography>
+                <Typography>{item?.type?.name}</Typography>
               </Box>
             </Box>
           )
