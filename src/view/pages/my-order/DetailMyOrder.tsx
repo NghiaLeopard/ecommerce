@@ -207,7 +207,7 @@ export default function DetailMyOrder({}: TProps) {
             <Typography color={theme.palette.primary.main}>Back</Typography>
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            {OBJECT_ACTION_STATUS[item.status]?.value === '2' && (
+            {OBJECT_ACTION_STATUS[item?.status]?.value === '2' && (
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <CustomIcon icon='hugeicons:truck-delivery'></CustomIcon>
                 <Typography color={theme.palette.success.main} fontSize='17px' fontWeight='700'>
@@ -225,7 +225,7 @@ export default function DetailMyOrder({}: TProps) {
 
         <Divider />
         {item?.orderItems?.map((orderOfMe: TOrderedProduct) => {
-          arrCountInStockItems.push(orderOfMe.product.countInStock)
+          arrCountInStockItems.push(orderOfMe?.product?.countInStock)
 
           return (
             <Box key={orderOfMe.product._id} sx={{ display: 'flex', gap: 2 }}>
@@ -251,16 +251,16 @@ export default function DetailMyOrder({}: TProps) {
                         fontSize='15px'
                         sx={{ textDecoration: 'line-through', color: theme.palette.error.main }}
                       >
-                        {`${formatPriceToLocal(orderOfMe.price)} VNĐ`}
+                        {`${formatPriceToLocal(orderOfMe?.price)} VNĐ`}
                       </Typography>
                     ) : (
                       <Box>{''}</Box>
                     )}
                     <Box sx={{ display: 'flex', gap: 2, flexDirection: 'row' }}>
                       <Typography color={theme.palette.primary.main} fontSize='15px' fontWeight='bold'>
-                        {orderOfMe.discount > 0
-                          ? `${formatPriceToLocal((orderOfMe.price * (100 - orderOfMe.discount)) / 100)} VNĐ`
-                          : `${formatPriceToLocal(orderOfMe.price)} VNĐ`}
+                        {orderOfMe?.discount > 0
+                          ? `${formatPriceToLocal((orderOfMe?.price * (100 - orderOfMe?.discount)) / 100)} VNĐ`
+                          : `${formatPriceToLocal(orderOfMe?.price)} VNĐ`}
                       </Typography>
                       {orderOfMe.discount > 0 && (
                         <Box
@@ -280,12 +280,12 @@ export default function DetailMyOrder({}: TProps) {
                     </Box>
                   </Box>
                   <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Typography>{`x${orderOfMe.amount}`}</Typography>
+                    <Typography>{`x${orderOfMe?.amount}`}</Typography>
                   </Box>
                 </Box>
               </Box>
               <Box>
-                {OBJECT_ACTION_STATUS[item.status]?.value === '2' && (
+                {OBJECT_ACTION_STATUS[item?.status]?.value === '2' && (
                   <Button
                     variant='outlined'
                     sx={{ height: '40px', fontWeight: '600', mt: 3 }}
@@ -384,7 +384,7 @@ export default function DetailMyOrder({}: TProps) {
                 {t('Price_item')}:
               </Typography>
               <Typography fontSize='20px' color={theme.palette.primary.main} width='150px'>
-                {`${formatPriceToLocal(item.itemsPrice)} VNĐ`}
+                {`${formatPriceToLocal(item?.itemsPrice)} VNĐ`}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
@@ -398,7 +398,7 @@ export default function DetailMyOrder({}: TProps) {
                 {t('Price_shipping')}:
               </Typography>
               <Typography fontSize='20px' color={theme.palette.primary.main} width='150px'>
-                {`${formatPriceToLocal(item.shippingPrice)} VNĐ`}
+                {`${formatPriceToLocal(item?.shippingPrice)} VNĐ`}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
@@ -412,7 +412,7 @@ export default function DetailMyOrder({}: TProps) {
                 {t('Sum_money')}:
               </Typography>
               <Typography fontSize='20px' color={theme.palette.primary.main} width='150px'>
-                {`${formatPriceToLocal(item.totalPrice)} VNĐ`}
+                {`${formatPriceToLocal(item?.totalPrice)} VNĐ`}
               </Typography>
             </Box>
           </Box>
@@ -420,7 +420,7 @@ export default function DetailMyOrder({}: TProps) {
 
         {/* Button */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
-          {OBJECT_ACTION_STATUS[item.status]?.value !== '2' && (
+          {![2, 3].includes(+OBJECT_ACTION_STATUS[item?.status]?.value) && (
             <Button
               variant='outlined'
               sx={{

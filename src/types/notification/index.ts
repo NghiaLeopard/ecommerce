@@ -1,6 +1,6 @@
 export type TParamsGetNotification = {
-  limit?: number
-  page?: number
+  limit: number
+  page: number
   search?: string
   order?: string
 }

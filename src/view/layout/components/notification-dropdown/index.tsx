@@ -3,14 +3,13 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
 // ** React
-import { Fragment, MouseEvent, useEffect, useMemo, useState } from 'react'
+import { Fragment, MouseEvent, useEffect, useState } from 'react'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Mui
 import { Badge, Button, Divider, Typography, useTheme } from '@mui/material'
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -21,35 +20,34 @@ import Tooltip from '@mui/material/Tooltip'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Components
-import NoData from 'src/components/no-data'
 import CustomIcon from '../../../../components/Icon'
+import { MessageNotification } from './components/messageNotification'
+import Spinner from 'src/components/spinner'
 
 // ** i18n
 import { useTranslation } from 'react-i18next'
 
-// ** Config
-import { CONFIG_ROUTE } from 'src/configs/route'
-
-// ** Utils
-import { formatPriceToLocal, isExpiry, toFullName } from 'src/utils'
-
 // ** Store
-import { RootState } from 'src/stores'
-import { updateToCart } from 'src/stores/order-product'
+import { AppDispatch, RootState } from 'src/stores'
+import { resetInitialState } from 'src/stores/notification'
+import { getAllNotificationAsync, markReadAllNotificationAsync } from 'src/stores/notification/actions'
 
-// ** Type
-import { TOrderProduct } from 'src/types/order-product'
+// ** Config
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 
-// ** Helper
-import { getOrderItem } from 'src/helpers/storage'
-import { MessageNotification } from './components/messageNotification'
+// ** Other
+import toast from 'react-hot-toast'
+import { CONTEXT_NOTIFICATION } from 'src/configs/permission'
 
 interface TProps {}
 
 type TNotification = {
-  meta: string
+  body: string
+  context: string
+  createdAt: string
+  referenceId: string
   title: string
-  subtitle: string
+  _id: string
 }
 
 const NotificationDropdown: NextPage<TProps> = () => {
@@ -57,10 +55,10 @@ const NotificationDropdown: NextPage<TProps> = () => {
   const route = useRouter()
 
   // ** Translation
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   // ** useAuth
-  const { user, setUser } = useAuth()
+  const { user } = useAuth()
 
   // ** Theme
   const theme = useTheme()
@@ -69,7 +67,21 @@ const NotificationDropdown: NextPage<TProps> = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   // ** Dispatch
-  const dispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
+  const {
+    isLoading,
+    notification,
+    typeError,
+    isErrorMarkRead,
+    isSuccessMarkRead,
+    isMessageMarkRead,
+    isSuccessDelete,
+    isMessageDelete,
+    isErrorDelete,
+    isErrorMarkReadAll,
+    isMessageMarkReadAll,
+    isSuccessMarkReadAll
+  } = useSelector((state: RootState) => state.notification)
 
   const open = Boolean(anchorEl)
 
@@ -80,61 +92,108 @@ const NotificationDropdown: NextPage<TProps> = () => {
     setAnchorEl(null)
   }
 
-  const notification: TNotification[] = [
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
-    },
-    {
-      meta: 'Today',
-      title: 'Congratulation Nghia',
-      subtitle: 'Won the best seller'
+  const handleMarkReadAll = () => {
+    dispatch(markReadAllNotificationAsync())
+  }
+
+  const handleClickItemNotification = (data: TNotification) => {
+    route.push(`/${(CONTEXT_NOTIFICATION as any)?.[data?.context]}/${data?.referenceId}`)
+  }
+
+  useEffect(() => {
+    dispatch(
+      getAllNotificationAsync({
+        params: {
+          limit: -1,
+          page: -1
+        }
+      })
+    )
+  }, [])
+
+  useEffect(() => {
+    if (isMessageMarkRead) {
+      if (isSuccessMarkRead) {
+        toast.success(t('Marked_notification_success'))
+        dispatch(resetInitialState())
+        dispatch(
+          getAllNotificationAsync({
+            params: {
+              limit: -1,
+              page: -1
+            }
+          })
+        )
+      } else if (isErrorMarkRead) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Marked_notification_failed'))
+        }
+        dispatch(resetInitialState())
+      }
     }
-  ]
+  }, [isErrorMarkRead, isSuccessMarkRead])
+
+  useEffect(() => {
+    if (isMessageDelete) {
+      if (isSuccessDelete) {
+        toast.success(t('Delete_notification_success'))
+        dispatch(resetInitialState())
+        dispatch(
+          getAllNotificationAsync({
+            params: {
+              limit: -1,
+              page: -1
+            }
+          })
+        )
+      } else if (isErrorDelete) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Delete_notification_failed'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorDelete, isSuccessDelete])
+
+  useEffect(() => {
+    if (isMessageMarkReadAll) {
+      if (isSuccessMarkReadAll) {
+        toast.success(t('Marked_all_notification_success'))
+        dispatch(resetInitialState())
+        dispatch(
+          getAllNotificationAsync({
+            params: {
+              limit: -1,
+              page: -1
+            }
+          })
+        )
+      } else if (isErrorMarkReadAll) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Marked_all_notification_failed'))
+        }
+        dispatch(resetInitialState())
+      }
+    }
+  }, [isErrorMarkReadAll, isSuccessMarkReadAll])
 
   return (
     <Fragment>
+      {isLoading && <Spinner />}
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title={t('Cart')}>
           {user?._id ? (
             <IconButton onClick={handleClick}>
-              <Badge color='primary'>
+              <Badge color='primary' badgeContent={notification?.total}>
                 <CustomIcon icon='mdi:bell' />
               </Badge>
             </IconButton>
@@ -150,12 +209,12 @@ const NotificationDropdown: NextPage<TProps> = () => {
         id='account-menu'
         open={open}
         onClose={handleClose}
-        onClick={handleClose}
+        // onClick={handleClose}
         PaperProps={{
           elevation: 0,
           sx: {
-            height: '350',
-            width: '350px',
+            maxHeight: '400px',
+            maxWidth: '420px',
             overflow: 'visible  ',
             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
             mt: 1.5,
@@ -196,17 +255,19 @@ const NotificationDropdown: NextPage<TProps> = () => {
                 alignItems: 'center'
               }}
             >
-              <Typography color={theme.palette.customColors.lightPaperBg}>{notification.length} new</Typography>
+              <Typography color={theme.palette.customColors.lightPaperBg}>{notification?.total} new</Typography>
             </Box>
             <CustomIcon icon='solar:letter-bold' color={theme.palette.primary.main} fontSize='28px' />
           </Box>
         </Box>
-        <Box sx={{ maxHeight: '300px', overflowY: 'scroll', overflowX: 'hidden' }}>
-          {notification.map((item: TNotification) => {
+        <Divider sx={{ width: '100%' }} />
+
+        <Box sx={{ maxHeight: '270px', overflowY: 'scroll', overflowX: 'hidden' }}>
+          {notification?.data?.map((item: TNotification) => {
             return (
               <>
                 <Divider sx={{ width: '100%' }} />
-                <MenuItem key={item?.title} sx={{ width: '100%' }}>
+                <MenuItem key={item?.title} sx={{ width: '100%' }} onClick={() => handleClickItemNotification(item)}>
                   <MessageNotification data={item} />
                 </MenuItem>
               </>
@@ -216,7 +277,7 @@ const NotificationDropdown: NextPage<TProps> = () => {
 
         <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
           <Divider sx={{ width: '100%' }} />
-          <Button variant='contained' sx={{ margin: '10px 20px 5px' }}>
+          <Button variant='contained' sx={{ margin: '10px 20px 5px' }} onClick={handleMarkReadAll}>
             {t('Mark_read_all_notification')}
           </Button>
         </Box>
