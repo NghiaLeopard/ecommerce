@@ -1,14 +1,43 @@
 // ** Next
+import { NextPage } from 'next'
 import Head from 'next/head'
 
-// **React
-import { ReactNode } from 'react'
+// ** React
+import { ReactNode, useEffect } from 'react'
+
+// ** Firebase
+import { getMessaging, onMessage } from 'firebase/messaging'
+import { firebaseApp } from 'src/configs/firebase'
+
+// ** Hook
+import useFcmToken from 'src/hooks/useFcmToken'
 
 // ** Layout
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
+
+// ** View
 import HomePage from 'src/view/pages/home'
 
-export default function Home() {
+type TProps = {}
+
+const Home: NextPage<TProps> = () => {
+  const { fcmToken } = useFcmToken()
+  // Use the token as needed
+  console.log('FCM token:', fcmToken)
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const messaging = getMessaging(firebaseApp)
+      const unsubscribe = onMessage(messaging, payload => {
+        console.log('Foreground push notification received:', payload)
+      })
+      return () => {
+        unsubscribe() // Unsubscribe from the onMessage event
+      }
+    }
+  }, [])
+
   return (
     <>
       <Head>
@@ -26,3 +55,5 @@ export default function Home() {
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
+
+export default Home
