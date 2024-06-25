@@ -4,6 +4,7 @@ export type LoginParams = {
   email: string
   password: string
   rememberMe?: boolean
+  deviceToken?: string
 }
 
 export type RegisterParams = {
@@ -13,6 +14,7 @@ export type RegisterParams = {
 export type LoginParamsGoogle = {
   idToken: string
   rememberMe?: boolean
+  deviceToken?: string
 }
 
 export type RegisterParamsGoogle = {
@@ -31,6 +33,7 @@ export type TResetPassword = {
 export type LoginParamsFacebook = {
   idToken: string
   rememberMe?: boolean
+  deviceToken?: string
 }
 
 export type RegisterParamsFacebook = {

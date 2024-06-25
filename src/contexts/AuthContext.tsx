@@ -107,7 +107,7 @@ const AuthProvider = ({ children }: Props) => {
 
   // when login is success, initialize data
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    loginAuth({ email: params.email, password: params.password })
+    loginAuth({ email: params.email, password: params.password, deviceToken: params?.deviceToken })
       .then(async response => {
         params.rememberMe
           ? setLocalUserData(
@@ -132,7 +132,7 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLoginGoogle = (params: LoginParamsGoogle, errorCallback?: ErrCallbackType) => {
-    loginAuthGoogle({ idToken: params.idToken })
+    loginAuthGoogle({ idToken: params.idToken, deviceToken: params?.deviceToken })
       .then(async response => {
         params.rememberMe
           ? setLocalUserData(
@@ -157,7 +157,7 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLoginFacebook = (params: LoginParamsFacebook, errorCallback?: ErrCallbackType) => {
-    loginAuthFacebook({ idToken: params.idToken })
+    loginAuthFacebook({ idToken: params.idToken, deviceToken: params?.deviceToken })
       .then(async response => {
         params.rememberMe
           ? setLocalUserData(
