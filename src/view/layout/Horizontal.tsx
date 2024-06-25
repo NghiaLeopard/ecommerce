@@ -23,6 +23,7 @@ import ModeToggle from './components/mode-toggle'
 
 // ** React
 import { useTranslation } from 'react-i18next'
+import NotificationDropdown from './components/notification-dropdown'
 
 // ** i18n
 
@@ -118,9 +119,12 @@ const HorizontalLayout: NextPage<TProps> = ({ isHidden = false, open, toggleDraw
 
           <LanguageDropDown />
           <ModeToggle />
-          <CartProduct />
           {user !== null ? (
-            <UserDropDown />
+            <>
+              <CartProduct />
+              <NotificationDropdown />
+              <UserDropDown />
+            </>
           ) : (
             <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleNavigateLogin}>
               {t('Login')}
