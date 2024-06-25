@@ -3,7 +3,7 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
 // ** React
-import { Fragment, MouseEvent, useEffect, useState } from 'react'
+import { Fragment, MouseEvent, useEffect, useRef, useState } from 'react'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -65,6 +65,10 @@ const NotificationDropdown: NextPage<TProps> = () => {
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [limit, setLimit] = useState(10)
+
+  // ** Ref
+  const wrapperList = useRef<HTMLDivElement>(null)
 
   // ** Dispatch
   const dispatch: AppDispatch = useDispatch()
@@ -100,30 +104,38 @@ const NotificationDropdown: NextPage<TProps> = () => {
     route.push(`/${(CONTEXT_NOTIFICATION as any)?.[data?.context]}/${data?.referenceId}`)
   }
 
-  useEffect(() => {
+  const handleOnScroll = () => {
+    const divEle = wrapperList.current
+    const heightDiv = divEle?.clientHeight || 0
+    const heightScroll = divEle?.scrollHeight || 0
+    const maxScroll = heightScroll - heightDiv
+    const scrollCurrent = divEle?.scrollTop || 0
+    if (scrollCurrent >= maxScroll && limit < notification.total) {
+      setLimit(prev => prev + 10)
+    }
+  }
+
+  const getListNotification = () => {
     dispatch(
       getAllNotificationAsync({
         params: {
-          limit: -1,
-          page: -1
+          limit: limit,
+          page: 1
         }
       })
     )
-  }, [])
+  }
+
+  useEffect(() => {
+    getListNotification()
+  }, [limit])
 
   useEffect(() => {
     if (isMessageMarkRead) {
       if (isSuccessMarkRead) {
         toast.success(t('Marked_notification_success'))
         dispatch(resetInitialState())
-        dispatch(
-          getAllNotificationAsync({
-            params: {
-              limit: -1,
-              page: -1
-            }
-          })
-        )
+        getListNotification()
       } else if (isErrorMarkRead) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -141,14 +153,7 @@ const NotificationDropdown: NextPage<TProps> = () => {
       if (isSuccessDelete) {
         toast.success(t('Delete_notification_success'))
         dispatch(resetInitialState())
-        dispatch(
-          getAllNotificationAsync({
-            params: {
-              limit: -1,
-              page: -1
-            }
-          })
-        )
+        getListNotification()
       } else if (isErrorDelete) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -166,14 +171,7 @@ const NotificationDropdown: NextPage<TProps> = () => {
       if (isSuccessMarkReadAll) {
         toast.success(t('Marked_all_notification_success'))
         dispatch(resetInitialState())
-        dispatch(
-          getAllNotificationAsync({
-            params: {
-              limit: -1,
-              page: -1
-            }
-          })
-        )
+        getListNotification()
       } else if (isErrorMarkReadAll) {
         const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
         if (errorConfig) {
@@ -254,14 +252,18 @@ const NotificationDropdown: NextPage<TProps> = () => {
                 alignItems: 'center'
               }}
             >
-              <Typography color={theme.palette.customColors.lightPaperBg}>{notification?.total} new</Typography>
+              <Typography color={theme.palette.customColors.lightPaperBg}>{notification?.totalNew} new</Typography>
             </Box>
             <CustomIcon icon='solar:letter-bold' color={theme.palette.primary.main} fontSize='28px' />
           </Box>
         </Box>
         <Divider sx={{ width: '100%' }} />
 
-        <Box sx={{ maxHeight: '270px', overflowY: 'scroll', overflowX: 'hidden' }}>
+        <Box
+          ref={wrapperList}
+          onScroll={handleOnScroll}
+          sx={{ maxHeight: '270px', overflowY: 'scroll', overflowX: 'hidden' }}
+        >
           {notification?.data?.map((item: TNotification) => {
             return (
               <>
