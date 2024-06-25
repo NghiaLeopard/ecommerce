@@ -6,19 +6,19 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { Avatar, Box, Button, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+import { Box, Button, Checkbox, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
 import NoData from 'src/components/no-data'
 import Spinner from 'src/components/spinner'
-import CustomTextField from 'src/components/text-field'
+import { ItemProductCart } from './components/ItemProductCart'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Utils
-import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
+import { formatPriceToLocal } from 'src/utils'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -35,8 +35,9 @@ import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Type
 import { TOrderProduct } from 'src/types/order-product'
+
+// ** Config
 import { CONFIG_ROUTE } from 'src/configs/route'
-import { ItemProductCart } from './components/ItemProductCart'
 
 type TProps = {}
 

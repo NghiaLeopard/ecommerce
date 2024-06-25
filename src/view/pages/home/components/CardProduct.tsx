@@ -134,8 +134,8 @@ export default function CardProduct({ item }: TCardProduct) {
             display: '-webkit-box',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            '-webkit-line-clamp': '2',
-            '-webkit-box-orient': 'vertical',
+            'WebkitLineClamp': '2',
+            'WebkitBoxOrient': 'vertical',
             height: '60px'
           }}
           onClick={() => handleNavigationPage(item.slug)}
