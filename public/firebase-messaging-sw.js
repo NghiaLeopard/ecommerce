@@ -2,13 +2,13 @@ importScripts('https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/8.8.0/firebase-messaging.js')
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyA1EYibGd3to70_B6iCmAA0ZJvFGxBp8Y8',
-  authDomain: 'shop-ecomerce.firebaseapp.com',
-  projectId: 'shop-ecomerce',
-  storageBucket: 'shop-ecomerce.appspot.com',
-  messagingSenderId: '473863276840',
-  appId: '1:473863276840:web:dc32e31c4174c0be72a81d',
-  measurementId: 'G-1YLCLBHYZC'
+  apiKey: 'AIzaSyDNr9FY0BWxihPUD3tvSQwFT59h6S5qUaw',
+  authDomain: 'ecommerce-426608.firebaseapp.com',
+  projectId: 'ecommerce-426608',
+  storageBucket: 'ecommerce-426608.appspot.com',
+  messagingSenderId: '571962248186',
+  appId: '1:571962248186:web:409cc5abe7119691ec7243',
+  measurementId: 'G-5G195C5PZV'
 }
 // eslint-disable-next-line no-undef
 firebase.initializeApp(firebaseConfig)
