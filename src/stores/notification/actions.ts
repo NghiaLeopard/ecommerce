@@ -61,8 +61,13 @@ export const markReadNotificationAsync = createAsyncThunk(
 export const markReadAllNotificationAsync = createAsyncThunk(`${serviceName}/mark-many-read`, async () => {
   const response = await markReadAllNotification()
 
-  if (response?.message) {
-    return response
+  if (response?.status === 'Success') {
+    return {
+      ...response,
+      data: {
+        _id: 1
+      }
+    }
   }
 
   return {

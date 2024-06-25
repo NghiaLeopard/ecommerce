@@ -40,7 +40,7 @@ export const markReadNotification = async (notificationId: string) => {
 
 export const markReadAllNotification = async () => {
   try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.NOTIFICATION.INDEX}/read`)
+    const res = await instanceAxios.post(`${API_ENDPOINT.NOTIFICATION.INDEX}/all/read`)
 
     return res.data
   } catch (error: any) {

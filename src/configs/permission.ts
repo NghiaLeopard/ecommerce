@@ -102,8 +102,8 @@ const PAYMENT_TYPES = {
   PAYPAL: 'PAYPAL'
 }
 
-const CONTEXT_NOTIFICATION = {
-  ORDER: 'ORDER',
+export const CONTEXT_NOTIFICATION = {
+  ORDER: 'my-order',
   PAYMENT_VN_PAY: 'PAYMENT_VN_PAY'
 }
 

@@ -70,7 +70,7 @@ export const getValuePermissions = (obj: any, exclude: string[]) => {
 
 export const formatDate = (
   value: Date | string,
-  formatting: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric', year: 'numeric' }
+  formatting: Intl.DateTimeFormatOptions = { month: '2-digit', day: '2-digit', year: 'numeric' }
 ) => {
   if (!value) return value
 
