@@ -22,8 +22,6 @@ type TProps = {}
 
 const Home: NextPage<TProps> = () => {
   const { fcmToken } = useFcmToken()
-  // Use the token as needed
-  console.log('FCM token:', fcmToken)
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -33,7 +31,7 @@ const Home: NextPage<TProps> = () => {
         console.log('Foreground push notification received:', payload)
       })
       return () => {
-        unsubscribe() // Unsubscribe from the onMessage event
+        unsubscribe()
       }
     }
   }, [])
