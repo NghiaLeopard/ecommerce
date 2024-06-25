@@ -15,7 +15,8 @@ const initialState = {
   typeError: '',
   notification: {
     data: [],
-    total: 0
+    total: 0,
+    totalNew: 0
   },
   isSuccessMarkRead: false,
   isErrorMarkRead: false,
@@ -46,7 +47,8 @@ export const notificationSlice = createSlice({
 
       state.notification = {
         data: [],
-        total: 0
+        total: 0,
+        totalNew: 0
       }
     }
   },
@@ -59,6 +61,7 @@ export const notificationSlice = createSlice({
         state.isLoading = false
         state.notification.data = actions?.payload?.data?.notifications
         state.notification.total = actions?.payload?.data?.totalCount
+        state.notification.totalNew = actions?.payload?.data?.totalNew
       })
 
     // mark notification

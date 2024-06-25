@@ -21,6 +21,7 @@ type TNotification = {
   referenceId: string
   title: string
   _id: string
+  isRead?: boolean
 }
 
 type TMessageNotification = {
@@ -65,8 +66,17 @@ export const MessageNotification = ({ data }: TMessageNotification) => {
         <Typography>{formatDate(data?.createdAt)}</Typography>
       </Box>
       <Box sx={{ display: 'flex', justifyItems: 'center', alignItems: 'center' }}>
-        <Badge color='error' badgeContent=' ' variant='dot' sx={{ mr: 2 }} />
-        <Typography>{t('Unread')}</Typography>
+        {data?.isRead ? (
+          <>
+            <Badge color='success' badgeContent=' ' variant='dot' sx={{ mr: 2 }} />
+            <Typography>{t('Read')}</Typography>
+          </>
+        ) : (
+          <>
+            <Badge color='error' badgeContent=' ' variant='dot' sx={{ mr: 2 }} />
+            <Typography>{t('Unread')}</Typography>
+          </>
+        )}
         <IconButton aria-label='more' id='long-button' aria-haspopup='true' onClick={handleClick}>
           <GridMoreVertIcon />
         </IconButton>
