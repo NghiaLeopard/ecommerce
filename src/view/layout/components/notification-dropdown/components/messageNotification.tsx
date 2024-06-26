@@ -1,17 +1,27 @@
+// ** Next
+import { useRouter } from 'next/router'
+
 // ** React
 import { MouseEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 
 // ** MUI
 import { Box, IconButton, Menu, MenuItem, Typography, useTheme } from '@mui/material'
 import { GridMoreVertIcon } from '@mui/x-data-grid'
+import { Badge } from '@mui/material'
 
 // ** Component
 import CustomIcon from 'src/components/Icon'
-import { Badge } from '@mui/material'
-import { useDispatch } from 'react-redux'
-import { deleteNotificationAsync, markReadNotificationAsync } from 'src/stores/notification/actions'
+
+// ** Config
+import { CONTEXT_NOTIFICATION } from 'src/configs/permission'
+
+// ** Store
 import { AppDispatch } from 'src/stores'
+import { deleteNotificationAsync, markReadNotificationAsync } from 'src/stores/notification/actions'
+
+// ** Utils
 import { formatDate } from 'src/utils'
 
 type TNotification = {
@@ -41,6 +51,9 @@ export const MessageNotification = ({ data }: TMessageNotification) => {
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
 
+  // ** Router
+  const route = useRouter()
+
   const open = Boolean(anchorEl)
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -58,9 +71,16 @@ export const MessageNotification = ({ data }: TMessageNotification) => {
     dispatch(deleteNotificationAsync(data?._id))
   }
 
+  const handleClickItemNotification = (data: TNotification) => {
+    dispatch(markReadNotificationAsync(data?._id))
+    route.push(`/${(CONTEXT_NOTIFICATION as any)?.[data?.context]}/${data?.referenceId}`)
+  }
+
+  console.log(data)
+
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      <Box sx={{ maxWidth: '210px' }}>
+      <Box sx={{ maxWidth: '210px' }} onClick={e => handleClickItemNotification(data)}>
         <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(`${data.title}`)}</Typography>
         <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{data.body}</Typography>
         <Typography>{formatDate(data?.createdAt)}</Typography>

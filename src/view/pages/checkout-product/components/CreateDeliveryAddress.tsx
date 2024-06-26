@@ -1,7 +1,7 @@
 // ** React
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { ChangeEvent, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 // ** MUI
 import {
@@ -39,8 +39,8 @@ import { resetInitialState } from 'src/stores/auth'
 
 // ** Components
 import { CustomSelect } from 'src/components/custom-select'
-import Spinner from 'src/components/spinner'
 import NoData from 'src/components/no-data'
+import Spinner from 'src/components/spinner'
 
 // ** Configs
 
@@ -87,6 +87,7 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
   // ** User
   const { user } = useAuth()
 
+  // ** State
   const [loading, setLoading] = useState(false)
   const [checkboxSelected, setCheckboxSelected] = useState(0)
   const [tabActive, setTabActive] = useState(0)
@@ -211,7 +212,7 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
   }, [])
 
   useEffect(() => {
-    const findIndex = user?.addresses.findIndex((item: TAddresses) => item.isDefault)
+    const findIndex = user?.addresses?.findIndex((item: TAddresses) => item.isDefault)
     setCheckboxSelected(findIndex)
   }, [user])
 

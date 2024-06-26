@@ -40,6 +40,9 @@ import { CONTEXT_NOTIFICATION } from 'src/configs/permission'
 // ** Other
 import { getMessaging, onMessage } from 'firebase/messaging'
 import toast from 'react-hot-toast'
+import useFcmToken from 'src/hooks/useFcmToken'
+import { getDeviceToken } from 'src/helpers/storage'
+import { updateDeviceToken } from 'src/services/auth'
 
 interface TProps {}
 
@@ -54,7 +57,6 @@ type TNotification = {
 
 const NotificationDropdown: NextPage<TProps> = () => {
   // ** Router
-  const route = useRouter()
 
   // ** Translation
   const { t } = useTranslation()
@@ -68,6 +70,8 @@ const NotificationDropdown: NextPage<TProps> = () => {
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [limit, setLimit] = useState(10)
+  const { fcmToken } = useFcmToken()
+  const deviceToken = getDeviceToken()
 
   // ** Ref
   const wrapperList = useRef<HTMLDivElement>(null)
@@ -102,10 +106,6 @@ const NotificationDropdown: NextPage<TProps> = () => {
     dispatch(markReadAllNotificationAsync())
   }
 
-  const handleClickItemNotification = (data: TNotification) => {
-    route.push(`/${(CONTEXT_NOTIFICATION as any)?.[data?.context]}/${data?.referenceId}`)
-  }
-
   const handleOnScroll = () => {
     const divEle = wrapperList.current
     const heightDiv = divEle?.clientHeight || 0
@@ -128,6 +128,10 @@ const NotificationDropdown: NextPage<TProps> = () => {
     )
   }
 
+  const handleUpdateDeviceToken = async () => {
+    await updateDeviceToken(fcmToken)
+  }
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
@@ -145,6 +149,12 @@ const NotificationDropdown: NextPage<TProps> = () => {
   useEffect(() => {
     getListNotification()
   }, [limit])
+
+  useEffect(() => {
+    if (fcmToken && fcmToken !== deviceToken) {
+      handleUpdateDeviceToken()
+    }
+  }, [fcmToken])
 
   useEffect(() => {
     if (isMessageMarkRead) {
@@ -284,7 +294,7 @@ const NotificationDropdown: NextPage<TProps> = () => {
             return (
               <Box key={item?.title}>
                 <Divider sx={{ width: '100%' }} />
-                <MenuItem sx={{ width: '100%' }} onClick={() => handleClickItemNotification(item)}>
+                <MenuItem sx={{ width: '100%' }}>
                   <MessageNotification data={item} />
                 </MenuItem>
               </Box>
