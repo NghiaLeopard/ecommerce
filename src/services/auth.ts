@@ -67,6 +67,16 @@ export const updateAuthMe = async (data: any) => {
   }
 }
 
+export const updateDeviceToken = async (deviceToken: any) => {
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/update-device`, deviceToken)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
 export const getAuthMe = async () => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.AUTH.INDEX}/me`)

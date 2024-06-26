@@ -201,8 +201,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     } catch (error) {}
   }
 
-  console.log(user)
-
   const handleOrderProduct = () => {
     const findPaymentMethod = listDeliveryType.find(item => item.value === deliveryTypeSelected)
     const shippingPrice = findPaymentMethod ? findPaymentMethod.price : 0
@@ -213,15 +211,17 @@ const CheckOutProductPage: NextPage<TProps> = () => {
       return
     }
 
+    console.log(memoAddressDefault)
+
     if (user) {
       dispatch(
         createOrderProductsAsync({
           orderItems: memoQueryProduct.products,
           itemsPrice: +memoQueryProduct.totalPrice,
           fullName: toFullName(user?.lastName, user?.middleName, user?.firstName, i18n.language),
-          address: user?.address,
-          city: user?.city,
-          phone: user?.phoneNumber,
+          address: memoAddressDefault.address,
+          city: memoAddressDefault?.city,
+          phone: memoAddressDefault?.phoneNumber,
           user: user?._id,
           paymentMethod: paymentTypeSelected,
           deliveryMethod: deliveryTypeSelected,

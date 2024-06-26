@@ -34,8 +34,6 @@ const useFcmToken = () => {
       }
     }
 
-    console.log(token)
-
     if (token && token !== getDeviceToken()) {
       clearDeviceToken()
       setDeviceToken(token)
