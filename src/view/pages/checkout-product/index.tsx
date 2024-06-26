@@ -188,6 +188,8 @@ const CheckOutProductPage: NextPage<TProps> = () => {
             orderId
           })
 
+          console.log(res?.data)
+
           window.open(res?.data, '_blank')
 
           break
@@ -220,7 +222,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
           totalPrice: totalPrice
         })
       ).then(res => {
-
         const orderPayment = listPaymentType.find(
           (item: { value: string; label: string }) => item.value === res?.payload?.data?.paymentMethod
         )
