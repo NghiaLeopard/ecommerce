@@ -112,8 +112,6 @@ const HomePage: NextPage<TProps> = () => {
     }
   }
 
-  console.log(listProductPublic)
-
   const handleFilterProduct = (value: string, name: string) => {
     switch (name) {
       case 'review':
@@ -297,7 +295,7 @@ const HomePage: NextPage<TProps> = () => {
               pageSizeOptions={PAGE_SIZE_OPTION}
               onChangePagination={handleChangePagination}
               isHideShowed={true}
-              totalPage={Math.ceil(listProductPublic.length / 6)}
+              totalPage={Math.ceil(listProductPublic.length / PAGE_SIZE_OPTION[0])}
             />
           </Grid>
         </Grid>

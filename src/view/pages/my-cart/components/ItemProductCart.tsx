@@ -16,7 +16,7 @@ import CustomTextField from 'src/components/text-field'
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
 
 // ** Service
-import { getDetailProducts } from 'src/services/products'
+import { getDetailProductsPublicById } from 'src/services/products'
 
 // ** Store
 import { RootState } from 'src/stores'
@@ -108,7 +108,8 @@ export const ItemProductCart = ({ item, checkboxSelected, handleChangeCheckbox }
 
   const fetchDetailProductCart = async () => {
     try {
-      const res = await getDetailProducts(item.product)
+      const res = await getDetailProductsPublicById(item.product)
+      console.log(res)
       setItemState({
         name: res?.data?.name,
         amount: item.amount,
