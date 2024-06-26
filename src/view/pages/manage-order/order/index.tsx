@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI
-import { AvatarGroup, Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
+import { AvatarGroup, Box, Chip, ChipProps, Grid, Switch, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -15,8 +15,11 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/order-product'
-import { deleteOrderProductsAsync, getAllOrderCMSAsync } from 'src/stores/order-product/actions'
-import { TOrderedProduct } from 'src/types/order-product'
+import {
+  UpdateStatusOrderProductsAsync,
+  deleteOrderProductsAsync,
+  getAllOrderCMSAsync
+} from 'src/stores/order-product/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
@@ -26,13 +29,13 @@ import { CustomSelect } from 'src/components/custom-select'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
-import { UpdateOrderProduct } from './components/UpdateOrderProduct'
 import Spinner from 'src/components/spinner'
+import { UpdateOrderProduct } from './components/UpdateOrderProduct'
 
 // ** Config
+import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import i18n from 'src/configs/i18n'
-import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
 import { OBJECT_ACTION_STATUS } from 'src/configs/order'
 
 // ** Toast
@@ -51,6 +54,10 @@ import { Avatar } from '@mui/material'
 import { usePermissions } from 'src/hooks/usePermissions'
 import { getReportOrderStatus } from 'src/services/report'
 import { CardOrderStatus } from './components/CardOrderStatus'
+
+// ** Type
+import { TOrderedProduct } from 'src/types/order-product'
+import { ButtonStatusOrder } from './components/ButtonStatusOrder'
 
 type TProps = {}
 
@@ -108,10 +115,13 @@ const OrderPage: NextPage<TProps> = () => {
     isSuccessDeleteOrderProduct,
     isSuccessUpdateOrderProduct,
     isErrorUpdateOrderProduct,
-    isMessageUpdateOrderProduct
+    isMessageUpdateOrderProduct,
+    isSuccessUpdateStatusOrderProduct,
+    isErrorUpdateStatusOrderProduct,
+    isMessageUpdateStatusOrderProduct
   } = useSelector((state: RootState) => state.orderProduct)
 
-  const { UPDATE, DELETE, VIEW } = usePermissions('MANAGE_ORDER.ORDER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
+  const { UPDATE, DELETE } = usePermissions('MANAGE_ORDER.ORDER', ['CREATE', 'UPDATE', 'DELETE', 'VIEW'])
 
   const OBJECT_ACTION_STATUS_STYLE: any = {
     0: { label: 'Wait_payment', background: theme.palette.warning.main },
@@ -260,6 +270,24 @@ const OrderPage: NextPage<TProps> = () => {
   }, [isSuccessUpdateOrderProduct, isErrorUpdateOrderProduct])
 
   useEffect(() => {
+    if (isMessageUpdateStatusOrderProduct) {
+      if (isSuccessUpdateStatusOrderProduct) {
+        toast.success(t('Update_status_order_product_success'))
+        getListOrderProduct()
+        handleCloseModal()
+        dispatch(resetInitialState())
+      } else if (isErrorUpdateStatusOrderProduct) {
+        const errorConfig = OBJECT_TYPE_ERROR_MAP[typeError]
+        if (errorConfig) {
+          toast.error(t(`${errorConfig}`))
+        } else {
+          toast.error(t('Update_status_order_product_error'))
+        }
+      }
+    }
+  }, [isSuccessUpdateStatusOrderProduct, isErrorUpdateStatusOrderProduct])
+
+  useEffect(() => {
     if (isMessageDeleteOrderProduct) {
       if (isSuccessDeleteOrderProduct) {
         toast.success(t('Delete_order_product_success'))
@@ -337,6 +365,54 @@ const OrderPage: NextPage<TProps> = () => {
       }
     },
     {
+      field: 'paidStatus',
+      headerName: t('Paid_status'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return (
+          <Switch
+            checked={Boolean(row?.isPaid)}
+            onChange={e => {
+              dispatch(
+                UpdateStatusOrderProductsAsync({
+                  isPaid: Boolean(row?.isPaid) ? 0 : 1,
+                  orderId: row?._id
+                })
+              )
+            }}
+            value={row?.isPaid}
+          />
+        )
+      }
+    },
+    {
+      field: 'deliveryStatus',
+      headerName: t('Delivery_status'),
+      minWidth: 215,
+      maxWidth: 215,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params
+
+        return (
+          <Switch
+            checked={Boolean(row?.isDelivered)}
+            onChange={e =>
+              dispatch(
+                UpdateStatusOrderProductsAsync({
+                  isDelivered: Boolean(row?.isDelivered) ? 0 : 1,
+                  orderId: row?._id
+                })
+              )
+            }
+            value={row?.isDelivered}
+          />
+        )
+      }
+    },
+    {
       field: 'status',
       headerName: t('Status'),
       minWidth: 215,
@@ -346,6 +422,7 @@ const OrderPage: NextPage<TProps> = () => {
 
         return (
           <StatusChip
+            sx={{ width: '70%' }}
             label={t(OBJECT_ACTION_STATUS_STYLE[row?.status].label)}
             background={OBJECT_ACTION_STATUS_STYLE[row?.status].background}
           />
@@ -383,6 +460,8 @@ const OrderPage: NextPage<TProps> = () => {
                 }}
               />
             )}
+
+            <ButtonStatusOrder row={row} listOrderStatus={listOrderStatus} />
           </>
         )
       }

@@ -125,3 +125,10 @@ export type TItemOrderCMS = {
   isDelivered: number
   status: number
 }
+
+export type TUpdateStatusOrder = {
+  orderId: string
+  isDelivered?: number
+  isPaid?: number
+  status?: number
+}

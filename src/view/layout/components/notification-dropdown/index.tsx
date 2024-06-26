@@ -282,12 +282,12 @@ const NotificationDropdown: NextPage<TProps> = () => {
         >
           {notification?.data?.map((item: TNotification) => {
             return (
-              <>
+              <Box key={item?.title}>
                 <Divider sx={{ width: '100%' }} />
-                <MenuItem key={item?.title} sx={{ width: '100%' }} onClick={() => handleClickItemNotification(item)}>
+                <MenuItem sx={{ width: '100%' }} onClick={() => handleClickItemNotification(item)}>
                   <MessageNotification data={item} />
                 </MenuItem>
-              </>
+              </Box>
             )
           })}
         </Box>
