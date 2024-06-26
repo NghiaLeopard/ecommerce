@@ -13,11 +13,11 @@ import { Box, Button, Typography, useTheme } from '@mui/material'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Component
+import Spinner from 'src/components/spinner'
 import CustomIcon from 'src/components/Icon'
 
 // ** Service
 import { getVNPayIpnPaymentVNPay } from 'src/services/payment'
-import Spinner from 'src/components/spinner'
 
 type TProps = {}
 

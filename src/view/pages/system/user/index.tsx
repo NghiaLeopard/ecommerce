@@ -28,6 +28,7 @@ import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
+import CustomIcon from 'src/components/Icon'
 import { CreateEditUsers } from './components/CreateEditUsers'
 
 // ** Config
@@ -52,7 +53,6 @@ import { getAllCity } from 'src/services/city'
 import { usePermissions } from 'src/hooks/usePermissions'
 import { CardCountUser } from './components/CardCountUser'
 import { getReportUserType } from 'src/services/report'
-import CustomIcon from 'src/components/Icon'
 
 type TProps = {}
 

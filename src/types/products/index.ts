@@ -81,6 +81,8 @@ export type TProduct = {
   price: number
   status: string
   discount: number
+  views: string
+  uniqueViews: string[]
   description: string
   averageRating: number
   discountStartDate?: Date | null

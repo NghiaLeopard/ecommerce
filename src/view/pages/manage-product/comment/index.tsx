@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/comment'
-import { deleteMultipleCommentsAsync, deleteCommentsAsync, getAllCommentsAsync } from 'src/stores/comment/actions'
+import { deleteCommentsAsync, deleteMultipleCommentsAsync, getAllCommentsAsync } from 'src/stores/comment/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
@@ -26,7 +26,7 @@ import CustomGridEdit from 'src/components/grid-edit'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
-import { CustomSelect } from 'src/components/custom-select'
+import { EditComments } from './components/EditComments'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -41,7 +41,6 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Hook
 import { usePermissions } from 'src/hooks/usePermissions'
-import { EditComments } from './components/EditComments'
 
 type TProps = {}
 
