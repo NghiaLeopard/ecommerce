@@ -453,7 +453,7 @@ const ProductDetail: NextPage<TProps> = () => {
     <>
       {(loading || isLoading || isLoadingComment) && <Spinner />}
       <Box>
-        <Typography sx={{ color: theme.palette.primary.main }} fontWeight='500' fontSize='18px'>
+        <Typography sx={{ color: theme.palette.primary.main, mb: 3 }} fontWeight='500' fontSize='18px'>
           {t('Product_details')} {'>'} {t(`${dataDetailProduct?.type?.name}`)} {'>'} {t(`${dataDetailProduct?.name}`)}
         </Typography>
       </Box>

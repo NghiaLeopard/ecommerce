@@ -38,6 +38,7 @@ import { getAllCity } from 'src/services/city'
 // ** Store
 import { resetInitialState } from 'src/stores/products'
 import { RootState } from 'src/stores'
+import ChatBoxAi from 'src/components/chat-box-ai'
 
 interface TProps {}
 
@@ -221,11 +222,11 @@ const HomePage: NextPage<TProps> = () => {
     }
   }, [isErrorLikeProduct, isSuccessLikeProduct])
 
-
   return (
     <>
       {(loading || isLoading) && <Spinner />}
 
+      <ChatBoxAi />
       <Tabs
         value={tabSelected}
         onChange={handleChangeTab}
