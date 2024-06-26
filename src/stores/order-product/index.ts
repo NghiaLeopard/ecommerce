@@ -16,6 +16,7 @@ import {
 const initialState = {
   orderItem: [],
   orderItemProduct: [],
+  totalPage: 0,
   orderItemMe: [],
   isLoading: false,
   isSuccessCreateOrderMe: false,
@@ -48,6 +49,7 @@ export const cartProductSlice = createSlice({
       state.isSuccessCreateOrderMe = false
       state.isErrorCreateOrderMe = false
       state.isMessageCreateOrderMe = ''
+      state.totalPage = 0
       state.typeError = ''
       state.isSuccessCancelOrderMe = false
       state.isErrorCancelOrderMe = false
@@ -80,6 +82,7 @@ export const cartProductSlice = createSlice({
       builder.addCase(getAllOrderCMSAsync.fulfilled, (state, actions) => {
         state.isLoading = false
         state.orderItemProduct = actions.payload?.data?.orders
+        state.totalPage = actions.payload?.data?.totalPage
       })
 
     // Create order product

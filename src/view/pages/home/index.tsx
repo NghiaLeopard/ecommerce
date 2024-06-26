@@ -112,6 +112,8 @@ const HomePage: NextPage<TProps> = () => {
     }
   }
 
+  console.log(listProductPublic)
+
   const handleFilterProduct = (value: string, name: string) => {
     switch (name) {
       case 'review':
@@ -286,18 +288,20 @@ const HomePage: NextPage<TProps> = () => {
                     </Grid>
                   )
                 })}
+
+            <CustomPagination
+              marginTop='20'
+              page={page}
+              pageSize={pageSize}
+              rowLength={PAGE_SIZE_OPTION[0]}
+              pageSizeOptions={PAGE_SIZE_OPTION}
+              onChangePagination={handleChangePagination}
+              isHideShowed={true}
+              totalPage={Math.ceil(listProductPublic.length / 6)}
+            />
           </Grid>
         </Grid>
       </Grid>
-
-      <CustomPagination
-        page={page}
-        pageSize={pageSize}
-        rowLength={PAGE_SIZE_OPTION[0]}
-        pageSizeOptions={PAGE_SIZE_OPTION}
-        onChangePagination={handleChangePagination}
-        isHideShowed={true}
-      />
     </>
   )
 }

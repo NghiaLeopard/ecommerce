@@ -4,6 +4,9 @@ import Script from 'next/script'
 // ** MUI
 import { Box, BoxProps, styled } from '@mui/material'
 
+// ** React
+import { useTranslation } from 'react-i18next'
+
 const StyleWrapperChatBox = styled(Box)<BoxProps>(({ theme }) => ({
   'df-messenger': {
     '--df-messenger-bot-message': theme.palette.secondary.main,
@@ -19,15 +22,17 @@ const StyleWrapperChatBox = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const ChatBoxAi = () => {
+  const { t, i18n } = useTranslation()
+
   return (
     <StyleWrapperChatBox>
       <Script src='https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1'></Script>
 
       <df-messenger
         intent='WELCOME'
-        chat-title='Support'
+        chat-title={t('Support')}
         agent-id='64474be9-08a3-466b-bf90-5b90b8e8ee5d'
-        language-code='en'
+        language-code={i18n.language}
       ></df-messenger>
     </StyleWrapperChatBox>
   )
