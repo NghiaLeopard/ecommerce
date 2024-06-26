@@ -497,7 +497,7 @@ export const CreateDeliveryAddress = ({ open, onClose, tabActiveDefault }: TCrea
             )}
             {tabActive === 2 ? (
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {t('Submit')}
+                {t('Add_address')}
               </Button>
             ) : (
               <Button variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleUpdateAddressesMe}>
