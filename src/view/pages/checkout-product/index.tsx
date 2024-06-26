@@ -128,7 +128,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
   }, [user])
 
   const memoLabelCity = useMemo(() => {
-    return allCity.find(item => item.value === memoAddressDefault.city)
+    return allCity?.find(item => item?.value === memoAddressDefault?.city)
   }, [memoAddressDefault, allCity, user])
 
   const memoPriceDeliveryType = useMemo(() => {
@@ -201,10 +201,17 @@ const CheckOutProductPage: NextPage<TProps> = () => {
     } catch (error) {}
   }
 
+  console.log(user)
+
   const handleOrderProduct = () => {
     const findPaymentMethod = listDeliveryType.find(item => item.value === deliveryTypeSelected)
     const shippingPrice = findPaymentMethod ? findPaymentMethod.price : 0
     const totalPrice = +memoQueryProduct.totalPrice + Number(shippingPrice)
+
+    if (!memoAddressDefault) {
+      setOpenCreate(true)
+      return
+    }
 
     if (user) {
       dispatch(
@@ -337,7 +344,7 @@ const CheckOutProductPage: NextPage<TProps> = () => {
             <Typography>{t('Delivery_address')}</Typography>
           </Box>
           {!memoAddressDefault ? (
-            <Button variant='contained' sx={{ marginTop: '5px' }} onClick={() => setOpenCreate(true)}>
+            <Button variant='contained' sx={{ marginTop: '10px' }} onClick={() => setOpenCreate(true)}>
               {t('Add_address')}
             </Button>
           ) : (
