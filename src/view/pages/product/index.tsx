@@ -470,17 +470,19 @@ const ProductDetail: NextPage<TProps> = () => {
           xs={12}
         >
           <Grid item xs={12} md={5}>
-            <Image
-              alt='Image detail product'
-              src={dataDetailProduct?.image}
-              width={0}
-              height='300'
-              style={{
-                width: '100%',
-                objectFit: 'cover',
-                borderRadius: '10px'
-              }}
-            />
+            {dataDetailProduct?.image && (
+              <Image
+                alt='Image detail product'
+                src={dataDetailProduct?.image}
+                width={0}
+                height='300'
+                style={{
+                  width: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '10px'
+                }}
+              />
+            )}
           </Grid>
           <Grid item xs={12} md={7}>
             <Typography
@@ -584,16 +586,18 @@ const ProductDetail: NextPage<TProps> = () => {
 
             <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2, mt: '5px' }}>
               <Tooltip title='Delete'>
-                <IconButton
-                  disabled={amountCart === 1}
-                  sx={{
-                    backgroundColor: `${theme.palette.primary.main} !important`,
-                    color: theme.palette.common.white
-                  }}
-                  onClick={() => handleChangeAmountCart(-1)}
-                >
-                  <CustomIcon icon='ic:baseline-minus' />
-                </IconButton>
+                <span>
+                  <IconButton
+                    disabled={amountCart === 1}
+                    sx={{
+                      backgroundColor: `${theme.palette.primary.main} !important`,
+                      color: theme.palette.common.white
+                    }}
+                    onClick={() => handleChangeAmountCart(-1)}
+                  >
+                    <CustomIcon icon='ic:baseline-minus' />
+                  </IconButton>
+                </span>
               </Tooltip>
               <CustomTextField
                 value={amountCart}
@@ -609,15 +613,17 @@ const ProductDetail: NextPage<TProps> = () => {
                 }}
               />
               <Tooltip title='Create'>
-                <IconButton
-                  onClick={() => handleChangeAmountCart(1)}
-                  sx={{
-                    backgroundColor: `${theme.palette.primary.main} !important`,
-                    color: theme.palette.common.white
-                  }}
-                >
-                  <CustomIcon icon='ph:plus-bold' />
-                </IconButton>
+                <span>
+                  <IconButton
+                    onClick={() => handleChangeAmountCart(1)}
+                    sx={{
+                      backgroundColor: `${theme.palette.primary.main} !important`,
+                      color: theme.palette.common.white
+                    }}
+                  >
+                    <CustomIcon icon='ph:plus-bold' />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Box>
 

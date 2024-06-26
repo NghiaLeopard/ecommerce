@@ -69,7 +69,7 @@ export const CardOrderStatus = ({ item }: TCardOrderStatus) => {
         </Typography>
       </Box>
       <Box
-        bgcolor={hexToRGBA(theme.palette.customColors.lightPaperBg, 0.8)}
+        bgcolor={hexToRGBA(theme.palette.customColors.lightPaperBg, 0.2)}
         padding=' 10px 12px'
         borderRadius='10px'
         sx={{ display: 'flex', alignItems: 'center' }}

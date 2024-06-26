@@ -272,7 +272,7 @@ const OrderPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isMessageUpdateStatusOrderProduct) {
       if (isSuccessUpdateStatusOrderProduct) {
-        toast.success(t('Update_status_order_product_success'))
+        toast.success(t('Update_status_order_success'))
         getListOrderProduct()
         handleCloseModal()
         dispatch(resetInitialState())
@@ -281,7 +281,7 @@ const OrderPage: NextPage<TProps> = () => {
         if (errorConfig) {
           toast.error(t(`${errorConfig}`))
         } else {
-          toast.error(t('Update_status_order_product_error'))
+          toast.error(t('Update_status_order_error'))
         }
       }
     }
