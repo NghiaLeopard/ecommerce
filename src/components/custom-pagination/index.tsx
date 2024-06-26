@@ -19,10 +19,22 @@ type TProps = {
   pageSizeOptions: number[]
   onChangePagination: (page: number, pageSize: number) => void
   isHideShowed?: boolean
+  marginTop?: string
+  totalPage?: number
 }
 
 const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
-  const { pageSize, page, rowLength, pageSizeOptions, onChangePagination, isHideShowed, ...rests } = props
+  const {
+    pageSize,
+    totalPage,
+    page,
+    rowLength,
+    pageSizeOptions,
+    onChangePagination,
+    marginTop,
+    isHideShowed,
+    ...rests
+  } = props
 
   const { t } = useTranslation()
 
@@ -33,7 +45,8 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
         alignItems: 'center',
         justifyContent: isHideShowed ? 'center' : 'space-between',
         width: '100%',
-        paddingLeft: '8px'
+        paddingLeft: '8px',
+        mt: marginTop ? `${marginTop}px` : '0px'
       }}
     >
       {!isHideShowed && (
@@ -84,7 +97,7 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
           }}
           color='primary'
           page={page}
-          count={Math.ceil(rowLength / pageSize)}
+          count={totalPage || 1}
           {...rests}
         />
       </Box>

@@ -35,7 +35,7 @@ export const usePermissions = (keys: string, action: TAction[]) => {
     action?.forEach(mode => {
       if (permissionsUser?.includes(CONFIG_PERMISSIONS.ADMIN)) {
         defaultActions[mode] = true
-      } else if (permissionsUser?.includes(result[mode])) {
+      } else if (result[mode] && permissionsUser?.includes(result[mode])) {
         defaultActions[mode] = true
       } else {
         defaultActions[mode] = false

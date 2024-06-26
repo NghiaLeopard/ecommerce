@@ -1,18 +1,32 @@
-import { Avatar, Tooltip, Typography } from '@mui/material'
-import { useTheme } from '@mui/material'
-import { IconButton } from '@mui/material'
-import { Box, Checkbox, Divider } from '@mui/material'
+// ** Next
 import { useRouter } from 'next/router'
+
+// ** React
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
+// ** MUI
+import { Avatar, Box, Checkbox, Divider, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+
+// ** Component
 import CustomIcon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
+
+// ** Helper
 import { getOrderItem, setOrderItem } from 'src/helpers/storage'
-import { useAuth } from 'src/hooks/useAuth'
-import { getDetailProducts } from 'src/services/products'
+
+// ** Service
+import { getDetailProductsPublicById } from 'src/services/products'
+
+// ** Store
 import { RootState } from 'src/stores'
 import { updateToCart } from 'src/stores/order-product'
+
+// ** Types
 import { TOrderProduct } from 'src/types/order-product'
+
+// ** Other
+import { useAuth } from 'src/hooks/useAuth'
 import { executeUpdateCard, formatPriceToLocal, isExpiry } from 'src/utils'
 
 type TProps = {
@@ -94,7 +108,8 @@ export const ItemProductCart = ({ item, checkboxSelected, handleChangeCheckbox }
 
   const fetchDetailProductCart = async () => {
     try {
-      const res = await getDetailProducts(item.product)
+      const res = await getDetailProductsPublicById(item.product)
+      console.log(res)
       setItemState({
         name: res?.data?.name,
         amount: item.amount,

@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next'
 import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
 
 // ** Components
-import { CustomTextArea } from 'src/components/text-area'
 import CustomIcon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
+import { CustomTextArea } from 'src/components/text-area'
 
 // **Form
 import { Controller, useForm } from 'react-hook-form'
@@ -21,8 +21,8 @@ import * as yup from 'yup'
 import { useDispatch } from 'react-redux'
 
 // ** Store
-import { editCommentsAsync } from 'src/stores/comment/actions'
 import { AppDispatch } from 'src/stores'
+import { editCommentsAsync } from 'src/stores/comment/actions'
 
 // ** Components
 import Spinner from 'src/components/spinner'

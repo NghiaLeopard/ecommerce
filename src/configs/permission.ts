@@ -104,7 +104,7 @@ const PAYMENT_TYPES = {
 
 export const CONTEXT_NOTIFICATION = {
   ORDER: 'my-order',
-  PAYMENT_VN_PAY: 'PAYMENT_VN_PAY'
+  PAYMENT_VN_PAY: 'payment/vn-pay'
 }
 
 const ACTION_SOCKET_COMMENT = {

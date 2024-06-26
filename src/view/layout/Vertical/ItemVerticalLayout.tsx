@@ -110,7 +110,7 @@ export const ItemVerticalLayout: NextPage<TProps> = ({ data, level, openVertical
             >
               <CustomIcon icon={data.icon} />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1.5 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ml: 1.7 }}>
               <StyledListItemText
                 primary={data.title}
                 active={

@@ -109,6 +109,7 @@ const OrderPage: NextPage<TProps> = () => {
   const {
     isLoading,
     orderItemProduct,
+    totalPage,
     typeError,
     isErrorDeleteOrderProduct,
     isMessageDeleteOrderProduct,
@@ -198,6 +199,8 @@ const OrderPage: NextPage<TProps> = () => {
     setPageSize(pageSize)
   }
 
+  console.log(orderItemProduct.length)
+
   const ComponentPagination = () => {
     return (
       <CustomPagination
@@ -206,6 +209,7 @@ const OrderPage: NextPage<TProps> = () => {
         rowLength={PAGE_SIZE_OPTION[0]}
         pageSizeOptions={PAGE_SIZE_OPTION}
         onChangePagination={handleChangePagination}
+        totalPage={totalPage}
         isHideShowed={false}
       />
     )

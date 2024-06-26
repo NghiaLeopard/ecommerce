@@ -38,6 +38,7 @@ import { getAllCity } from 'src/services/city'
 // ** Store
 import { resetInitialState } from 'src/stores/products'
 import { RootState } from 'src/stores'
+import ChatBoxAi from 'src/components/chat-box-ai'
 
 interface TProps {}
 
@@ -221,11 +222,11 @@ const HomePage: NextPage<TProps> = () => {
     }
   }, [isErrorLikeProduct, isSuccessLikeProduct])
 
-
   return (
     <>
       {(loading || isLoading) && <Spinner />}
 
+      <ChatBoxAi />
       <Tabs
         value={tabSelected}
         onChange={handleChangeTab}
@@ -285,18 +286,20 @@ const HomePage: NextPage<TProps> = () => {
                     </Grid>
                   )
                 })}
+
+            <CustomPagination
+              marginTop='20'
+              page={page}
+              pageSize={pageSize}
+              rowLength={PAGE_SIZE_OPTION[0]}
+              pageSizeOptions={PAGE_SIZE_OPTION}
+              onChangePagination={handleChangePagination}
+              isHideShowed={true}
+              totalPage={Math.ceil(listProductPublic.length / PAGE_SIZE_OPTION[0])}
+            />
           </Grid>
         </Grid>
       </Grid>
-
-      <CustomPagination
-        page={page}
-        pageSize={pageSize}
-        rowLength={PAGE_SIZE_OPTION[0]}
-        pageSizeOptions={PAGE_SIZE_OPTION}
-        onChangePagination={handleChangePagination}
-        isHideShowed={true}
-      />
     </>
   )
 }

@@ -15,20 +15,21 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Store
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/products'
-import { deleteProductsAsync, deleteMultipleProductsAsync, getAllProductsAsync } from 'src/stores/products/actions'
+import { deleteMultipleProductsAsync, deleteProductsAsync, getAllProductsAsync } from 'src/stores/products/actions'
 
 // ** Component
 import CustomConfirmDialog from 'src/components/custom-confirm-dialog'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import CustomPagination from 'src/components/custom-pagination'
+import { CustomSelect } from 'src/components/custom-select'
 import CustomGridCreate from 'src/components/grid-create'
 import CustomGridDelete from 'src/components/grid-delete'
 import CustomGridEdit from 'src/components/grid-edit'
+import { CardProductStatusCount } from './components/CardProductStatusCount'
 import InputSearch from 'src/components/input-search'
 import Spinner from 'src/components/spinner'
 import TableHeader from 'src/components/table-header'
 import { CreateEditProducts } from './components/CreateEditProducts'
-import { CustomSelect } from 'src/components/custom-select'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
@@ -38,8 +39,8 @@ import { OBJECT_STATUS_PRODUCTS } from 'src/configs/products'
 import toast from 'react-hot-toast'
 
 // ** utils
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { formatDate, formatPriceToLocal } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Configs
 import { OBJECT_TYPE_ERROR_MAP } from 'src/configs/error'
@@ -50,7 +51,6 @@ import { usePermissions } from 'src/hooks/usePermissions'
 // ** Services
 import { getAllProductTypes } from 'src/services/product-types'
 import { getReportProductStatus } from 'src/services/report'
-import { CardProductStatusCount } from './components/CardProductStatusCount'
 
 type TProps = {}
 

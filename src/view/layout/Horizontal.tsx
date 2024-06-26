@@ -114,7 +114,7 @@ const HorizontalLayout: NextPage<TProps> = ({ isHidden = false, open, toggleDraw
             onClick={handleClickHome}
             style={{ cursor: 'pointer' }}
           >
-            Dashboard
+            {t('Leopard')}
           </Typography>
 
           <LanguageDropDown />

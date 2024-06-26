@@ -91,6 +91,16 @@ export const getDetailProductsPublic = async (slug: string) => {
   }
 }
 
+export const getDetailProductsPublicById = async (id: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCTS.INDEX}/public/${id}`)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
 export const editProducts = async (data: TParamsEditProducts) => {
   const { idProducts, ...rests } = data
   try {
