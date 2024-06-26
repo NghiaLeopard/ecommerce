@@ -66,7 +66,7 @@ const CardCountAllRecord = ({ listRecords }: TCardCountAllRecord) => {
         <Grid container>
           {Object.keys(configRecords).map(itemObject => {
             return (
-              <Grid key={itemObject} md={3} xs={12} sm={6} mt={8}>
+              <Grid item key={itemObject} md={3} xs={12} sm={6} mt={8}>
                 <Box sx={{ display: 'flex', gap: 2, justifyItems: 'center' }}>
                   <Avatar
                     sx={{

@@ -6,22 +6,18 @@ import {
   deleteOrderProducts,
   getAllOrderMe,
   getAllOrderProducts,
-  updateOrderProducts
+  updateOrderProducts,
+  updateStatusOrderProducts
 } from 'src/services/order-product'
 
 // ** Services
 import {
-  createProducts,
-  deleteMultipleProducts,
-  deleteProducts,
-  editProducts,
-  getAllProducts,
-  getListProductsLiked,
-  getListProductsViewed,
-  likeProduct,
-  unLikeProduct
-} from 'src/services/products'
-import { TCreateOrderProduct, TParamsGetOrderCMS, TParamsGetOrderMe, TUpdateOrderProduct } from 'src/types/order-product'
+  TCreateOrderProduct,
+  TParamsGetOrderCMS,
+  TParamsGetOrderMe,
+  TUpdateOrderProduct,
+  TUpdateStatusOrder
+} from 'src/types/order-product'
 
 // ** Types
 
@@ -75,6 +71,25 @@ export const UpdateOrderProductsAsync = createAsyncThunk(`${serviceName}/update`
     typeError: response?.response?.data?.typeError
   }
 })
+
+export const UpdateStatusOrderProductsAsync = createAsyncThunk(
+  `${serviceName}/update-status`,
+  async (data: TUpdateStatusOrder) => {
+    const response = await updateStatusOrderProducts(data)
+
+    if (response?.data) {
+      return response
+    }
+
+    return {
+      data: {
+        _id: null
+      },
+      message: response?.response?.data?.message,
+      typeError: response?.response?.data?.typeError
+    }
+  }
+)
 
 export const cancelOrderProductMeAsync = createAsyncThunk(`${serviceName}/cancel`, async (orderId: string) => {
   const response = await cancelOrderProductMe(orderId)

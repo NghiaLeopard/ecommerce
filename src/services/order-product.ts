@@ -9,7 +9,8 @@ import {
   TItemOrderCMS,
   TParamsGetOrderCMS,
   TParamsGetOrderMe,
-  TUpdateOrderProduct
+  TUpdateOrderProduct,
+  TUpdateStatusOrder
 } from 'src/types/order-product'
 
 export const getAllOrderMe = async (data: { params: TParamsGetOrderMe }) => {
@@ -65,6 +66,17 @@ export const getOrderProductsDetail = async (orderId: string) => {
 export const updateOrderProducts = async (data: TUpdateOrderProduct) => {
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${data._id}`, data)
+
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const updateStatusOrderProducts = async (data: TUpdateStatusOrder) => {
+  const { orderId, ...rest } = data
+  try {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/status/${orderId}`, rest)
 
     return res.data
   } catch (error) {
