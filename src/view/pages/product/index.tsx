@@ -64,7 +64,7 @@ import { TReviewsProduct } from 'src/types/reviews'
 type TProps = {}
 
 type TServerSide = {
-  listProductDetail: TProduct[]
+  listProductDetail: TProduct
   listProductRelate: TProduct[]
 }
 

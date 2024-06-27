@@ -1,10 +1,12 @@
 // ** Next
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
+import Head from 'next/head'
 
 // ** React
 import { ReactNode } from 'react'
 import { getAllProductsRelevant, getDetailProductsPublic } from 'src/services/products'
 import { TProduct } from 'src/types/products'
+import { convertHTMLtoText } from 'src/utils'
 
 // **Layout
 import LayoutNotApp from 'src/view/layout/LayoutNotApp'
@@ -17,13 +19,34 @@ import ProductDetail from 'src/view/pages/product/index'
 type TProps = {}
 
 type TServerSide = {
-  listProductDetail: TProduct[]
+  listProductDetail: TProduct
   listProductRelate: TProduct[]
 }
 
 const Index: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
   const { listProductDetail, listProductRelate } = props
-  return <ProductDetail listProductDetail={listProductDetail} listProductRelate={listProductRelate} />
+  console.log(listProductDetail)
+  const title = listProductDetail?.name
+  const description = convertHTMLtoText(listProductDetail?.description)
+
+  return (
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name='description' content={description} />
+        <meta name='author' content={'Nguyễn Đại Nghĩa'} />
+        <meta name='viewport' content='initial-scale=1, width=device-width' />
+        {/* <meta name='image' content={imageUrl} /> */}
+
+        {/* Facebook */}
+        <meta property='og:type' content='website' />
+        <meta name='og:title' content={title} />
+        <meta property='og:description' content={description} />
+        <meta name='og:viewport' content='initial-scale=1, width=device-width' />
+      </Head>
+      <ProductDetail listProductDetail={listProductDetail} listProductRelate={listProductRelate} />
+    </>
+  )
 }
 
 export const getServerSideProps: GetServerSideProps<TServerSide> = async context => {

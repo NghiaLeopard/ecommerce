@@ -110,6 +110,14 @@ export default function App(props: ExtendedAppProps) {
 
   const permissions = Component.permissions
 
+  const title = Component?.title ?? `Leopard - Project Ecommerce`
+
+  const description = Component?.title ?? 'Project Ecommerce'
+
+  const keywords = Component?.keywords ?? `'Shop leopard'`
+
+  const imageUrl = Component?.urlImage ?? 'vercel.svg'
+
   const toastOptions = {
     success: {
       className: 'react-hot-toast',
@@ -128,10 +136,18 @@ export default function App(props: ExtendedAppProps) {
   return (
     <Provider store={store}>
       <Head>
-        <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
-        <meta name='description' />
-        <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+        <title>{title}</title>
+        <meta name='description' content={description} />
+        <meta name='author' content={'Nguyễn Đại Nghĩa'} />
+        <meta name='keywords' content={keywords} />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
+        <meta name='image' content={imageUrl} />
+
+        {/* Facebook */}
+        <meta property='og:type' content='website' />
+        <meta name='og:title' content={title} />
+        <meta property='og:description' content={description} />
+        <meta name='og:viewport' content='initial-scale=1, width=device-width' />
       </Head>
 
       <AuthProvider>
