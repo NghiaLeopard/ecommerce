@@ -154,3 +154,10 @@ export const isExpiry = (startDiscount: Date | null, endDiscount: Date | null) =
 
   return false
 }
+
+export const convertHTMLtoText = (data: string) => {
+  const container = document.createElement('div')
+  container.innerHTML = data
+
+  return container.textContent || container.innerHTML
+}
