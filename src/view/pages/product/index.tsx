@@ -63,7 +63,12 @@ import { TReviewsProduct } from 'src/types/reviews'
 
 type TProps = {}
 
-const ProductDetail: NextPage<TProps> = () => {
+type TServerSide = {
+  listProductDetail: TProduct[]
+  listProductRelate: TProduct[]
+}
+
+const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRelate }: TServerSide) => {
   // ** Theme
   const theme = useTheme()
 
@@ -92,8 +97,6 @@ const ProductDetail: NextPage<TProps> = () => {
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
-
-  const { productSlug } = router?.query
 
   const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
 
@@ -141,27 +144,7 @@ const ProductDetail: NextPage<TProps> = () => {
     }
   }
 
-  const fetchDetailProduct = async (slug: string) => {
-    setLoading(true)
-    try {
-      const res = await getDetailProductsPublic(slug)
-      setLoading(false)
-      setDataDetailProduct(res.data)
-    } catch (error) {
-      setLoading(false)
-    }
-  }
-
-  const fetchProductRelated = async (slug: string) => {
-    setLoading(true)
-    try {
-      const res = await getAllProductsRelevant({ params: { slug } })
-      setLoading(false)
-      setDataProductRelated(res.data.products)
-    } catch (error) {
-      setLoading(false)
-    }
-  }
+  console.log(listProductRelate)
 
   const handleChangeAmountCart = (amount: number) => {
     setAmountCart(prev => (prev += amount))
@@ -313,16 +296,9 @@ const ProductDetail: NextPage<TProps> = () => {
   }, [dataDetailProduct?._id])
 
   useEffect(() => {
-    if (productSlug) {
-      fetchDetailProduct(productSlug as string)
-    }
-  }, [i18n.language, productSlug])
-
-  useEffect(() => {
-    if (productSlug) {
-      fetchProductRelated(productSlug as string)
-    }
-  }, [i18n.language, productSlug])
+    setDataDetailProduct(listProductDetail)
+    setDataProductRelated(listProductRelate)
+  }, [listProductDetail, listProductRelate])
 
   useEffect(() => {
     if (isMessageDelete) {
