@@ -42,7 +42,19 @@ import ChatBoxAi from 'src/components/chat-box-ai'
 
 interface TProps {}
 
-const HomePage: NextPage<TProps> = () => {
+type TServerSide = {
+  dataServer: []
+  listProductTypesServer: Record<string, string>[]
+  paramsServer: {
+    limit: number
+    page: number
+    totalPage: number
+    orderBy: string
+    productType: string
+  }
+}
+
+const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, paramsServer }: TServerSide) => {
   // ** Theme
   const theme = useTheme()
 
@@ -55,7 +67,7 @@ const HomePage: NextPage<TProps> = () => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [tabSelected, setTabSelected] = useState<string>('')
   const [listProductPublic, setListProductPublic] = useState<TProduct[]>([])
-  const [allProductTypes, setAllProductTypes] = useState([])
+  const [allProductTypes, setAllProductTypes] = useState<Record<string, string>[]>([])
   const [reviewSelected, setReviewSelected] = useState('')
   const [citySelected, setCitySelected] = useState('')
   const [search, setSearch] = useState('')
@@ -63,6 +75,7 @@ const HomePage: NextPage<TProps> = () => {
 
   // ** Ref
   const firstRender = useRef<boolean>(false)
+  const serverRender = useRef<boolean>(false)
 
   // ** Dispatch
   const dispatch = useDispatch()
@@ -84,6 +97,9 @@ const HomePage: NextPage<TProps> = () => {
     setPageSize(pageSize)
   }
   const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
+    if (!firstRender.current) {
+      firstRender.current = true
+    }
     setTabSelected(newValue)
   }
 
@@ -115,10 +131,16 @@ const HomePage: NextPage<TProps> = () => {
   const handleFilterProduct = (value: string, name: string) => {
     switch (name) {
       case 'review':
+        if (!firstRender.current) {
+          firstRender.current = true
+        }
         setReviewSelected(value)
         break
 
       case 'city':
+        if (!firstRender.current) {
+          firstRender.current = true
+        }
         setCitySelected(value)
         break
 
@@ -132,26 +154,10 @@ const HomePage: NextPage<TProps> = () => {
     setCitySelected('')
   }
 
-  const fetchAllProductTypes = async () => {
-    setLoading(true)
-    try {
-      const response = await getAllProductTypes({ params: { limit: -1, page: -1 } })
-      setLoading(false)
-
-      const productTypesArr = response?.data?.productTypes.map((item: any) => ({
-        label: item.name,
-        value: item._id
-      }))
-
-      setAllProductTypes(productTypesArr)
-      setTabSelected(productTypesArr[0].value)
-      firstRender.current = true
-    } catch (error) {
-      setLoading(false)
-    }
-  }
-
   const handleOnChangeSearch = (value: string) => {
+    if (!firstRender.current && !!serverRender.current) {
+      firstRender.current = true
+    }
     setSearch(value)
   }
 
@@ -177,14 +183,29 @@ const HomePage: NextPage<TProps> = () => {
   }, [])
 
   useEffect(() => {
-    if (firstRender.current) {
+    if (!!firstRender.current && !!serverRender.current) {
       getListProductsPublic(reviewSelected, search, tabSelected, citySelected)
     }
   }, [reviewSelected, search, tabSelected, citySelected])
 
+  console.log(!!firstRender.current, !!serverRender.current)
+
+  // ** always only render: serverRender = false
   useEffect(() => {
-    fetchAllProductTypes()
-  }, [])
+    if (!serverRender.current && !!dataServer.length && !!listProductTypesServer.length && paramsServer?.productType) {
+      setAllProductTypes(
+        listProductTypesServer.map(item => ({
+          value: item?._id,
+          label: item?.name
+        }))
+      )
+      setListProductPublic(dataServer)
+      setTabSelected(paramsServer?.productType)
+      setPage(paramsServer?.page)
+      setPageSize(paramsServer?.limit)
+      serverRender.current = true
+    }
+  }, [dataServer, listProductTypesServer, paramsServer?.productType])
 
   useEffect(() => {
     if (isMessageUnLikeProduct) {
@@ -234,14 +255,14 @@ const HomePage: NextPage<TProps> = () => {
         sx={{ borderBottom: 'none !important' }}
       >
         {allProductTypes
-          ? allProductTypes.map((item: TProductType) => {
+          ? allProductTypes.map((item: any) => {
               return <Tab value={item.value} key={item.value} label={item.label} />
             })
           : ''}
       </Tabs>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
         <Box width='200px'>
-          <InputSearch onChange={handleOnChangeSearch} />
+          <InputSearch onChange={value => handleOnChangeSearch(value)} />
         </Box>
       </Box>
       <Grid
@@ -295,7 +316,7 @@ const HomePage: NextPage<TProps> = () => {
               pageSizeOptions={PAGE_SIZE_OPTION}
               onChangePagination={handleChangePagination}
               isHideShowed={true}
-              totalPage={Math.ceil(listProductPublic.length / PAGE_SIZE_OPTION[0])}
+              totalPage={paramsServer?.totalPage}
             />
           </Grid>
         </Grid>

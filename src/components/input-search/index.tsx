@@ -28,6 +28,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   height: '100%',
   width: '100%',
   '& .MuiInputBase-input': {
+    marginLeft: '5px',
     width: '100%',
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
@@ -72,7 +73,7 @@ const InputSearch = ({ onChange }: TInputSearch) => {
         <CustomIcon icon='wpf:search' />
       </SearchIconWrapper>
       <StyledInputBase
-        placeholder=' Search…'
+        placeholder='Search…'
         inputProps={{ 'aria-label': 'search' }}
         onChange={e => {
           handleChange(e.target.value)
