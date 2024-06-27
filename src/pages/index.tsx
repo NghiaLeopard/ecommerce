@@ -82,7 +82,8 @@ export const getServerSideProps: GetServerSideProps<TServerSide> = async context
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
-;(Home.title = 'Ecommerce'), (Home.description = 'Home Ecommerce')
+Home.title = 'Ecommerce'
+Home.description = 'Home Ecommerce'
 Home.keywords = 'Home Product'
 
 export default Home
