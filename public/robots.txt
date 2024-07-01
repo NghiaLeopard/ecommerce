@@ -8,4 +8,4 @@ Allow: /home
 Allow: /product
 
 
-Sitemap: https://app-shop-fe.vercel.app/sitemap.xml
+Sitemap: https://ecommerce-leopard.vercel.app/sitemap.xml

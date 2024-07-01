@@ -14,13 +14,13 @@ export const getServerSideProps = async context => {
   })
 
   const productUrls = allProduct.map(slug => ({
-    loc: `https://ecommerce-leopard.vercel.app/product/${slug}`,
+    loc: `${process.env.NEXT_PUBLIC_API_HOST}/product/${slug}`,
     lastMod: new Date().toIOString(),
     priority: 0.9
   }))
 
   const homeUrl = {
-    loc: 'https://ecommerce-leopard.vercel.app',
+    loc: `${process.env.NEXT_PUBLIC_API_HOST}`,
     lastMod: new Date().toIOString(),
     priority: 0.9
   }
