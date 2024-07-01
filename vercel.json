@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "functions": {
+    "src/pages/**/*": {
+      "memory": 1024,
+      "maxDuration": 20
+    }
+  }
+}
