@@ -199,8 +199,6 @@ const OrderPage: NextPage<TProps> = () => {
     setPageSize(pageSize)
   }
 
-  console.log(orderItemProduct.length)
-
   const ComponentPagination = () => {
     return (
       <CustomPagination

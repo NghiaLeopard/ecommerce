@@ -144,7 +144,6 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
     }
   }
 
-  console.log(listProductRelate)
 
   const handleChangeAmountCart = (amount: number) => {
     setAmountCart(prev => (prev += amount))

@@ -188,8 +188,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
             orderId
           })
 
-          console.log(res?.data)
-
           window.open(res?.data, '_blank')
 
           break
@@ -210,8 +208,6 @@ const CheckOutProductPage: NextPage<TProps> = () => {
       setOpenCreate(true)
       return
     }
-
-    console.log(memoAddressDefault)
 
     if (user) {
       dispatch(

@@ -109,7 +109,6 @@ export const ItemProductCart = ({ item, checkboxSelected, handleChangeCheckbox }
   const fetchDetailProductCart = async () => {
     try {
       const res = await getDetailProductsPublicById(item.product)
-      console.log(res)
       setItemState({
         name: res?.data?.name,
         amount: item.amount,

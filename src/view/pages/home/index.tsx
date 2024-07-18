@@ -67,7 +67,7 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [tabSelected, setTabSelected] = useState<string>('')
   const [listProductPublic, setListProductPublic] = useState<TProduct[]>([])
-  const [allProductTypes, setAllProductTypes] = useState<Record<string, string>[]>([])
+  const [allProductTypes, setAllProductTypes] = useState<Record<string, string>[]>(listProductTypesServer)
   const [reviewSelected, setReviewSelected] = useState('')
   const [citySelected, setCitySelected] = useState('')
   const [search, setSearch] = useState('')
@@ -187,8 +187,6 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
       getListProductsPublic(reviewSelected, search, tabSelected, citySelected)
     }
   }, [reviewSelected, search, tabSelected, citySelected])
-
-  console.log(!!firstRender.current, !!serverRender.current)
 
   // ** always only render: serverRender = false
   useEffect(() => {

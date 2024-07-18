@@ -25,7 +25,6 @@ type TServerSide = {
 
 const Index: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
   const { listProductDetail, listProductRelate } = props
-  console.log(listProductDetail)
   const title = listProductDetail?.name
   const description = convertHTMLtoText(listProductDetail?.description)
 

@@ -177,7 +177,6 @@ const MyProfilePage: NextPage<TProps> = () => {
         lastName: lastName,
         middleName: middleName,
         address: data?.address,
-        role: data?.role,
         city: data?.city,
         avatar
       })
