@@ -76,8 +76,6 @@ export const MessageNotification = ({ data }: TMessageNotification) => {
     route.push(`/${(CONTEXT_NOTIFICATION as any)?.[data?.context]}/${data?.referenceId}`)
   }
 
-  console.log(data)
-
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <Box sx={{ maxWidth: '210px' }} onClick={e => handleClickItemNotification(data)}>

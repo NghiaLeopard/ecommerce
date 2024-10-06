@@ -97,7 +97,7 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
           }}
           color='primary'
           page={page}
-          count={totalPage || 1}
+          count={totalPage ? Math.ceil(totalPage / rowLength) : 1}
           {...rests}
         />
       </Box>

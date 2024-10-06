@@ -114,7 +114,7 @@ const MyProfilePage: NextPage<TProps> = () => {
             email: data?.email,
             role: data?.role?._id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
-            phoneNumber: data?.phoneNumber,
+            phoneNumber: `${data?.phoneNumber}`,
             city: data?.city,
             address: data?.address
           })
@@ -177,7 +177,6 @@ const MyProfilePage: NextPage<TProps> = () => {
         lastName: lastName,
         middleName: middleName,
         address: data?.address,
-        role: data?.role,
         city: data?.city,
         avatar
       })

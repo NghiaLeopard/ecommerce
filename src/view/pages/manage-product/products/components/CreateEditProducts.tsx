@@ -398,11 +398,11 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                           )}
                           {avatar ? (
                             <Avatar src={avatar} sx={{ width: 100, height: 100 }}>
-                              <CustomIcon icon='gravity-ui:person' fontSize={60} />
+                              <CustomIcon icon='fluent-mdl2:product-variant' fontSize={60} />
                             </Avatar>
                           ) : (
                             <Avatar src={avatar} sx={{ width: 100, height: 100 }}>
-                              <CustomIcon icon='gravity-ui:person' fontSize={60} />
+                              <CustomIcon icon='fluent-mdl2:product-variant' fontSize={60} />
                             </Avatar>
                           )}
                         </Box>
@@ -420,7 +420,7 @@ export const CreateEditProducts = ({ open, onClose, idProducts }: TCreateEditPro
                               sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1, mt: 3 }}
                             >
                               <CustomIcon icon='gravity-ui:camera'></CustomIcon>
-                              <span>{t('Upload_avatar')}</span>
+                              <span>{t('Upload_image_product')}</span>
                             </Button>
                           </WrapperFileUpload>
                         </Box>

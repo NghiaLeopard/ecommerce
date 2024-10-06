@@ -79,12 +79,14 @@ const AuthProvider = ({ children }: Props) => {
     const initAuth = async (): Promise<void> => {
       const storedToken = getLocalUserData()?.accessToken
       const temporaryToken = getTemporaryToken()?.temporaryToken
+      console.log('accessToken', storedToken)
 
       if (storedToken || temporaryToken) {
         setLoading(true)
         await instanceAxios
           .get(API_ENDPOINT.AUTH.AUTH_ME)
           .then(async response => {
+            console.log('sadas', response)
             setLoading(false)
             setUser({ ...response.data.data })
           })

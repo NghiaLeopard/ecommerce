@@ -520,7 +520,7 @@ const UserPage: NextPage<TProps> = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: 3, gap: 3 }}>
             {!checkboxRow.length && (
               <>
-                <Box sx={{ width: '200px', mt: 1 }}>
+                <Box sx={{ width: { md: '200px', xs: '100px' }, mt: 1 }}>
                   <CustomSelect
                     value={roleSelected}
                     options={allRole}
@@ -531,7 +531,7 @@ const UserPage: NextPage<TProps> = () => {
                     placeholder={t('Role')}
                   />
                 </Box>
-                <Box sx={{ width: '200px', mt: 1 }}>
+                <Box sx={{ width: { md: '200px', xs: '100px' }, mt: 1 }}>
                   <CustomSelect
                     value={userTypeSelected}
                     options={Object.values(OBJECT_TYPE)}
@@ -542,7 +542,7 @@ const UserPage: NextPage<TProps> = () => {
                     placeholder={t('User_type')}
                   />
                 </Box>
-                <Box sx={{ width: '200px', mt: 1 }}>
+                <Box sx={{ width: { md: '200px', xs: '100px' }, mt: 1 }}>
                   <CustomSelect
                     value={statusSelected}
                     options={Object.values(OBJECT_STATUS)}
@@ -553,7 +553,7 @@ const UserPage: NextPage<TProps> = () => {
                     placeholder={t('Status')}
                   />
                 </Box>
-                <Box sx={{ width: '200px', mt: 1 }}>
+                <Box sx={{ width: { md: '200px', xs: '100px' }, mt: 1 }}>
                   {CREATE && (
                     <CustomSelect
                       value={citySelected}

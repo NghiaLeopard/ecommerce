@@ -174,17 +174,21 @@ export default function CardProduct({ item }: TCardProduct) {
               <Typography>{item?.location?.name}</Typography>
             </Box>
           )}
-          {item?.views && (
+          {item?.views ? (
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               <CustomIcon icon='ph:eye-duotone' />
               <Typography>{item?.views}</Typography>
             </Box>
+          ) : (
+            ''
           )}
-          {item?.uniqueViews.length > 0 && (
+          {item?.uniqueViews.length > 0 ? (
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               <CustomIcon icon='mdi:account-view-outline' />
               <Typography>{item?.uniqueViews.length}</Typography>
             </Box>
+          ) : (
+            ''
           )}
           {item?.likedBy.length > 0 && (
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -203,7 +207,7 @@ export default function CardProduct({ item }: TCardProduct) {
               )}
               <Typography>|</Typography>
               <Typography>
-                {t('Sold_product')} {item?.sold} {t('Product')}
+                {t('Sold_product')} {item?.sold || 0} {t('Product')}
               </Typography>
             </Box>
           </Box>

@@ -58,6 +58,7 @@ import { CardOrderStatus } from './components/CardOrderStatus'
 // ** Type
 import { TOrderedProduct } from 'src/types/order-product'
 import { ButtonStatusOrder } from './components/ButtonStatusOrder'
+import { formatPriceToLocal } from 'src/utils'
 
 type TProps = {}
 
@@ -198,8 +199,6 @@ const OrderPage: NextPage<TProps> = () => {
     setPage(page)
     setPageSize(pageSize)
   }
-
-  console.log(orderItemProduct.length)
 
   const ComponentPagination = () => {
     return (
@@ -342,7 +341,7 @@ const OrderPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.totalPrice}</Typography>
+        return <Typography>{`${formatPriceToLocal(row?.totalPrice)} đ`}</Typography>
       }
     },
     {
@@ -353,7 +352,7 @@ const OrderPage: NextPage<TProps> = () => {
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params
 
-        return <Typography>{row?.shippingAddress?.phone}</Typography>
+        return <Typography>{`0${row?.shippingAddress?.phone}`}</Typography>
       }
     },
 

@@ -20,19 +20,19 @@ export const OBJECT_STAR_PRODUCT = () => {
 
   return {
     '0': {
-      label: t('Từ 4.5 sao trở lên'),
+      label: t('Từ 4.5 sao trở xuống'),
       value: 4.5
     },
     '1': {
-      label: t('Từ 4 sao trở lên'),
+      label: t('Từ 4 sao trở xuống'),
       value: 4
     },
     '2': {
-      label: t('Từ 3.5 sao trở lên'),
+      label: t('Từ 3.5 sao trở xuống'),
       value: 3.5
     },
     '3': {
-      label: t('Từ 3 sao trở lên'),
+      label: t('Từ 3 sao trở xuống'),
       value: 3
     }
   }

@@ -35,6 +35,7 @@ import { TProduct } from 'src/types/products'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/products'
 import { getListProductsLikedAsync, getListProductsViewedAsync } from 'src/stores/products/actions'
+import { useAuth } from 'src/hooks/useAuth'
 
 interface TProps {}
 
@@ -61,6 +62,8 @@ const MyProductPage: NextPage<TProps> = () => {
       value: 'PRODUCT_VIEWED'
     }
   ])
+
+  const { user } = useAuth()
 
   // ** Ref
   const firstRender = useRef<boolean>(false)
@@ -99,7 +102,8 @@ const MyProductPage: NextPage<TProps> = () => {
     const params = {
       limit: pageSize,
       page: page,
-      search: search
+      search: search,
+      userId: user._id
     }
     dispatch(
       getListProductsLikedAsync({
@@ -112,7 +116,8 @@ const MyProductPage: NextPage<TProps> = () => {
     const params = {
       limit: pageSize,
       page: page,
-      search: search
+      search: search,
+      userId: user._id
     }
     dispatch(
       getListProductsViewedAsync({
@@ -202,10 +207,10 @@ const MyProductPage: NextPage<TProps> = () => {
           }}
           mt='10px !important'
         >
-          <Grid item md={12}>
+          <Grid item xs={12} md={12}>
             <Grid container spacing={5}>
               {tabSelected === 'PRODUCT_LIKED' &&
-                (productsLiked.data.length > 0
+                (productsLiked?.data?.length > 0
                   ? productsLiked?.data.map((item: TProduct) => {
                       return (
                         <>
