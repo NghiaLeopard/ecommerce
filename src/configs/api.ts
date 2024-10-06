@@ -1,4 +1,4 @@
-export const BASE_URL = `http://localhost:3001/api`
+export const BASE_URL = `http://localhost:8080/api`
 
 export const API_ENDPOINT = {
   AUTH: {
