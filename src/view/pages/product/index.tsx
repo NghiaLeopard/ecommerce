@@ -63,12 +63,7 @@ import { TReviewsProduct } from 'src/types/reviews'
 
 type TProps = {}
 
-type TServerSide = {
-  listProductDetail: TProduct
-  listProductRelate: TProduct[]
-}
-
-const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRelate }: TServerSide) => {
+const ProductDetail: NextPage<TProps> = () => {
   // ** Theme
   const theme = useTheme()
 
@@ -97,6 +92,8 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
 
   // ** Selector
   const { orderItem } = useSelector((state: RootState) => state.orderProduct)
+
+  const { productSlug } = router?.query
 
   const isExpiryDay = isExpiry(dataDetailProduct?.discountStartDate, dataDetailProduct?.discountEndDate)
 
@@ -144,6 +141,27 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
     }
   }
 
+  const fetchDetailProduct = async (slug: string) => {
+    setLoading(true)
+    try {
+      const res = await getDetailProductsPublic(slug)
+      setLoading(false)
+      setDataDetailProduct(res.data)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
+
+  const fetchProductRelated = async (slug: string) => {
+    setLoading(true)
+    try {
+      const res = await getAllProductsRelevant({ params: { slug } })
+      setLoading(false)
+      setDataProductRelated(res.data.products)
+    } catch (error) {
+      setLoading(false)
+    }
+  }
 
   const handleChangeAmountCart = (amount: number) => {
     setAmountCart(prev => (prev += amount))
@@ -295,9 +313,16 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
   }, [dataDetailProduct?._id])
 
   useEffect(() => {
-    setDataDetailProduct(listProductDetail)
-    setDataProductRelated(listProductRelate)
-  }, [listProductDetail, listProductRelate])
+    if (productSlug) {
+      fetchDetailProduct(productSlug as string)
+    }
+  }, [i18n.language, productSlug])
+
+  useEffect(() => {
+    if (productSlug) {
+      fetchProductRelated(productSlug as string)
+    }
+  }, [i18n.language, productSlug])
 
   useEffect(() => {
     if (isMessageDelete) {
@@ -428,7 +453,7 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
     <>
       {(loading || isLoading || isLoadingComment) && <Spinner />}
       <Box>
-        <Typography sx={{ color: theme.palette.primary.main, mb: 3 }} fontWeight='500' fontSize='18px'>
+        <Typography sx={{ color: theme.palette.primary.main }} fontWeight='500' fontSize='18px'>
           {t('Product_details')} {'>'} {t(`${dataDetailProduct?.type?.name}`)} {'>'} {t(`${dataDetailProduct?.name}`)}
         </Typography>
       </Box>
@@ -445,19 +470,17 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
           xs={12}
         >
           <Grid item xs={12} md={5}>
-            {dataDetailProduct?.image && (
-              <Image
-                alt='Image detail product'
-                src={dataDetailProduct?.image}
-                width={0}
-                height='300'
-                style={{
-                  width: '100%',
-                  objectFit: 'cover',
-                  borderRadius: '10px'
-                }}
-              />
-            )}
+            <Image
+              alt='Image detail product'
+              src={dataDetailProduct?.image}
+              width={0}
+              height='300'
+              style={{
+                width: '100%',
+                objectFit: 'contain',
+                borderRadius: '10px'
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={7}>
             <Typography
@@ -561,18 +584,16 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
 
             <Box sx={{ display: 'flex', flexBasis: '10%', gap: 2, mt: '5px' }}>
               <Tooltip title='Delete'>
-                <span>
-                  <IconButton
-                    disabled={amountCart === 1}
-                    sx={{
-                      backgroundColor: `${theme.palette.primary.main} !important`,
-                      color: theme.palette.common.white
-                    }}
-                    onClick={() => handleChangeAmountCart(-1)}
-                  >
-                    <CustomIcon icon='ic:baseline-minus' />
-                  </IconButton>
-                </span>
+                <IconButton
+                  disabled={amountCart === 1}
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main} !important`,
+                    color: theme.palette.common.white
+                  }}
+                  onClick={() => handleChangeAmountCart(-1)}
+                >
+                  <CustomIcon icon='ic:baseline-minus' />
+                </IconButton>
               </Tooltip>
               <CustomTextField
                 value={amountCart}
@@ -588,17 +609,15 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
                 }}
               />
               <Tooltip title='Create'>
-                <span>
-                  <IconButton
-                    onClick={() => handleChangeAmountCart(1)}
-                    sx={{
-                      backgroundColor: `${theme.palette.primary.main} !important`,
-                      color: theme.palette.common.white
-                    }}
-                  >
-                    <CustomIcon icon='ph:plus-bold' />
-                  </IconButton>
-                </span>
+                <IconButton
+                  onClick={() => handleChangeAmountCart(1)}
+                  sx={{
+                    backgroundColor: `${theme.palette.primary.main} !important`,
+                    color: theme.palette.common.white
+                  }}
+                >
+                  <CustomIcon icon='ph:plus-bold' />
+                </IconButton>
               </Tooltip>
             </Box>
 

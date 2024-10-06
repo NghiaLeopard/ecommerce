@@ -46,8 +46,6 @@ export const getServerSideProps: GetServerSideProps<TServerSide> = async context
     params: { limit: 10, page: 1, order: orderBy, productType: response?.data?.productTypes?.[0]?._id }
   })
 
-  console.log(res)
-
   if (res) {
     if (response?.data?.productTypes) {
       return {

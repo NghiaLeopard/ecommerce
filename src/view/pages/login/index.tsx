@@ -102,7 +102,7 @@ const LoginPage: NextPage<TProps> = () => {
   } = useForm({
     defaultValues: {
       email: 'admin@gmail.com',
-      password: '123456789Kha@'
+      password: '1234567890@1nN'
     },
     resolver: yupResolver(schema)
   })
@@ -290,7 +290,7 @@ const LoginPage: NextPage<TProps> = () => {
                 </Link>
               </Box>
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                Sign In
+                {t('Login')}
               </Button>
               <Grid container>
                 <Grid item xs>

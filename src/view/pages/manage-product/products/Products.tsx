@@ -161,6 +161,7 @@ const ProductsPage: NextPage<TProps> = () => {
     )
   }
 
+
   const handleCloseModal = () => {
     setOpenCreateEdit({
       open: false,
@@ -204,6 +205,7 @@ const ProductsPage: NextPage<TProps> = () => {
         pageSizeOptions={PAGE_SIZE_OPTION}
         onChangePagination={handleChangePagination}
         isHideShowed={false}
+        totalPage={products.total}
       />
     )
   }

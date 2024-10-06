@@ -67,7 +67,7 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [tabSelected, setTabSelected] = useState<string>('')
   const [listProductPublic, setListProductPublic] = useState<TProduct[]>([])
-  const [allProductTypes, setAllProductTypes] = useState<Record<string, string>[]>(listProductTypesServer)
+  const [allProductTypes, setAllProductTypes] = useState<Record<string, string>[]>([])
   const [reviewSelected, setReviewSelected] = useState('')
   const [citySelected, setCitySelected] = useState('')
   const [search, setSearch] = useState('')
@@ -124,7 +124,6 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
       }
     } catch (error) {
       setLoading(false)
-      console.log(error)
     }
   }
 
@@ -190,7 +189,7 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
 
   // ** always only render: serverRender = false
   useEffect(() => {
-    if (!serverRender.current && !!dataServer.length && !!listProductTypesServer.length && paramsServer?.productType) {
+    if (!serverRender.current && !!listProductTypesServer.length && paramsServer?.productType) {
       setAllProductTypes(
         listProductTypesServer.map(item => ({
           value: item?._id,
@@ -271,7 +270,7 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
         }}
         mt='10px !important'
       >
-        <Grid item md={3}>
+        <Grid item md={3} xs={12}>
           <Box
             sx={{
               border: `1px solid rgba(${theme.palette.customColors.main},0.2)`,
@@ -288,7 +287,7 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
             />
           </Box>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} xs={12}>
           <Grid container spacing={5}>
             {loading
               ? Array.from({ length: 6 }).map((_, index) => {

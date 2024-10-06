@@ -207,7 +207,7 @@ export default function CardProduct({ item }: TCardProduct) {
               )}
               <Typography>|</Typography>
               <Typography>
-                {t('Sold_product')} {item?.sold} {t('Product')}
+                {t('Sold_product')} {item?.sold || 0} {t('Product')}
               </Typography>
             </Box>
           </Box>
