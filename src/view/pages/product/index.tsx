@@ -454,7 +454,7 @@ const ProductDetail: NextPage<TServerSide> = ({ listProductDetail, listProductRe
                 height='300'
                 style={{
                   width: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   borderRadius: '10px'
                 }}
               />

@@ -181,7 +181,7 @@ const ReviewsPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'nameProduct',
+      field: 'name',
       headerName: t('Name_product'),
       minWidth: 300,
       maxWidth: 300,

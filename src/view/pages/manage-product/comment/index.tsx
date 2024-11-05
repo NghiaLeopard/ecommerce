@@ -196,7 +196,7 @@ const CommentsPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'comment',
+      field: 'content',
       headerName: t('Comment'),
       minWidth: 600,
       maxWidth: 600,

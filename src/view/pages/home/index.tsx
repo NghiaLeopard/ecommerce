@@ -273,7 +273,7 @@ const HomePage: NextPage<TServerSide> = ({ dataServer, listProductTypesServer, p
         }}
         mt='10px !important'
       >
-        <Grid item md={3}>
+        <Grid item md={3} sm={12} xs={12}>
           <Box
             sx={{
               border: `1px solid rgba(${theme.palette.customColors.main},0.2)`,

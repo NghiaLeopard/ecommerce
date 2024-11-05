@@ -254,7 +254,7 @@ const ProductTypesPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'created_date',
+      field: 'createdAt',
       headerName: t('Created_date'),
       minWidth: 200,
       maxWidth: 200,

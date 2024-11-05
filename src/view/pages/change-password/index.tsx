@@ -129,13 +129,14 @@ const ChangePasswordPage: NextPage<TProps> = () => {
     >
       <Box
         display={{
-          sm: 'flex',
-          xs: 'none'
+          sm: 'none',
+          xs: 'none',
+          md: 'flex'
         }}
         sx={{
           alignItems: 'center',
           justifyContent: 'center',
-          height: '100%',
+          height: { md: '100%', sm: '100%' },
           minWidth: '50vw',
           borderRadius: '20px',
           backgroundColor: theme.palette.customColors.bodyBg
@@ -150,11 +151,26 @@ const ChangePasswordPage: NextPage<TProps> = () => {
         />
       </Box>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+          height: { xs: '73vh', sm: '82.5vh' }
+        }}
+      >
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginLeft: {
+              xs: -4,
+              sm: 2
+            },
+            marginTop: {
+              sm: 0,
+              md: 8
+            },
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center'

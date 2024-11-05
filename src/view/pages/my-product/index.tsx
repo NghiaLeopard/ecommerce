@@ -202,7 +202,7 @@ const MyProductPage: NextPage<TProps> = () => {
           }}
           mt='10px !important'
         >
-          <Grid item md={12}>
+          <Grid item xs={12} sm={12} md={12}>
             <Grid container spacing={5}>
               {tabSelected === 'PRODUCT_LIKED' &&
                 (productsLiked.data.length > 0

@@ -290,7 +290,7 @@ const LoginPage: NextPage<TProps> = () => {
                 </Link>
               </Box>
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                Sign In
+                {t('Sign_in')}
               </Button>
               <Grid container>
                 <Grid item xs>

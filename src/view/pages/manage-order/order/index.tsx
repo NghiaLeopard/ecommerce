@@ -369,7 +369,7 @@ const OrderPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'paidStatus',
+      field: 'isPaid',
       headerName: t('Paid_status'),
       minWidth: 215,
       maxWidth: 215,
@@ -393,7 +393,7 @@ const OrderPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'deliveryStatus',
+      field: 'isDelivered',
       headerName: t('Delivery_status'),
       minWidth: 215,
       maxWidth: 215,
